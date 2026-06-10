@@ -23,16 +23,20 @@ from lance_namespace_urllib3_client.models.alter_table_add_columns_request impor
 from lance_namespace_urllib3_client.models.alter_table_add_columns_response import AlterTableAddColumnsResponse
 from lance_namespace_urllib3_client.models.alter_table_alter_columns_request import AlterTableAlterColumnsRequest
 from lance_namespace_urllib3_client.models.alter_table_alter_columns_response import AlterTableAlterColumnsResponse
+from lance_namespace_urllib3_client.models.alter_table_backfill_columns_request import AlterTableBackfillColumnsRequest
+from lance_namespace_urllib3_client.models.alter_table_backfill_columns_response import AlterTableBackfillColumnsResponse
 from lance_namespace_urllib3_client.models.alter_table_drop_columns_request import AlterTableDropColumnsRequest
 from lance_namespace_urllib3_client.models.alter_table_drop_columns_response import AlterTableDropColumnsResponse
 from lance_namespace_urllib3_client.models.analyze_table_query_plan_request import AnalyzeTableQueryPlanRequest
+from lance_namespace_urllib3_client.models.batch_commit_tables_request import BatchCommitTablesRequest
+from lance_namespace_urllib3_client.models.batch_commit_tables_response import BatchCommitTablesResponse
 from lance_namespace_urllib3_client.models.batch_create_table_versions_request import BatchCreateTableVersionsRequest
 from lance_namespace_urllib3_client.models.batch_create_table_versions_response import BatchCreateTableVersionsResponse
 from lance_namespace_urllib3_client.models.batch_delete_table_versions_request import BatchDeleteTableVersionsRequest
 from lance_namespace_urllib3_client.models.batch_delete_table_versions_response import BatchDeleteTableVersionsResponse
 from lance_namespace_urllib3_client.models.count_table_rows_request import CountTableRowsRequest
-from lance_namespace_urllib3_client.models.create_empty_table_request import CreateEmptyTableRequest
-from lance_namespace_urllib3_client.models.create_empty_table_response import CreateEmptyTableResponse
+from lance_namespace_urllib3_client.models.create_table_branch_request import CreateTableBranchRequest
+from lance_namespace_urllib3_client.models.create_table_branch_response import CreateTableBranchResponse
 from lance_namespace_urllib3_client.models.create_table_index_request import CreateTableIndexRequest
 from lance_namespace_urllib3_client.models.create_table_index_response import CreateTableIndexResponse
 from lance_namespace_urllib3_client.models.create_table_response import CreateTableResponse
@@ -45,6 +49,8 @@ from lance_namespace_urllib3_client.models.declare_table_request import DeclareT
 from lance_namespace_urllib3_client.models.declare_table_response import DeclareTableResponse
 from lance_namespace_urllib3_client.models.delete_from_table_request import DeleteFromTableRequest
 from lance_namespace_urllib3_client.models.delete_from_table_response import DeleteFromTableResponse
+from lance_namespace_urllib3_client.models.delete_table_branch_request import DeleteTableBranchRequest
+from lance_namespace_urllib3_client.models.delete_table_branch_response import DeleteTableBranchResponse
 from lance_namespace_urllib3_client.models.delete_table_tag_request import DeleteTableTagRequest
 from lance_namespace_urllib3_client.models.delete_table_tag_response import DeleteTableTagResponse
 from lance_namespace_urllib3_client.models.deregister_table_request import DeregisterTableRequest
@@ -63,6 +69,7 @@ from lance_namespace_urllib3_client.models.get_table_stats_response import GetTa
 from lance_namespace_urllib3_client.models.get_table_tag_version_request import GetTableTagVersionRequest
 from lance_namespace_urllib3_client.models.get_table_tag_version_response import GetTableTagVersionResponse
 from lance_namespace_urllib3_client.models.insert_into_table_response import InsertIntoTableResponse
+from lance_namespace_urllib3_client.models.list_table_branches_response import ListTableBranchesResponse
 from lance_namespace_urllib3_client.models.list_table_indices_request import ListTableIndicesRequest
 from lance_namespace_urllib3_client.models.list_table_indices_response import ListTableIndicesResponse
 from lance_namespace_urllib3_client.models.list_table_tags_response import ListTableTagsResponse
@@ -77,6 +84,8 @@ from lance_namespace_urllib3_client.models.rename_table_response import RenameTa
 from lance_namespace_urllib3_client.models.restore_table_request import RestoreTableRequest
 from lance_namespace_urllib3_client.models.restore_table_response import RestoreTableResponse
 from lance_namespace_urllib3_client.models.table_exists_request import TableExistsRequest
+from lance_namespace_urllib3_client.models.update_field_metadata_request import UpdateFieldMetadataRequest
+from lance_namespace_urllib3_client.models.update_field_metadata_response import UpdateFieldMetadataResponse
 from lance_namespace_urllib3_client.models.update_table_request import UpdateTableRequest
 from lance_namespace_urllib3_client.models.update_table_response import UpdateTableResponse
 from lance_namespace_urllib3_client.models.update_table_tag_request import UpdateTableTagRequest
@@ -753,6 +762,332 @@ class TableApi:
 
 
     @validate_call
+    def alter_table_backfill_columns(
+        self,
+        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
+        alter_table_backfill_columns_request: AlterTableBackfillColumnsRequest,
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> AlterTableBackfillColumnsResponse:
+        """Trigger an async column backfill job
+
+        Trigger an asynchronous backfill job for a computed column on table `id`. The column must be a virtual (UDF-backed) column. Returns a job ID for tracking. 
+
+        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
+        :type id: str
+        :param alter_table_backfill_columns_request: (required)
+        :type alter_table_backfill_columns_request: AlterTableBackfillColumnsRequest
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._alter_table_backfill_columns_serialize(
+            id=id,
+            alter_table_backfill_columns_request=alter_table_backfill_columns_request,
+            delimiter=delimiter,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '202': "AlterTableBackfillColumnsResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def alter_table_backfill_columns_with_http_info(
+        self,
+        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
+        alter_table_backfill_columns_request: AlterTableBackfillColumnsRequest,
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[AlterTableBackfillColumnsResponse]:
+        """Trigger an async column backfill job
+
+        Trigger an asynchronous backfill job for a computed column on table `id`. The column must be a virtual (UDF-backed) column. Returns a job ID for tracking. 
+
+        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
+        :type id: str
+        :param alter_table_backfill_columns_request: (required)
+        :type alter_table_backfill_columns_request: AlterTableBackfillColumnsRequest
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._alter_table_backfill_columns_serialize(
+            id=id,
+            alter_table_backfill_columns_request=alter_table_backfill_columns_request,
+            delimiter=delimiter,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '202': "AlterTableBackfillColumnsResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def alter_table_backfill_columns_without_preload_content(
+        self,
+        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
+        alter_table_backfill_columns_request: AlterTableBackfillColumnsRequest,
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Trigger an async column backfill job
+
+        Trigger an asynchronous backfill job for a computed column on table `id`. The column must be a virtual (UDF-backed) column. Returns a job ID for tracking. 
+
+        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
+        :type id: str
+        :param alter_table_backfill_columns_request: (required)
+        :type alter_table_backfill_columns_request: AlterTableBackfillColumnsRequest
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._alter_table_backfill_columns_serialize(
+            id=id,
+            alter_table_backfill_columns_request=alter_table_backfill_columns_request,
+            delimiter=delimiter,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '202': "AlterTableBackfillColumnsResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _alter_table_backfill_columns_serialize(
+        self,
+        id,
+        alter_table_backfill_columns_request,
+        delimiter,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if id is not None:
+            _path_params['id'] = id
+        # process the query parameters
+        if delimiter is not None:
+            
+            _query_params.append(('delimiter', delimiter))
+            
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if alter_table_backfill_columns_request is not None:
+            _body_params = alter_table_backfill_columns_request
+
+
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'application/json'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'OAuth2', 
+            'ApiKeyAuth', 
+            'BearerAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='POST',
+            resource_path='/v1/table/{id}/backfill_column',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
     def alter_table_drop_columns(
         self,
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
@@ -1389,6 +1724,320 @@ class TableApi:
         return self.api_client.param_serialize(
             method='POST',
             resource_path='/v1/table/{id}/analyze_plan',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def batch_commit_tables(
+        self,
+        batch_commit_tables_request: BatchCommitTablesRequest,
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> BatchCommitTablesResponse:
+        """Atomically commit a batch of mixed table operations
+
+        Atomically commit a batch of table operations. This is a generalized version of `BatchCreateTableVersions` that supports mixed operation types within a single atomic transaction at the metadata layer.  Supported operation types: - `DeclareTable`: Declare (reserve) a new table - `CreateTableVersion`: Create a new version entry for a table - `DeleteTableVersions`: Delete version ranges from a table - `DeregisterTable`: Deregister (soft-delete) a table  All operations are committed atomically: either all succeed or none are applied. 
+
+        :param batch_commit_tables_request: (required)
+        :type batch_commit_tables_request: BatchCommitTablesRequest
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._batch_commit_tables_serialize(
+            batch_commit_tables_request=batch_commit_tables_request,
+            delimiter=delimiter,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "BatchCommitTablesResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '409': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def batch_commit_tables_with_http_info(
+        self,
+        batch_commit_tables_request: BatchCommitTablesRequest,
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[BatchCommitTablesResponse]:
+        """Atomically commit a batch of mixed table operations
+
+        Atomically commit a batch of table operations. This is a generalized version of `BatchCreateTableVersions` that supports mixed operation types within a single atomic transaction at the metadata layer.  Supported operation types: - `DeclareTable`: Declare (reserve) a new table - `CreateTableVersion`: Create a new version entry for a table - `DeleteTableVersions`: Delete version ranges from a table - `DeregisterTable`: Deregister (soft-delete) a table  All operations are committed atomically: either all succeed or none are applied. 
+
+        :param batch_commit_tables_request: (required)
+        :type batch_commit_tables_request: BatchCommitTablesRequest
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._batch_commit_tables_serialize(
+            batch_commit_tables_request=batch_commit_tables_request,
+            delimiter=delimiter,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "BatchCommitTablesResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '409': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def batch_commit_tables_without_preload_content(
+        self,
+        batch_commit_tables_request: BatchCommitTablesRequest,
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Atomically commit a batch of mixed table operations
+
+        Atomically commit a batch of table operations. This is a generalized version of `BatchCreateTableVersions` that supports mixed operation types within a single atomic transaction at the metadata layer.  Supported operation types: - `DeclareTable`: Declare (reserve) a new table - `CreateTableVersion`: Create a new version entry for a table - `DeleteTableVersions`: Delete version ranges from a table - `DeregisterTable`: Deregister (soft-delete) a table  All operations are committed atomically: either all succeed or none are applied. 
+
+        :param batch_commit_tables_request: (required)
+        :type batch_commit_tables_request: BatchCommitTablesRequest
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._batch_commit_tables_serialize(
+            batch_commit_tables_request=batch_commit_tables_request,
+            delimiter=delimiter,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "BatchCommitTablesResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '409': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _batch_commit_tables_serialize(
+        self,
+        batch_commit_tables_request,
+        delimiter,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        # process the query parameters
+        if delimiter is not None:
+            
+            _query_params.append(('delimiter', delimiter))
+            
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if batch_commit_tables_request is not None:
+            _body_params = batch_commit_tables_request
+
+
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'application/json'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'OAuth2', 
+            'ApiKeyAuth', 
+            'BearerAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='POST',
+            resource_path='/v1/table/batch-commit',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -2371,344 +3020,14 @@ class TableApi:
 
 
     @validate_call
-    def create_empty_table(
-        self,
-        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
-        create_empty_table_request: CreateEmptyTableRequest,
-        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> CreateEmptyTableResponse:
-        """(Deprecated) Create an empty table
-
-        Create an empty table with the given name without touching storage. This is a metadata-only operation that records the table existence and sets up aspects like access control.  For DirectoryNamespace implementation, this creates a `.lance-reserved` file in the table directory to mark the table's existence without creating actual Lance data files.  **Deprecated**: Use `DeclareTable` instead. 
-
-        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
-        :type id: str
-        :param create_empty_table_request: (required)
-        :type create_empty_table_request: CreateEmptyTableRequest
-        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
-        :type delimiter: str
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-        warnings.warn("POST /v1/table/{id}/create-empty is deprecated.", DeprecationWarning)
-
-        _param = self._create_empty_table_serialize(
-            id=id,
-            create_empty_table_request=create_empty_table_request,
-            delimiter=delimiter,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "CreateEmptyTableResponse",
-            '400': "ErrorResponse",
-            '401': "ErrorResponse",
-            '403': "ErrorResponse",
-            '404': "ErrorResponse",
-            '409': "ErrorResponse",
-            '503': "ErrorResponse",
-            '5XX': "ErrorResponse",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        ).data
-
-
-    @validate_call
-    def create_empty_table_with_http_info(
-        self,
-        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
-        create_empty_table_request: CreateEmptyTableRequest,
-        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[CreateEmptyTableResponse]:
-        """(Deprecated) Create an empty table
-
-        Create an empty table with the given name without touching storage. This is a metadata-only operation that records the table existence and sets up aspects like access control.  For DirectoryNamespace implementation, this creates a `.lance-reserved` file in the table directory to mark the table's existence without creating actual Lance data files.  **Deprecated**: Use `DeclareTable` instead. 
-
-        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
-        :type id: str
-        :param create_empty_table_request: (required)
-        :type create_empty_table_request: CreateEmptyTableRequest
-        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
-        :type delimiter: str
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-        warnings.warn("POST /v1/table/{id}/create-empty is deprecated.", DeprecationWarning)
-
-        _param = self._create_empty_table_serialize(
-            id=id,
-            create_empty_table_request=create_empty_table_request,
-            delimiter=delimiter,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "CreateEmptyTableResponse",
-            '400': "ErrorResponse",
-            '401': "ErrorResponse",
-            '403': "ErrorResponse",
-            '404': "ErrorResponse",
-            '409': "ErrorResponse",
-            '503': "ErrorResponse",
-            '5XX': "ErrorResponse",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        response_data.read()
-        return self.api_client.response_deserialize(
-            response_data=response_data,
-            response_types_map=_response_types_map,
-        )
-
-
-    @validate_call
-    def create_empty_table_without_preload_content(
-        self,
-        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
-        create_empty_table_request: CreateEmptyTableRequest,
-        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
-        _request_timeout: Union[
-            None,
-            Annotated[StrictFloat, Field(gt=0)],
-            Tuple[
-                Annotated[StrictFloat, Field(gt=0)],
-                Annotated[StrictFloat, Field(gt=0)]
-            ]
-        ] = None,
-        _request_auth: Optional[Dict[StrictStr, Any]] = None,
-        _content_type: Optional[StrictStr] = None,
-        _headers: Optional[Dict[StrictStr, Any]] = None,
-        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> RESTResponseType:
-        """(Deprecated) Create an empty table
-
-        Create an empty table with the given name without touching storage. This is a metadata-only operation that records the table existence and sets up aspects like access control.  For DirectoryNamespace implementation, this creates a `.lance-reserved` file in the table directory to mark the table's existence without creating actual Lance data files.  **Deprecated**: Use `DeclareTable` instead. 
-
-        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
-        :type id: str
-        :param create_empty_table_request: (required)
-        :type create_empty_table_request: CreateEmptyTableRequest
-        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
-        :type delimiter: str
-        :param _request_timeout: timeout setting for this request. If one
-                                 number provided, it will be total request
-                                 timeout. It can also be a pair (tuple) of
-                                 (connection, read) timeouts.
-        :type _request_timeout: int, tuple(int, int), optional
-        :param _request_auth: set to override the auth_settings for an a single
-                              request; this effectively ignores the
-                              authentication in the spec for a single request.
-        :type _request_auth: dict, optional
-        :param _content_type: force content-type for the request.
-        :type _content_type: str, Optional
-        :param _headers: set to override the headers for a single
-                         request; this effectively ignores the headers
-                         in the spec for a single request.
-        :type _headers: dict, optional
-        :param _host_index: set to override the host_index for a single
-                            request; this effectively ignores the host_index
-                            in the spec for a single request.
-        :type _host_index: int, optional
-        :return: Returns the result object.
-        """ # noqa: E501
-        warnings.warn("POST /v1/table/{id}/create-empty is deprecated.", DeprecationWarning)
-
-        _param = self._create_empty_table_serialize(
-            id=id,
-            create_empty_table_request=create_empty_table_request,
-            delimiter=delimiter,
-            _request_auth=_request_auth,
-            _content_type=_content_type,
-            _headers=_headers,
-            _host_index=_host_index
-        )
-
-        _response_types_map: Dict[str, Optional[str]] = {
-            '200': "CreateEmptyTableResponse",
-            '400': "ErrorResponse",
-            '401': "ErrorResponse",
-            '403': "ErrorResponse",
-            '404': "ErrorResponse",
-            '409': "ErrorResponse",
-            '503': "ErrorResponse",
-            '5XX': "ErrorResponse",
-        }
-        response_data = self.api_client.call_api(
-            *_param,
-            _request_timeout=_request_timeout
-        )
-        return response_data.response
-
-
-    def _create_empty_table_serialize(
-        self,
-        id,
-        create_empty_table_request,
-        delimiter,
-        _request_auth,
-        _content_type,
-        _headers,
-        _host_index,
-    ) -> RequestSerialized:
-
-        _host = None
-
-        _collection_formats: Dict[str, str] = {
-        }
-
-        _path_params: Dict[str, str] = {}
-        _query_params: List[Tuple[str, str]] = []
-        _header_params: Dict[str, Optional[str]] = _headers or {}
-        _form_params: List[Tuple[str, str]] = []
-        _files: Dict[
-            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
-        ] = {}
-        _body_params: Optional[bytes] = None
-
-        # process the path parameters
-        if id is not None:
-            _path_params['id'] = id
-        # process the query parameters
-        if delimiter is not None:
-            
-            _query_params.append(('delimiter', delimiter))
-            
-        # process the header parameters
-        # process the form parameters
-        # process the body parameter
-        if create_empty_table_request is not None:
-            _body_params = create_empty_table_request
-
-
-        # set the HTTP header `Accept`
-        if 'Accept' not in _header_params:
-            _header_params['Accept'] = self.api_client.select_header_accept(
-                [
-                    'application/json'
-                ]
-            )
-
-        # set the HTTP header `Content-Type`
-        if _content_type:
-            _header_params['Content-Type'] = _content_type
-        else:
-            _default_content_type = (
-                self.api_client.select_header_content_type(
-                    [
-                        'application/json'
-                    ]
-                )
-            )
-            if _default_content_type is not None:
-                _header_params['Content-Type'] = _default_content_type
-
-        # authentication setting
-        _auth_settings: List[str] = [
-            'OAuth2', 
-            'ApiKeyAuth', 
-            'BearerAuth'
-        ]
-
-        return self.api_client.param_serialize(
-            method='POST',
-            resource_path='/v1/table/{id}/create-empty',
-            path_params=_path_params,
-            query_params=_query_params,
-            header_params=_header_params,
-            body=_body_params,
-            post_params=_form_params,
-            files=_files,
-            auth_settings=_auth_settings,
-            collection_formats=_collection_formats,
-            _host=_host,
-            _request_auth=_request_auth
-        )
-
-
-
-
-    @validate_call
     def create_table(
         self,
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
         body: Annotated[Union[StrictBytes, StrictStr, Tuple[StrictStr, StrictBytes]], Field(description="Arrow IPC data")],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         mode: Optional[StrictStr] = None,
+        properties: Annotated[Optional[StrictStr], Field(description="Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as `properties={\"user\":\"alice\",\"team\":\"eng\"}`. ")] = None,
+        storage_options: Annotated[Optional[StrictStr], Field(description="Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -2724,7 +3043,7 @@ class TableApi:
     ) -> CreateTableResponse:
         """Create a table with the given name
 
-        Create table `id` in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `CreateTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
+        Create table `id` in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `CreateTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name - `properties`: serialize as a single JSON-encoded query parameter such as   `properties={\"user\":\"alice\",\"team\":\"eng\"}`; these are business logic properties   managed by the namespace implementation outside Lance context - `storage_options`: serialize as a single JSON-encoded query parameter such as   `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`; these configure   write-time overrides for data and metadata written during table creation 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -2734,6 +3053,10 @@ class TableApi:
         :type delimiter: str
         :param mode:
         :type mode: str
+        :param properties: Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as `properties={\"user\":\"alice\",\"team\":\"eng\"}`. 
+        :type properties: str
+        :param storage_options: Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`. 
+        :type storage_options: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -2761,6 +3084,8 @@ class TableApi:
             body=body,
             delimiter=delimiter,
             mode=mode,
+            properties=properties,
+            storage_options=storage_options,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -2773,6 +3098,7 @@ class TableApi:
             '401': "ErrorResponse",
             '403': "ErrorResponse",
             '404': "ErrorResponse",
+            '409': "ErrorResponse",
             '503': "ErrorResponse",
             '5XX': "ErrorResponse",
         }
@@ -2794,6 +3120,8 @@ class TableApi:
         body: Annotated[Union[StrictBytes, StrictStr, Tuple[StrictStr, StrictBytes]], Field(description="Arrow IPC data")],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         mode: Optional[StrictStr] = None,
+        properties: Annotated[Optional[StrictStr], Field(description="Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as `properties={\"user\":\"alice\",\"team\":\"eng\"}`. ")] = None,
+        storage_options: Annotated[Optional[StrictStr], Field(description="Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -2809,7 +3137,7 @@ class TableApi:
     ) -> ApiResponse[CreateTableResponse]:
         """Create a table with the given name
 
-        Create table `id` in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `CreateTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
+        Create table `id` in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `CreateTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name - `properties`: serialize as a single JSON-encoded query parameter such as   `properties={\"user\":\"alice\",\"team\":\"eng\"}`; these are business logic properties   managed by the namespace implementation outside Lance context - `storage_options`: serialize as a single JSON-encoded query parameter such as   `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`; these configure   write-time overrides for data and metadata written during table creation 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -2819,6 +3147,10 @@ class TableApi:
         :type delimiter: str
         :param mode:
         :type mode: str
+        :param properties: Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as `properties={\"user\":\"alice\",\"team\":\"eng\"}`. 
+        :type properties: str
+        :param storage_options: Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`. 
+        :type storage_options: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -2846,6 +3178,8 @@ class TableApi:
             body=body,
             delimiter=delimiter,
             mode=mode,
+            properties=properties,
+            storage_options=storage_options,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -2858,6 +3192,7 @@ class TableApi:
             '401': "ErrorResponse",
             '403': "ErrorResponse",
             '404': "ErrorResponse",
+            '409': "ErrorResponse",
             '503': "ErrorResponse",
             '5XX': "ErrorResponse",
         }
@@ -2879,6 +3214,8 @@ class TableApi:
         body: Annotated[Union[StrictBytes, StrictStr, Tuple[StrictStr, StrictBytes]], Field(description="Arrow IPC data")],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         mode: Optional[StrictStr] = None,
+        properties: Annotated[Optional[StrictStr], Field(description="Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as `properties={\"user\":\"alice\",\"team\":\"eng\"}`. ")] = None,
+        storage_options: Annotated[Optional[StrictStr], Field(description="Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -2894,7 +3231,7 @@ class TableApi:
     ) -> RESTResponseType:
         """Create a table with the given name
 
-        Create table `id` in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `CreateTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
+        Create table `id` in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `CreateTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name - `properties`: serialize as a single JSON-encoded query parameter such as   `properties={\"user\":\"alice\",\"team\":\"eng\"}`; these are business logic properties   managed by the namespace implementation outside Lance context - `storage_options`: serialize as a single JSON-encoded query parameter such as   `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`; these configure   write-time overrides for data and metadata written during table creation 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -2904,6 +3241,10 @@ class TableApi:
         :type delimiter: str
         :param mode:
         :type mode: str
+        :param properties: Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as `properties={\"user\":\"alice\",\"team\":\"eng\"}`. 
+        :type properties: str
+        :param storage_options: Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`. 
+        :type storage_options: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -2931,6 +3272,8 @@ class TableApi:
             body=body,
             delimiter=delimiter,
             mode=mode,
+            properties=properties,
+            storage_options=storage_options,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -2943,6 +3286,7 @@ class TableApi:
             '401': "ErrorResponse",
             '403': "ErrorResponse",
             '404': "ErrorResponse",
+            '409': "ErrorResponse",
             '503': "ErrorResponse",
             '5XX': "ErrorResponse",
         }
@@ -2959,6 +3303,8 @@ class TableApi:
         body,
         delimiter,
         mode,
+        properties,
+        storage_options,
         _request_auth,
         _content_type,
         _headers,
@@ -2990,6 +3336,14 @@ class TableApi:
         if mode is not None:
             
             _query_params.append(('mode', mode))
+            
+        if properties is not None:
+            
+            _query_params.append(('properties', properties))
+            
+        if storage_options is not None:
+            
+            _query_params.append(('storage_options', storage_options))
             
         # process the header parameters
         # process the form parameters
@@ -3054,6 +3408,335 @@ class TableApi:
 
 
     @validate_call
+    def create_table_branch(
+        self,
+        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
+        create_table_branch_request: CreateTableBranchRequest,
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> CreateTableBranchResponse:
+        """Create a new branch
+
+        Create a new branch for table `id` starting from a source ref (another branch and/or version), defaulting to the latest version of the main branch. 
+
+        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
+        :type id: str
+        :param create_table_branch_request: (required)
+        :type create_table_branch_request: CreateTableBranchRequest
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._create_table_branch_serialize(
+            id=id,
+            create_table_branch_request=create_table_branch_request,
+            delimiter=delimiter,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "CreateTableBranchResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '409': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def create_table_branch_with_http_info(
+        self,
+        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
+        create_table_branch_request: CreateTableBranchRequest,
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[CreateTableBranchResponse]:
+        """Create a new branch
+
+        Create a new branch for table `id` starting from a source ref (another branch and/or version), defaulting to the latest version of the main branch. 
+
+        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
+        :type id: str
+        :param create_table_branch_request: (required)
+        :type create_table_branch_request: CreateTableBranchRequest
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._create_table_branch_serialize(
+            id=id,
+            create_table_branch_request=create_table_branch_request,
+            delimiter=delimiter,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "CreateTableBranchResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '409': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def create_table_branch_without_preload_content(
+        self,
+        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
+        create_table_branch_request: CreateTableBranchRequest,
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Create a new branch
+
+        Create a new branch for table `id` starting from a source ref (another branch and/or version), defaulting to the latest version of the main branch. 
+
+        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
+        :type id: str
+        :param create_table_branch_request: (required)
+        :type create_table_branch_request: CreateTableBranchRequest
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._create_table_branch_serialize(
+            id=id,
+            create_table_branch_request=create_table_branch_request,
+            delimiter=delimiter,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "CreateTableBranchResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '409': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _create_table_branch_serialize(
+        self,
+        id,
+        create_table_branch_request,
+        delimiter,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if id is not None:
+            _path_params['id'] = id
+        # process the query parameters
+        if delimiter is not None:
+            
+            _query_params.append(('delimiter', delimiter))
+            
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if create_table_branch_request is not None:
+            _body_params = create_table_branch_request
+
+
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'application/json'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'OAuth2', 
+            'ApiKeyAuth', 
+            'BearerAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='POST',
+            resource_path='/v1/table/{id}/branches/create',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
     def create_table_index(
         self,
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
@@ -3074,7 +3757,7 @@ class TableApi:
     ) -> CreateTableIndexResponse:
         """Create an index on a table
 
-        Create an index on a table column for faster search operations. Supports vector indexes (IVF_FLAT, IVF_HNSW_SQ, IVF_PQ, etc.) and scalar indexes (BTREE, BITMAP, FTS, etc.). Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
+        Create an index on a table field for faster search operations. Supports vector indexes (IVF_FLAT, IVF_HNSW_SQ, IVF_PQ, etc.) and scalar indexes (BTREE, BITMAP, FTS, etc.). Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -3155,7 +3838,7 @@ class TableApi:
     ) -> ApiResponse[CreateTableIndexResponse]:
         """Create an index on a table
 
-        Create an index on a table column for faster search operations. Supports vector indexes (IVF_FLAT, IVF_HNSW_SQ, IVF_PQ, etc.) and scalar indexes (BTREE, BITMAP, FTS, etc.). Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
+        Create an index on a table field for faster search operations. Supports vector indexes (IVF_FLAT, IVF_HNSW_SQ, IVF_PQ, etc.) and scalar indexes (BTREE, BITMAP, FTS, etc.). Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -3236,7 +3919,7 @@ class TableApi:
     ) -> RESTResponseType:
         """Create an index on a table
 
-        Create an index on a table column for faster search operations. Supports vector indexes (IVF_FLAT, IVF_HNSW_SQ, IVF_PQ, etc.) and scalar indexes (BTREE, BITMAP, FTS, etc.). Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
+        Create an index on a table field for faster search operations. Supports vector indexes (IVF_FLAT, IVF_HNSW_SQ, IVF_PQ, etc.) and scalar indexes (BTREE, BITMAP, FTS, etc.). Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -3400,7 +4083,7 @@ class TableApi:
     ) -> CreateTableScalarIndexResponse:
         """Create a scalar index on a table
 
-        Create a scalar index on a table column for faster filtering operations. Supports scalar indexes (BTREE, BITMAP, LABEL_LIST, FTS, etc.). This is an alias for CreateTableIndex specifically for scalar indexes. Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
+        Create a scalar index on a table field for faster filtering operations. Supports scalar indexes (BTREE, BITMAP, LABEL_LIST, FTS, etc.). This is an alias for CreateTableIndex specifically for scalar indexes. Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -3481,7 +4164,7 @@ class TableApi:
     ) -> ApiResponse[CreateTableScalarIndexResponse]:
         """Create a scalar index on a table
 
-        Create a scalar index on a table column for faster filtering operations. Supports scalar indexes (BTREE, BITMAP, LABEL_LIST, FTS, etc.). This is an alias for CreateTableIndex specifically for scalar indexes. Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
+        Create a scalar index on a table field for faster filtering operations. Supports scalar indexes (BTREE, BITMAP, LABEL_LIST, FTS, etc.). This is an alias for CreateTableIndex specifically for scalar indexes. Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -3562,7 +4245,7 @@ class TableApi:
     ) -> RESTResponseType:
         """Create a scalar index on a table
 
-        Create a scalar index on a table column for faster filtering operations. Supports scalar indexes (BTREE, BITMAP, LABEL_LIST, FTS, etc.). This is an alias for CreateTableIndex specifically for scalar indexes. Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
+        Create a scalar index on a table field for faster filtering operations. Supports scalar indexes (BTREE, BITMAP, LABEL_LIST, FTS, etc.). This is an alias for CreateTableIndex specifically for scalar indexes. Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -5019,6 +5702,332 @@ class TableApi:
 
 
     @validate_call
+    def delete_table_branch(
+        self,
+        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
+        delete_table_branch_request: DeleteTableBranchRequest,
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> DeleteTableBranchResponse:
+        """Delete a branch
+
+        Delete an existing branch from table `id`. 
+
+        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
+        :type id: str
+        :param delete_table_branch_request: (required)
+        :type delete_table_branch_request: DeleteTableBranchRequest
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._delete_table_branch_serialize(
+            id=id,
+            delete_table_branch_request=delete_table_branch_request,
+            delimiter=delimiter,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "DeleteTableBranchResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def delete_table_branch_with_http_info(
+        self,
+        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
+        delete_table_branch_request: DeleteTableBranchRequest,
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[DeleteTableBranchResponse]:
+        """Delete a branch
+
+        Delete an existing branch from table `id`. 
+
+        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
+        :type id: str
+        :param delete_table_branch_request: (required)
+        :type delete_table_branch_request: DeleteTableBranchRequest
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._delete_table_branch_serialize(
+            id=id,
+            delete_table_branch_request=delete_table_branch_request,
+            delimiter=delimiter,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "DeleteTableBranchResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def delete_table_branch_without_preload_content(
+        self,
+        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
+        delete_table_branch_request: DeleteTableBranchRequest,
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Delete a branch
+
+        Delete an existing branch from table `id`. 
+
+        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
+        :type id: str
+        :param delete_table_branch_request: (required)
+        :type delete_table_branch_request: DeleteTableBranchRequest
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._delete_table_branch_serialize(
+            id=id,
+            delete_table_branch_request=delete_table_branch_request,
+            delimiter=delimiter,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "DeleteTableBranchResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _delete_table_branch_serialize(
+        self,
+        id,
+        delete_table_branch_request,
+        delimiter,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if id is not None:
+            _path_params['id'] = id
+        # process the query parameters
+        if delimiter is not None:
+            
+            _query_params.append(('delimiter', delimiter))
+            
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if delete_table_branch_request is not None:
+            _body_params = delete_table_branch_request
+
+
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'application/json'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'OAuth2', 
+            'ApiKeyAuth', 
+            'BearerAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='POST',
+            resource_path='/v1/table/{id}/branches/delete',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
     def delete_table_tag(
         self,
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
@@ -5678,6 +6687,7 @@ class TableApi:
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         with_table_uri: Annotated[Optional[StrictBool], Field(description="Whether to include the table URI in the response")] = None,
         load_detailed_metadata: Annotated[Optional[StrictBool], Field(description="Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`. ")] = None,
+        check_declared: Annotated[Optional[StrictBool], Field(description="Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -5693,7 +6703,7 @@ class TableApi:
     ) -> DescribeTableResponse:
         """Describe information of a table
 
-        Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri` and `load_detailed_metadata` as query parameters instead of in the request body. 
+        Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri`, `load_detailed_metadata`, and `check_declared` as query parameters instead of in the request body. 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -5705,6 +6715,8 @@ class TableApi:
         :type with_table_uri: bool
         :param load_detailed_metadata: Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`. 
         :type load_detailed_metadata: bool
+        :param check_declared: Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check. 
+        :type check_declared: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -5733,6 +6745,7 @@ class TableApi:
             delimiter=delimiter,
             with_table_uri=with_table_uri,
             load_detailed_metadata=load_detailed_metadata,
+            check_declared=check_declared,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -5767,6 +6780,7 @@ class TableApi:
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         with_table_uri: Annotated[Optional[StrictBool], Field(description="Whether to include the table URI in the response")] = None,
         load_detailed_metadata: Annotated[Optional[StrictBool], Field(description="Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`. ")] = None,
+        check_declared: Annotated[Optional[StrictBool], Field(description="Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -5782,7 +6796,7 @@ class TableApi:
     ) -> ApiResponse[DescribeTableResponse]:
         """Describe information of a table
 
-        Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri` and `load_detailed_metadata` as query parameters instead of in the request body. 
+        Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri`, `load_detailed_metadata`, and `check_declared` as query parameters instead of in the request body. 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -5794,6 +6808,8 @@ class TableApi:
         :type with_table_uri: bool
         :param load_detailed_metadata: Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`. 
         :type load_detailed_metadata: bool
+        :param check_declared: Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check. 
+        :type check_declared: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -5822,6 +6838,7 @@ class TableApi:
             delimiter=delimiter,
             with_table_uri=with_table_uri,
             load_detailed_metadata=load_detailed_metadata,
+            check_declared=check_declared,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -5856,6 +6873,7 @@ class TableApi:
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         with_table_uri: Annotated[Optional[StrictBool], Field(description="Whether to include the table URI in the response")] = None,
         load_detailed_metadata: Annotated[Optional[StrictBool], Field(description="Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`. ")] = None,
+        check_declared: Annotated[Optional[StrictBool], Field(description="Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -5871,7 +6889,7 @@ class TableApi:
     ) -> RESTResponseType:
         """Describe information of a table
 
-        Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri` and `load_detailed_metadata` as query parameters instead of in the request body. 
+        Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri`, `load_detailed_metadata`, and `check_declared` as query parameters instead of in the request body. 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -5883,6 +6901,8 @@ class TableApi:
         :type with_table_uri: bool
         :param load_detailed_metadata: Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`. 
         :type load_detailed_metadata: bool
+        :param check_declared: Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check. 
+        :type check_declared: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -5911,6 +6931,7 @@ class TableApi:
             delimiter=delimiter,
             with_table_uri=with_table_uri,
             load_detailed_metadata=load_detailed_metadata,
+            check_declared=check_declared,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -5940,6 +6961,7 @@ class TableApi:
         delimiter,
         with_table_uri,
         load_detailed_metadata,
+        check_declared,
         _request_auth,
         _content_type,
         _headers,
@@ -5975,6 +6997,10 @@ class TableApi:
         if load_detailed_metadata is not None:
             
             _query_params.append(('load_detailed_metadata', load_detailed_metadata))
+            
+        if check_declared is not None:
+            
+            _query_params.append(('check_declared', check_declared))
             
         # process the header parameters
         # process the form parameters
@@ -7001,6 +8027,7 @@ class TableApi:
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
         index_name: Annotated[StrictStr, Field(description="Name of the index to drop")],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        branch: Annotated[Optional[StrictStr], Field(description="Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -7024,6 +8051,8 @@ class TableApi:
         :type index_name: str
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
+        :param branch: Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
+        :type branch: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -7050,6 +8079,7 @@ class TableApi:
             id=id,
             index_name=index_name,
             delimiter=delimiter,
+            branch=branch,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -7082,6 +8112,7 @@ class TableApi:
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
         index_name: Annotated[StrictStr, Field(description="Name of the index to drop")],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        branch: Annotated[Optional[StrictStr], Field(description="Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -7105,6 +8136,8 @@ class TableApi:
         :type index_name: str
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
+        :param branch: Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
+        :type branch: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -7131,6 +8164,7 @@ class TableApi:
             id=id,
             index_name=index_name,
             delimiter=delimiter,
+            branch=branch,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -7163,6 +8197,7 @@ class TableApi:
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
         index_name: Annotated[StrictStr, Field(description="Name of the index to drop")],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        branch: Annotated[Optional[StrictStr], Field(description="Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -7186,6 +8221,8 @@ class TableApi:
         :type index_name: str
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
+        :param branch: Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
+        :type branch: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -7212,6 +8249,7 @@ class TableApi:
             id=id,
             index_name=index_name,
             delimiter=delimiter,
+            branch=branch,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -7239,6 +8277,7 @@ class TableApi:
         id,
         index_name,
         delimiter,
+        branch,
         _request_auth,
         _content_type,
         _headers,
@@ -7268,6 +8307,10 @@ class TableApi:
         if delimiter is not None:
             
             _query_params.append(('delimiter', delimiter))
+            
+        if branch is not None:
+            
+            _query_params.append(('branch', branch))
             
         # process the header parameters
         # process the form parameters
@@ -8292,6 +9335,7 @@ class TableApi:
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
         body: Annotated[Union[StrictBytes, StrictStr, Tuple[StrictStr, StrictBytes]], Field(description="Arrow IPC stream containing the records to insert")],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        branch: Annotated[Optional[StrictStr], Field(description="Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. ")] = None,
         mode: Annotated[Optional[StrictStr], Field(description="How the insert should behave. Case insensitive, supports both PascalCase and snake_case. Valid values are: - Append (default): insert data to the existing table - Overwrite: remove all data in the table and then insert data to it ")] = None,
         _request_timeout: Union[
             None,
@@ -8308,7 +9352,7 @@ class TableApi:
     ) -> InsertIntoTableResponse:
         """Insert records into a table
 
-        Insert new records into table `id`.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `InsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
+        Insert new records into table `id`.  For tables that have been declared but not yet created on storage (is_only_declared=true), this operation will create the table with the provided data.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `InsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -8316,6 +9360,8 @@ class TableApi:
         :type body: bytearray
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
+        :param branch: Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
+        :type branch: str
         :param mode: How the insert should behave. Case insensitive, supports both PascalCase and snake_case. Valid values are: - Append (default): insert data to the existing table - Overwrite: remove all data in the table and then insert data to it 
         :type mode: str
         :param _request_timeout: timeout setting for this request. If one
@@ -8344,6 +9390,7 @@ class TableApi:
             id=id,
             body=body,
             delimiter=delimiter,
+            branch=branch,
             mode=mode,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -8377,6 +9424,7 @@ class TableApi:
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
         body: Annotated[Union[StrictBytes, StrictStr, Tuple[StrictStr, StrictBytes]], Field(description="Arrow IPC stream containing the records to insert")],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        branch: Annotated[Optional[StrictStr], Field(description="Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. ")] = None,
         mode: Annotated[Optional[StrictStr], Field(description="How the insert should behave. Case insensitive, supports both PascalCase and snake_case. Valid values are: - Append (default): insert data to the existing table - Overwrite: remove all data in the table and then insert data to it ")] = None,
         _request_timeout: Union[
             None,
@@ -8393,7 +9441,7 @@ class TableApi:
     ) -> ApiResponse[InsertIntoTableResponse]:
         """Insert records into a table
 
-        Insert new records into table `id`.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `InsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
+        Insert new records into table `id`.  For tables that have been declared but not yet created on storage (is_only_declared=true), this operation will create the table with the provided data.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `InsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -8401,6 +9449,8 @@ class TableApi:
         :type body: bytearray
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
+        :param branch: Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
+        :type branch: str
         :param mode: How the insert should behave. Case insensitive, supports both PascalCase and snake_case. Valid values are: - Append (default): insert data to the existing table - Overwrite: remove all data in the table and then insert data to it 
         :type mode: str
         :param _request_timeout: timeout setting for this request. If one
@@ -8429,6 +9479,7 @@ class TableApi:
             id=id,
             body=body,
             delimiter=delimiter,
+            branch=branch,
             mode=mode,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -8462,6 +9513,7 @@ class TableApi:
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
         body: Annotated[Union[StrictBytes, StrictStr, Tuple[StrictStr, StrictBytes]], Field(description="Arrow IPC stream containing the records to insert")],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        branch: Annotated[Optional[StrictStr], Field(description="Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. ")] = None,
         mode: Annotated[Optional[StrictStr], Field(description="How the insert should behave. Case insensitive, supports both PascalCase and snake_case. Valid values are: - Append (default): insert data to the existing table - Overwrite: remove all data in the table and then insert data to it ")] = None,
         _request_timeout: Union[
             None,
@@ -8478,7 +9530,7 @@ class TableApi:
     ) -> RESTResponseType:
         """Insert records into a table
 
-        Insert new records into table `id`.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `InsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
+        Insert new records into table `id`.  For tables that have been declared but not yet created on storage (is_only_declared=true), this operation will create the table with the provided data.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `InsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -8486,6 +9538,8 @@ class TableApi:
         :type body: bytearray
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
+        :param branch: Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
+        :type branch: str
         :param mode: How the insert should behave. Case insensitive, supports both PascalCase and snake_case. Valid values are: - Append (default): insert data to the existing table - Overwrite: remove all data in the table and then insert data to it 
         :type mode: str
         :param _request_timeout: timeout setting for this request. If one
@@ -8514,6 +9568,7 @@ class TableApi:
             id=id,
             body=body,
             delimiter=delimiter,
+            branch=branch,
             mode=mode,
             _request_auth=_request_auth,
             _content_type=_content_type,
@@ -8542,6 +9597,7 @@ class TableApi:
         id,
         body,
         delimiter,
+        branch,
         mode,
         _request_auth,
         _content_type,
@@ -8570,6 +9626,10 @@ class TableApi:
         if delimiter is not None:
             
             _query_params.append(('delimiter', delimiter))
+            
+        if branch is not None:
+            
+            _query_params.append(('branch', branch))
             
         if mode is not None:
             
@@ -8643,6 +9703,7 @@ class TableApi:
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         page_token: Annotated[Optional[StrictStr], Field(description="Pagination token from a previous request")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Maximum number of items to return")] = None,
+        include_declared: Annotated[Optional[StrictBool], Field(description="When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -8658,7 +9719,7 @@ class TableApi:
     ) -> ListTablesResponse:
         """List all tables
 
-        List all tables across all namespaces.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListAllTablesRequest` information in the following way: - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `delimiter`: pass through query parameter of the same name 
+        List all tables across all namespaces.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListAllTablesRequest` information in the following way: - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `delimiter`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
 
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
@@ -8666,6 +9727,8 @@ class TableApi:
         :type page_token: str
         :param limit: Maximum number of items to return
         :type limit: int
+        :param include_declared: When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. 
+        :type include_declared: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -8692,6 +9755,7 @@ class TableApi:
             delimiter=delimiter,
             page_token=page_token,
             limit=limit,
+            include_declared=include_declared,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -8723,6 +9787,7 @@ class TableApi:
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         page_token: Annotated[Optional[StrictStr], Field(description="Pagination token from a previous request")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Maximum number of items to return")] = None,
+        include_declared: Annotated[Optional[StrictBool], Field(description="When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -8738,7 +9803,7 @@ class TableApi:
     ) -> ApiResponse[ListTablesResponse]:
         """List all tables
 
-        List all tables across all namespaces.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListAllTablesRequest` information in the following way: - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `delimiter`: pass through query parameter of the same name 
+        List all tables across all namespaces.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListAllTablesRequest` information in the following way: - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `delimiter`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
 
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
@@ -8746,6 +9811,8 @@ class TableApi:
         :type page_token: str
         :param limit: Maximum number of items to return
         :type limit: int
+        :param include_declared: When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. 
+        :type include_declared: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -8772,6 +9839,7 @@ class TableApi:
             delimiter=delimiter,
             page_token=page_token,
             limit=limit,
+            include_declared=include_declared,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -8803,6 +9871,7 @@ class TableApi:
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         page_token: Annotated[Optional[StrictStr], Field(description="Pagination token from a previous request")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Maximum number of items to return")] = None,
+        include_declared: Annotated[Optional[StrictBool], Field(description="When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -8818,8 +9887,173 @@ class TableApi:
     ) -> RESTResponseType:
         """List all tables
 
-        List all tables across all namespaces.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListAllTablesRequest` information in the following way: - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `delimiter`: pass through query parameter of the same name 
+        List all tables across all namespaces.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListAllTablesRequest` information in the following way: - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `delimiter`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
 
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param page_token: Pagination token from a previous request
+        :type page_token: str
+        :param limit: Maximum number of items to return
+        :type limit: int
+        :param include_declared: When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. 
+        :type include_declared: bool
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_all_tables_serialize(
+            delimiter=delimiter,
+            page_token=page_token,
+            limit=limit,
+            include_declared=include_declared,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "ListTablesResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _list_all_tables_serialize(
+        self,
+        delimiter,
+        page_token,
+        limit,
+        include_declared,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        # process the query parameters
+        if delimiter is not None:
+            
+            _query_params.append(('delimiter', delimiter))
+            
+        if page_token is not None:
+            
+            _query_params.append(('page_token', page_token))
+            
+        if limit is not None:
+            
+            _query_params.append(('limit', limit))
+            
+        if include_declared is not None:
+            
+            _query_params.append(('include_declared', include_declared))
+            
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+
+
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
+
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'OAuth2', 
+            'ApiKeyAuth', 
+            'BearerAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='GET',
+            resource_path='/v1/table',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
+    def list_table_branches(
+        self,
+        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        page_token: Annotated[Optional[StrictStr], Field(description="Pagination token from a previous request")] = None,
+        limit: Annotated[Optional[StrictInt], Field(description="Maximum number of items to return")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ListTableBranchesResponse:
+        """List all branches for a table
+
+        List all branches that have been created for table `id`. Returns a map of branch names to their contents.  REST NAMESPACE ONLY REST namespace does not use a request body for this operation. The `ListTableBranchesRequest` information is passed in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
+
+        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
+        :type id: str
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
         :param page_token: Pagination token from a previous request
@@ -8848,7 +10082,8 @@ class TableApi:
         :return: Returns the result object.
         """ # noqa: E501
 
-        _param = self._list_all_tables_serialize(
+        _param = self._list_table_branches_serialize(
+            id=id,
             delimiter=delimiter,
             page_token=page_token,
             limit=limit,
@@ -8859,10 +10094,181 @@ class TableApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "ListTablesResponse",
+            '200': "ListTableBranchesResponse",
             '400': "ErrorResponse",
             '401': "ErrorResponse",
             '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def list_table_branches_with_http_info(
+        self,
+        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        page_token: Annotated[Optional[StrictStr], Field(description="Pagination token from a previous request")] = None,
+        limit: Annotated[Optional[StrictInt], Field(description="Maximum number of items to return")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[ListTableBranchesResponse]:
+        """List all branches for a table
+
+        List all branches that have been created for table `id`. Returns a map of branch names to their contents.  REST NAMESPACE ONLY REST namespace does not use a request body for this operation. The `ListTableBranchesRequest` information is passed in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
+
+        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
+        :type id: str
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param page_token: Pagination token from a previous request
+        :type page_token: str
+        :param limit: Maximum number of items to return
+        :type limit: int
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_table_branches_serialize(
+            id=id,
+            delimiter=delimiter,
+            page_token=page_token,
+            limit=limit,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "ListTableBranchesResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def list_table_branches_without_preload_content(
+        self,
+        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        page_token: Annotated[Optional[StrictStr], Field(description="Pagination token from a previous request")] = None,
+        limit: Annotated[Optional[StrictInt], Field(description="Maximum number of items to return")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """List all branches for a table
+
+        List all branches that have been created for table `id`. Returns a map of branch names to their contents.  REST NAMESPACE ONLY REST namespace does not use a request body for this operation. The `ListTableBranchesRequest` information is passed in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
+
+        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
+        :type id: str
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param page_token: Pagination token from a previous request
+        :type page_token: str
+        :param limit: Maximum number of items to return
+        :type limit: int
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._list_table_branches_serialize(
+            id=id,
+            delimiter=delimiter,
+            page_token=page_token,
+            limit=limit,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "ListTableBranchesResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
             '503': "ErrorResponse",
             '5XX': "ErrorResponse",
         }
@@ -8873,8 +10279,9 @@ class TableApi:
         return response_data.response
 
 
-    def _list_all_tables_serialize(
+    def _list_table_branches_serialize(
         self,
+        id,
         delimiter,
         page_token,
         limit,
@@ -8899,6 +10306,8 @@ class TableApi:
         _body_params: Optional[bytes] = None
 
         # process the path parameters
+        if id is not None:
+            _path_params['id'] = id
         # process the query parameters
         if delimiter is not None:
             
@@ -8934,8 +10343,8 @@ class TableApi:
         ]
 
         return self.api_client.param_serialize(
-            method='GET',
-            resource_path='/v1/table',
+            method='POST',
+            resource_path='/v1/table/{id}/branches/list',
             path_params=_path_params,
             query_params=_query_params,
             header_params=_header_params,
@@ -9614,6 +11023,7 @@ class TableApi:
         self,
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        branch: Annotated[Optional[StrictStr], Field(description="Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. ")] = None,
         page_token: Annotated[Optional[StrictStr], Field(description="Pagination token from a previous request")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Maximum number of items to return")] = None,
         descending: Annotated[Optional[StrictBool], Field(description="When true, versions are guaranteed to be returned in descending order (latest to oldest). When false or not specified, the ordering is implementation-defined. ")] = None,
@@ -9638,6 +11048,8 @@ class TableApi:
         :type id: str
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
+        :param branch: Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
+        :type branch: str
         :param page_token: Pagination token from a previous request
         :type page_token: str
         :param limit: Maximum number of items to return
@@ -9669,6 +11081,7 @@ class TableApi:
         _param = self._list_table_versions_serialize(
             id=id,
             delimiter=delimiter,
+            branch=branch,
             page_token=page_token,
             limit=limit,
             descending=descending,
@@ -9703,6 +11116,7 @@ class TableApi:
         self,
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        branch: Annotated[Optional[StrictStr], Field(description="Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. ")] = None,
         page_token: Annotated[Optional[StrictStr], Field(description="Pagination token from a previous request")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Maximum number of items to return")] = None,
         descending: Annotated[Optional[StrictBool], Field(description="When true, versions are guaranteed to be returned in descending order (latest to oldest). When false or not specified, the ordering is implementation-defined. ")] = None,
@@ -9727,6 +11141,8 @@ class TableApi:
         :type id: str
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
+        :param branch: Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
+        :type branch: str
         :param page_token: Pagination token from a previous request
         :type page_token: str
         :param limit: Maximum number of items to return
@@ -9758,6 +11174,7 @@ class TableApi:
         _param = self._list_table_versions_serialize(
             id=id,
             delimiter=delimiter,
+            branch=branch,
             page_token=page_token,
             limit=limit,
             descending=descending,
@@ -9792,6 +11209,7 @@ class TableApi:
         self,
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        branch: Annotated[Optional[StrictStr], Field(description="Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. ")] = None,
         page_token: Annotated[Optional[StrictStr], Field(description="Pagination token from a previous request")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Maximum number of items to return")] = None,
         descending: Annotated[Optional[StrictBool], Field(description="When true, versions are guaranteed to be returned in descending order (latest to oldest). When false or not specified, the ordering is implementation-defined. ")] = None,
@@ -9816,6 +11234,8 @@ class TableApi:
         :type id: str
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
+        :param branch: Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
+        :type branch: str
         :param page_token: Pagination token from a previous request
         :type page_token: str
         :param limit: Maximum number of items to return
@@ -9847,6 +11267,7 @@ class TableApi:
         _param = self._list_table_versions_serialize(
             id=id,
             delimiter=delimiter,
+            branch=branch,
             page_token=page_token,
             limit=limit,
             descending=descending,
@@ -9876,6 +11297,7 @@ class TableApi:
         self,
         id,
         delimiter,
+        branch,
         page_token,
         limit,
         descending,
@@ -9906,6 +11328,10 @@ class TableApi:
         if delimiter is not None:
             
             _query_params.append(('delimiter', delimiter))
+            
+        if branch is not None:
+            
+            _query_params.append(('branch', branch))
             
         if page_token is not None:
             
@@ -9965,6 +11391,7 @@ class TableApi:
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         page_token: Annotated[Optional[StrictStr], Field(description="Pagination token from a previous request")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Maximum number of items to return")] = None,
+        include_declared: Annotated[Optional[StrictBool], Field(description="When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -9980,7 +11407,7 @@ class TableApi:
     ) -> ListTablesResponse:
         """List tables in a namespace
 
-        List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
+        List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -9990,6 +11417,8 @@ class TableApi:
         :type page_token: str
         :param limit: Maximum number of items to return
         :type limit: int
+        :param include_declared: When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. 
+        :type include_declared: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -10017,6 +11446,7 @@ class TableApi:
             delimiter=delimiter,
             page_token=page_token,
             limit=limit,
+            include_declared=include_declared,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -10051,6 +11481,7 @@ class TableApi:
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         page_token: Annotated[Optional[StrictStr], Field(description="Pagination token from a previous request")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Maximum number of items to return")] = None,
+        include_declared: Annotated[Optional[StrictBool], Field(description="When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -10066,7 +11497,7 @@ class TableApi:
     ) -> ApiResponse[ListTablesResponse]:
         """List tables in a namespace
 
-        List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
+        List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -10076,6 +11507,8 @@ class TableApi:
         :type page_token: str
         :param limit: Maximum number of items to return
         :type limit: int
+        :param include_declared: When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. 
+        :type include_declared: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -10103,6 +11536,7 @@ class TableApi:
             delimiter=delimiter,
             page_token=page_token,
             limit=limit,
+            include_declared=include_declared,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -10137,6 +11571,7 @@ class TableApi:
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
         page_token: Annotated[Optional[StrictStr], Field(description="Pagination token from a previous request")] = None,
         limit: Annotated[Optional[StrictInt], Field(description="Maximum number of items to return")] = None,
+        include_declared: Annotated[Optional[StrictBool], Field(description="When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -10152,7 +11587,7 @@ class TableApi:
     ) -> RESTResponseType:
         """List tables in a namespace
 
-        List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
+        List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
@@ -10162,6 +11597,8 @@ class TableApi:
         :type page_token: str
         :param limit: Maximum number of items to return
         :type limit: int
+        :param include_declared: When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. 
+        :type include_declared: bool
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -10189,6 +11626,7 @@ class TableApi:
             delimiter=delimiter,
             page_token=page_token,
             limit=limit,
+            include_declared=include_declared,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -10218,6 +11656,7 @@ class TableApi:
         delimiter,
         page_token,
         limit,
+        include_declared,
         _request_auth,
         _content_type,
         _headers,
@@ -10253,6 +11692,10 @@ class TableApi:
         if limit is not None:
             
             _query_params.append(('limit', limit))
+            
+        if include_declared is not None:
+            
+            _query_params.append(('include_declared', include_declared))
             
         # process the header parameters
         # process the form parameters
@@ -10297,14 +11740,15 @@ class TableApi:
     def merge_insert_into_table(
         self,
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
-        on: Annotated[StrictStr, Field(description="Column name to use for matching rows (required)")],
+        on: Annotated[str, Field(min_length=1, strict=True, description="Lance field path to use for matching rows. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments. Use canonical full paths for display and errors; leaf names alone only identify top-level fields; invalid or unresolved paths should return InvalidInput or TableColumnNotFound.")],
         body: Annotated[Union[StrictBytes, StrictStr, Tuple[StrictStr, StrictBytes]], Field(description="Arrow IPC stream containing the records to merge")],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        branch: Annotated[Optional[StrictStr], Field(description="Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. ")] = None,
         when_matched_update_all: Annotated[Optional[StrictBool], Field(description="Update all columns when rows match")] = None,
-        when_matched_update_all_filt: Annotated[Optional[StrictStr], Field(description="The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true")] = None,
+        when_matched_update_all_filt: Annotated[Optional[StrictStr], Field(description="The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled.")] = None,
         when_not_matched_insert_all: Annotated[Optional[StrictBool], Field(description="Insert all columns when rows don't match")] = None,
         when_not_matched_by_source_delete: Annotated[Optional[StrictBool], Field(description="Delete all rows from target table that don't match a row in the source table")] = None,
-        when_not_matched_by_source_delete_filt: Annotated[Optional[StrictStr], Field(description="Delete rows from the target table if there is no match AND the SQL expression evaluates to true")] = None,
+        when_not_matched_by_source_delete_filt: Annotated[Optional[StrictStr], Field(description="Delete rows from the target table if there is no match AND the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled.")] = None,
         timeout: Annotated[Optional[StrictStr], Field(description="Timeout for the operation (e.g., \"30s\", \"5m\")")] = None,
         use_index: Annotated[Optional[StrictBool], Field(description="Whether to use index for matching rows")] = None,
         _request_timeout: Union[
@@ -10322,25 +11766,27 @@ class TableApi:
     ) -> MergeInsertIntoTableResponse:
         """Merge insert (upsert) records into a table
 
-        Performs a merge insert (upsert) operation on table `id`. This operation updates existing rows based on a matching column and inserts new rows that don't match. It returns the number of rows inserted and updated.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `MergeInsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `on`: pass through query parameter of the same name - `when_matched_update_all`: pass through query parameter of the same name - `when_matched_update_all_filt`: pass through query parameter of the same name - `when_not_matched_insert_all`: pass through query parameter of the same name - `when_not_matched_by_source_delete`: pass through query parameter of the same name - `when_not_matched_by_source_delete_filt`: pass through query parameter of the same name 
+        Performs a merge insert (upsert) operation on table `id`. This operation updates existing rows based on a matching column and inserts new rows that don't match. It returns the number of rows inserted and updated.  For tables that have been declared but not yet created on storage (is_only_declared=true), this operation will create the table with the provided data (since there are no existing rows to merge with).  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `MergeInsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `on`: pass through query parameter of the same name - `when_matched_update_all`: pass through query parameter of the same name - `when_matched_update_all_filt`: pass through query parameter of the same name - `when_not_matched_insert_all`: pass through query parameter of the same name - `when_not_matched_by_source_delete`: pass through query parameter of the same name - `when_not_matched_by_source_delete_filt`: pass through query parameter of the same name 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
-        :param on: Column name to use for matching rows (required) (required)
+        :param on: Lance field path to use for matching rows. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments. Use canonical full paths for display and errors; leaf names alone only identify top-level fields; invalid or unresolved paths should return InvalidInput or TableColumnNotFound. (required)
         :type on: str
         :param body: Arrow IPC stream containing the records to merge (required)
         :type body: bytearray
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
+        :param branch: Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
+        :type branch: str
         :param when_matched_update_all: Update all columns when rows match
         :type when_matched_update_all: bool
-        :param when_matched_update_all_filt: The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true
+        :param when_matched_update_all_filt: The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled.
         :type when_matched_update_all_filt: str
         :param when_not_matched_insert_all: Insert all columns when rows don't match
         :type when_not_matched_insert_all: bool
         :param when_not_matched_by_source_delete: Delete all rows from target table that don't match a row in the source table
         :type when_not_matched_by_source_delete: bool
-        :param when_not_matched_by_source_delete_filt: Delete rows from the target table if there is no match AND the SQL expression evaluates to true
+        :param when_not_matched_by_source_delete_filt: Delete rows from the target table if there is no match AND the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled.
         :type when_not_matched_by_source_delete_filt: str
         :param timeout: Timeout for the operation (e.g., \"30s\", \"5m\")
         :type timeout: str
@@ -10373,6 +11819,7 @@ class TableApi:
             on=on,
             body=body,
             delimiter=delimiter,
+            branch=branch,
             when_matched_update_all=when_matched_update_all,
             when_matched_update_all_filt=when_matched_update_all_filt,
             when_not_matched_insert_all=when_not_matched_insert_all,
@@ -10410,14 +11857,15 @@ class TableApi:
     def merge_insert_into_table_with_http_info(
         self,
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
-        on: Annotated[StrictStr, Field(description="Column name to use for matching rows (required)")],
+        on: Annotated[str, Field(min_length=1, strict=True, description="Lance field path to use for matching rows. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments. Use canonical full paths for display and errors; leaf names alone only identify top-level fields; invalid or unresolved paths should return InvalidInput or TableColumnNotFound.")],
         body: Annotated[Union[StrictBytes, StrictStr, Tuple[StrictStr, StrictBytes]], Field(description="Arrow IPC stream containing the records to merge")],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        branch: Annotated[Optional[StrictStr], Field(description="Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. ")] = None,
         when_matched_update_all: Annotated[Optional[StrictBool], Field(description="Update all columns when rows match")] = None,
-        when_matched_update_all_filt: Annotated[Optional[StrictStr], Field(description="The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true")] = None,
+        when_matched_update_all_filt: Annotated[Optional[StrictStr], Field(description="The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled.")] = None,
         when_not_matched_insert_all: Annotated[Optional[StrictBool], Field(description="Insert all columns when rows don't match")] = None,
         when_not_matched_by_source_delete: Annotated[Optional[StrictBool], Field(description="Delete all rows from target table that don't match a row in the source table")] = None,
-        when_not_matched_by_source_delete_filt: Annotated[Optional[StrictStr], Field(description="Delete rows from the target table if there is no match AND the SQL expression evaluates to true")] = None,
+        when_not_matched_by_source_delete_filt: Annotated[Optional[StrictStr], Field(description="Delete rows from the target table if there is no match AND the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled.")] = None,
         timeout: Annotated[Optional[StrictStr], Field(description="Timeout for the operation (e.g., \"30s\", \"5m\")")] = None,
         use_index: Annotated[Optional[StrictBool], Field(description="Whether to use index for matching rows")] = None,
         _request_timeout: Union[
@@ -10435,25 +11883,27 @@ class TableApi:
     ) -> ApiResponse[MergeInsertIntoTableResponse]:
         """Merge insert (upsert) records into a table
 
-        Performs a merge insert (upsert) operation on table `id`. This operation updates existing rows based on a matching column and inserts new rows that don't match. It returns the number of rows inserted and updated.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `MergeInsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `on`: pass through query parameter of the same name - `when_matched_update_all`: pass through query parameter of the same name - `when_matched_update_all_filt`: pass through query parameter of the same name - `when_not_matched_insert_all`: pass through query parameter of the same name - `when_not_matched_by_source_delete`: pass through query parameter of the same name - `when_not_matched_by_source_delete_filt`: pass through query parameter of the same name 
+        Performs a merge insert (upsert) operation on table `id`. This operation updates existing rows based on a matching column and inserts new rows that don't match. It returns the number of rows inserted and updated.  For tables that have been declared but not yet created on storage (is_only_declared=true), this operation will create the table with the provided data (since there are no existing rows to merge with).  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `MergeInsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `on`: pass through query parameter of the same name - `when_matched_update_all`: pass through query parameter of the same name - `when_matched_update_all_filt`: pass through query parameter of the same name - `when_not_matched_insert_all`: pass through query parameter of the same name - `when_not_matched_by_source_delete`: pass through query parameter of the same name - `when_not_matched_by_source_delete_filt`: pass through query parameter of the same name 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
-        :param on: Column name to use for matching rows (required) (required)
+        :param on: Lance field path to use for matching rows. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments. Use canonical full paths for display and errors; leaf names alone only identify top-level fields; invalid or unresolved paths should return InvalidInput or TableColumnNotFound. (required)
         :type on: str
         :param body: Arrow IPC stream containing the records to merge (required)
         :type body: bytearray
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
+        :param branch: Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
+        :type branch: str
         :param when_matched_update_all: Update all columns when rows match
         :type when_matched_update_all: bool
-        :param when_matched_update_all_filt: The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true
+        :param when_matched_update_all_filt: The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled.
         :type when_matched_update_all_filt: str
         :param when_not_matched_insert_all: Insert all columns when rows don't match
         :type when_not_matched_insert_all: bool
         :param when_not_matched_by_source_delete: Delete all rows from target table that don't match a row in the source table
         :type when_not_matched_by_source_delete: bool
-        :param when_not_matched_by_source_delete_filt: Delete rows from the target table if there is no match AND the SQL expression evaluates to true
+        :param when_not_matched_by_source_delete_filt: Delete rows from the target table if there is no match AND the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled.
         :type when_not_matched_by_source_delete_filt: str
         :param timeout: Timeout for the operation (e.g., \"30s\", \"5m\")
         :type timeout: str
@@ -10486,6 +11936,7 @@ class TableApi:
             on=on,
             body=body,
             delimiter=delimiter,
+            branch=branch,
             when_matched_update_all=when_matched_update_all,
             when_matched_update_all_filt=when_matched_update_all_filt,
             when_not_matched_insert_all=when_not_matched_insert_all,
@@ -10523,14 +11974,15 @@ class TableApi:
     def merge_insert_into_table_without_preload_content(
         self,
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
-        on: Annotated[StrictStr, Field(description="Column name to use for matching rows (required)")],
+        on: Annotated[str, Field(min_length=1, strict=True, description="Lance field path to use for matching rows. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments. Use canonical full paths for display and errors; leaf names alone only identify top-level fields; invalid or unresolved paths should return InvalidInput or TableColumnNotFound.")],
         body: Annotated[Union[StrictBytes, StrictStr, Tuple[StrictStr, StrictBytes]], Field(description="Arrow IPC stream containing the records to merge")],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        branch: Annotated[Optional[StrictStr], Field(description="Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. ")] = None,
         when_matched_update_all: Annotated[Optional[StrictBool], Field(description="Update all columns when rows match")] = None,
-        when_matched_update_all_filt: Annotated[Optional[StrictStr], Field(description="The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true")] = None,
+        when_matched_update_all_filt: Annotated[Optional[StrictStr], Field(description="The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled.")] = None,
         when_not_matched_insert_all: Annotated[Optional[StrictBool], Field(description="Insert all columns when rows don't match")] = None,
         when_not_matched_by_source_delete: Annotated[Optional[StrictBool], Field(description="Delete all rows from target table that don't match a row in the source table")] = None,
-        when_not_matched_by_source_delete_filt: Annotated[Optional[StrictStr], Field(description="Delete rows from the target table if there is no match AND the SQL expression evaluates to true")] = None,
+        when_not_matched_by_source_delete_filt: Annotated[Optional[StrictStr], Field(description="Delete rows from the target table if there is no match AND the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled.")] = None,
         timeout: Annotated[Optional[StrictStr], Field(description="Timeout for the operation (e.g., \"30s\", \"5m\")")] = None,
         use_index: Annotated[Optional[StrictBool], Field(description="Whether to use index for matching rows")] = None,
         _request_timeout: Union[
@@ -10548,25 +12000,27 @@ class TableApi:
     ) -> RESTResponseType:
         """Merge insert (upsert) records into a table
 
-        Performs a merge insert (upsert) operation on table `id`. This operation updates existing rows based on a matching column and inserts new rows that don't match. It returns the number of rows inserted and updated.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `MergeInsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `on`: pass through query parameter of the same name - `when_matched_update_all`: pass through query parameter of the same name - `when_matched_update_all_filt`: pass through query parameter of the same name - `when_not_matched_insert_all`: pass through query parameter of the same name - `when_not_matched_by_source_delete`: pass through query parameter of the same name - `when_not_matched_by_source_delete_filt`: pass through query parameter of the same name 
+        Performs a merge insert (upsert) operation on table `id`. This operation updates existing rows based on a matching column and inserts new rows that don't match. It returns the number of rows inserted and updated.  For tables that have been declared but not yet created on storage (is_only_declared=true), this operation will create the table with the provided data (since there are no existing rows to merge with).  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `MergeInsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `on`: pass through query parameter of the same name - `when_matched_update_all`: pass through query parameter of the same name - `when_matched_update_all_filt`: pass through query parameter of the same name - `when_not_matched_insert_all`: pass through query parameter of the same name - `when_not_matched_by_source_delete`: pass through query parameter of the same name - `when_not_matched_by_source_delete_filt`: pass through query parameter of the same name 
 
         :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
         :type id: str
-        :param on: Column name to use for matching rows (required) (required)
+        :param on: Lance field path to use for matching rows. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments. Use canonical full paths for display and errors; leaf names alone only identify top-level fields; invalid or unresolved paths should return InvalidInput or TableColumnNotFound. (required)
         :type on: str
         :param body: Arrow IPC stream containing the records to merge (required)
         :type body: bytearray
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
+        :param branch: Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
+        :type branch: str
         :param when_matched_update_all: Update all columns when rows match
         :type when_matched_update_all: bool
-        :param when_matched_update_all_filt: The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true
+        :param when_matched_update_all_filt: The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled.
         :type when_matched_update_all_filt: str
         :param when_not_matched_insert_all: Insert all columns when rows don't match
         :type when_not_matched_insert_all: bool
         :param when_not_matched_by_source_delete: Delete all rows from target table that don't match a row in the source table
         :type when_not_matched_by_source_delete: bool
-        :param when_not_matched_by_source_delete_filt: Delete rows from the target table if there is no match AND the SQL expression evaluates to true
+        :param when_not_matched_by_source_delete_filt: Delete rows from the target table if there is no match AND the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled.
         :type when_not_matched_by_source_delete_filt: str
         :param timeout: Timeout for the operation (e.g., \"30s\", \"5m\")
         :type timeout: str
@@ -10599,6 +12053,7 @@ class TableApi:
             on=on,
             body=body,
             delimiter=delimiter,
+            branch=branch,
             when_matched_update_all=when_matched_update_all,
             when_matched_update_all_filt=when_matched_update_all_filt,
             when_not_matched_insert_all=when_not_matched_insert_all,
@@ -10634,6 +12089,7 @@ class TableApi:
         on,
         body,
         delimiter,
+        branch,
         when_matched_update_all,
         when_matched_update_all_filt,
         when_not_matched_insert_all,
@@ -10668,6 +12124,10 @@ class TableApi:
         if delimiter is not None:
             
             _query_params.append(('delimiter', delimiter))
+            
+        if branch is not None:
+            
+            _query_params.append(('branch', branch))
             
         if on is not None:
             
@@ -12404,6 +13864,332 @@ class TableApi:
 
 
     @validate_call
+    def update_field_metadata(
+        self,
+        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
+        update_field_metadata_request: UpdateFieldMetadataRequest,
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> UpdateFieldMetadataResponse:
+        """Update per-field metadata
+
+        Update the Arrow field (column) metadata for table `id`.  Each entry targets a field by `path` and merges the provided key-value pairs into that field's existing metadata, or replaces it when `replace` is true. A null metadata value deletes that key. 
+
+        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
+        :type id: str
+        :param update_field_metadata_request: (required)
+        :type update_field_metadata_request: UpdateFieldMetadataRequest
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._update_field_metadata_serialize(
+            id=id,
+            update_field_metadata_request=update_field_metadata_request,
+            delimiter=delimiter,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "UpdateFieldMetadataResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        ).data
+
+
+    @validate_call
+    def update_field_metadata_with_http_info(
+        self,
+        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
+        update_field_metadata_request: UpdateFieldMetadataRequest,
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> ApiResponse[UpdateFieldMetadataResponse]:
+        """Update per-field metadata
+
+        Update the Arrow field (column) metadata for table `id`.  Each entry targets a field by `path` and merges the provided key-value pairs into that field's existing metadata, or replaces it when `replace` is true. A null metadata value deletes that key. 
+
+        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
+        :type id: str
+        :param update_field_metadata_request: (required)
+        :type update_field_metadata_request: UpdateFieldMetadataRequest
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._update_field_metadata_serialize(
+            id=id,
+            update_field_metadata_request=update_field_metadata_request,
+            delimiter=delimiter,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "UpdateFieldMetadataResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        response_data.read()
+        return self.api_client.response_deserialize(
+            response_data=response_data,
+            response_types_map=_response_types_map,
+        )
+
+
+    @validate_call
+    def update_field_metadata_without_preload_content(
+        self,
+        id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
+        update_field_metadata_request: UpdateFieldMetadataRequest,
+        delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        _request_timeout: Union[
+            None,
+            Annotated[StrictFloat, Field(gt=0)],
+            Tuple[
+                Annotated[StrictFloat, Field(gt=0)],
+                Annotated[StrictFloat, Field(gt=0)]
+            ]
+        ] = None,
+        _request_auth: Optional[Dict[StrictStr, Any]] = None,
+        _content_type: Optional[StrictStr] = None,
+        _headers: Optional[Dict[StrictStr, Any]] = None,
+        _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
+    ) -> RESTResponseType:
+        """Update per-field metadata
+
+        Update the Arrow field (column) metadata for table `id`.  Each entry targets a field by `path` and merges the provided key-value pairs into that field's existing metadata, or replaces it when `replace` is true. A null metadata value deletes that key. 
+
+        :param id: `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  (required)
+        :type id: str
+        :param update_field_metadata_request: (required)
+        :type update_field_metadata_request: UpdateFieldMetadataRequest
+        :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        :type delimiter: str
+        :param _request_timeout: timeout setting for this request. If one
+                                 number provided, it will be total request
+                                 timeout. It can also be a pair (tuple) of
+                                 (connection, read) timeouts.
+        :type _request_timeout: int, tuple(int, int), optional
+        :param _request_auth: set to override the auth_settings for an a single
+                              request; this effectively ignores the
+                              authentication in the spec for a single request.
+        :type _request_auth: dict, optional
+        :param _content_type: force content-type for the request.
+        :type _content_type: str, Optional
+        :param _headers: set to override the headers for a single
+                         request; this effectively ignores the headers
+                         in the spec for a single request.
+        :type _headers: dict, optional
+        :param _host_index: set to override the host_index for a single
+                            request; this effectively ignores the host_index
+                            in the spec for a single request.
+        :type _host_index: int, optional
+        :return: Returns the result object.
+        """ # noqa: E501
+
+        _param = self._update_field_metadata_serialize(
+            id=id,
+            update_field_metadata_request=update_field_metadata_request,
+            delimiter=delimiter,
+            _request_auth=_request_auth,
+            _content_type=_content_type,
+            _headers=_headers,
+            _host_index=_host_index
+        )
+
+        _response_types_map: Dict[str, Optional[str]] = {
+            '200': "UpdateFieldMetadataResponse",
+            '400': "ErrorResponse",
+            '401': "ErrorResponse",
+            '403': "ErrorResponse",
+            '404': "ErrorResponse",
+            '503': "ErrorResponse",
+            '5XX': "ErrorResponse",
+        }
+        response_data = self.api_client.call_api(
+            *_param,
+            _request_timeout=_request_timeout
+        )
+        return response_data.response
+
+
+    def _update_field_metadata_serialize(
+        self,
+        id,
+        update_field_metadata_request,
+        delimiter,
+        _request_auth,
+        _content_type,
+        _headers,
+        _host_index,
+    ) -> RequestSerialized:
+
+        _host = None
+
+        _collection_formats: Dict[str, str] = {
+        }
+
+        _path_params: Dict[str, str] = {}
+        _query_params: List[Tuple[str, str]] = []
+        _header_params: Dict[str, Optional[str]] = _headers or {}
+        _form_params: List[Tuple[str, str]] = []
+        _files: Dict[
+            str, Union[str, bytes, List[str], List[bytes], List[Tuple[str, bytes]]]
+        ] = {}
+        _body_params: Optional[bytes] = None
+
+        # process the path parameters
+        if id is not None:
+            _path_params['id'] = id
+        # process the query parameters
+        if delimiter is not None:
+            
+            _query_params.append(('delimiter', delimiter))
+            
+        # process the header parameters
+        # process the form parameters
+        # process the body parameter
+        if update_field_metadata_request is not None:
+            _body_params = update_field_metadata_request
+
+
+        # set the HTTP header `Accept`
+        if 'Accept' not in _header_params:
+            _header_params['Accept'] = self.api_client.select_header_accept(
+                [
+                    'application/json'
+                ]
+            )
+
+        # set the HTTP header `Content-Type`
+        if _content_type:
+            _header_params['Content-Type'] = _content_type
+        else:
+            _default_content_type = (
+                self.api_client.select_header_content_type(
+                    [
+                        'application/json'
+                    ]
+                )
+            )
+            if _default_content_type is not None:
+                _header_params['Content-Type'] = _default_content_type
+
+        # authentication setting
+        _auth_settings: List[str] = [
+            'OAuth2', 
+            'ApiKeyAuth', 
+            'BearerAuth'
+        ]
+
+        return self.api_client.param_serialize(
+            method='POST',
+            resource_path='/v1/table/{id}/update_field_metadata',
+            path_params=_path_params,
+            query_params=_query_params,
+            header_params=_header_params,
+            body=_body_params,
+            post_params=_form_params,
+            files=_files,
+            auth_settings=_auth_settings,
+            collection_formats=_collection_formats,
+            _host=_host,
+            _request_auth=_request_auth
+        )
+
+
+
+
+    @validate_call
     def update_table(
         self,
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
@@ -12735,6 +14521,7 @@ class TableApi:
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
         request_body: Dict[str, StrictStr],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        branch: Annotated[Optional[StrictStr], Field(description="Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -12758,6 +14545,8 @@ class TableApi:
         :type request_body: Dict[str, str]
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
+        :param branch: Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
+        :type branch: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -12784,6 +14573,7 @@ class TableApi:
             id=id,
             request_body=request_body,
             delimiter=delimiter,
+            branch=branch,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -12816,6 +14606,7 @@ class TableApi:
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
         request_body: Dict[str, StrictStr],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        branch: Annotated[Optional[StrictStr], Field(description="Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -12839,6 +14630,8 @@ class TableApi:
         :type request_body: Dict[str, str]
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
+        :param branch: Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
+        :type branch: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -12865,6 +14658,7 @@ class TableApi:
             id=id,
             request_body=request_body,
             delimiter=delimiter,
+            branch=branch,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -12897,6 +14691,7 @@ class TableApi:
         id: Annotated[StrictStr, Field(description="`string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. ")],
         request_body: Dict[str, StrictStr],
         delimiter: Annotated[Optional[StrictStr], Field(description="An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. ")] = None,
+        branch: Annotated[Optional[StrictStr], Field(description="Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. ")] = None,
         _request_timeout: Union[
             None,
             Annotated[StrictFloat, Field(gt=0)],
@@ -12920,6 +14715,8 @@ class TableApi:
         :type request_body: Dict[str, str]
         :param delimiter: An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         :type delimiter: str
+        :param branch: Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
+        :type branch: str
         :param _request_timeout: timeout setting for this request. If one
                                  number provided, it will be total request
                                  timeout. It can also be a pair (tuple) of
@@ -12946,6 +14743,7 @@ class TableApi:
             id=id,
             request_body=request_body,
             delimiter=delimiter,
+            branch=branch,
             _request_auth=_request_auth,
             _content_type=_content_type,
             _headers=_headers,
@@ -12973,6 +14771,7 @@ class TableApi:
         id,
         request_body,
         delimiter,
+        branch,
         _request_auth,
         _content_type,
         _headers,
@@ -13000,6 +14799,10 @@ class TableApi:
         if delimiter is not None:
             
             _query_params.append(('delimiter', delimiter))
+            
+        if branch is not None:
+            
+            _query_params.append(('branch', branch))
             
         # process the header parameters
         # process the form parameters

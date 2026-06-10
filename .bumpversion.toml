@@ -1,5 +1,5 @@
 [tool.bumpversion]
-current_version = "0.5.2"
+current_version = "0.8.3-beta.1"
 parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)(-(?P<pre_label>alpha|beta|rc)\\.(?P<pre_n>\\d+))?"
 serialize = [
     "{major}.{minor}.{patch}-{pre_label}.{pre_n}",
@@ -95,6 +95,19 @@ filename = "java/lance-namespace-core/pom.xml"
 search = "<version>{current_version}</version>"
 replace = "<version>{new_version}</version>"
 
+# Java async-client-pom.xml (template for async client)
+[[tool.bumpversion.files]]
+filename = "java/async-client-pom.xml"
+search = "<version>{current_version}</version>"
+replace = "<version>{new_version}</version>"
+
+# Java lance-namespace-core-async module
+[[tool.bumpversion.files]]
+filename = "java/lance-namespace-core-async/pom.xml"
+search = "<version>{current_version}</version>"
+replace = "<version>{new_version}</version>"
+
+
 # TypeScript workspace and package versions
 [[tool.bumpversion.files]]
 filename = "typescript/Makefile"
@@ -120,3 +133,4 @@ replace = '"version": "{new_version}"'
 filename = "typescript/lance-namespace-rest/package.json"
 search = '"version": "{current_version}"'
 replace = '"version": "{new_version}"'
+

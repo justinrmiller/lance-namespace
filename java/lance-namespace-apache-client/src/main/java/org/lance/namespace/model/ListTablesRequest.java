@@ -32,7 +32,8 @@ import java.util.StringJoiner;
   ListTablesRequest.JSON_PROPERTY_CONTEXT,
   ListTablesRequest.JSON_PROPERTY_ID,
   ListTablesRequest.JSON_PROPERTY_PAGE_TOKEN,
-  ListTablesRequest.JSON_PROPERTY_LIMIT
+  ListTablesRequest.JSON_PROPERTY_LIMIT,
+  ListTablesRequest.JSON_PROPERTY_INCLUDE_DECLARED
 })
 @javax.annotation.Generated(
     value = "org.openapitools.codegen.languages.JavaClientCodegen",
@@ -52,6 +53,9 @@ public class ListTablesRequest {
 
   public static final String JSON_PROPERTY_LIMIT = "limit";
   @javax.annotation.Nullable private Integer limit;
+
+  public static final String JSON_PROPERTY_INCLUDE_DECLARED = "include_declared";
+  @javax.annotation.Nullable private Boolean includeDeclared = true;
 
   public ListTablesRequest() {}
 
@@ -202,6 +206,32 @@ public class ListTablesRequest {
     this.limit = limit;
   }
 
+  public ListTablesRequest includeDeclared(@javax.annotation.Nullable Boolean includeDeclared) {
+
+    this.includeDeclared = includeDeclared;
+    return this;
+  }
+
+  /**
+   * When true (default), includes tables that have been declared in the namespace but not yet
+   * created on storage, in addition to tables that have been created. When false, only tables with
+   * storage components are returned.
+   *
+   * @return includeDeclared
+   */
+  @javax.annotation.Nullable
+  @JsonProperty(JSON_PROPERTY_INCLUDE_DECLARED)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public Boolean getIncludeDeclared() {
+    return includeDeclared;
+  }
+
+  @JsonProperty(JSON_PROPERTY_INCLUDE_DECLARED)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setIncludeDeclared(@javax.annotation.Nullable Boolean includeDeclared) {
+    this.includeDeclared = includeDeclared;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -215,12 +245,13 @@ public class ListTablesRequest {
         && Objects.equals(this.context, listTablesRequest.context)
         && Objects.equals(this.id, listTablesRequest.id)
         && Objects.equals(this.pageToken, listTablesRequest.pageToken)
-        && Objects.equals(this.limit, listTablesRequest.limit);
+        && Objects.equals(this.limit, listTablesRequest.limit)
+        && Objects.equals(this.includeDeclared, listTablesRequest.includeDeclared);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(identity, context, id, pageToken, limit);
+    return Objects.hash(identity, context, id, pageToken, limit, includeDeclared);
   }
 
   @Override
@@ -232,6 +263,7 @@ public class ListTablesRequest {
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    pageToken: ").append(toIndentedString(pageToken)).append("\n");
     sb.append("    limit: ").append(toIndentedString(limit)).append("\n");
+    sb.append("    includeDeclared: ").append(toIndentedString(includeDeclared)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -351,6 +383,22 @@ public class ListTablesRequest {
                 prefix,
                 suffix,
                 URLEncoder.encode(String.valueOf(getLimit()), "UTF-8").replaceAll("\\+", "%20")));
+      } catch (UnsupportedEncodingException e) {
+        // Should never happen, UTF-8 is always supported
+        throw new RuntimeException(e);
+      }
+    }
+
+    // add `include_declared` to the URL query string
+    if (getIncludeDeclared() != null) {
+      try {
+        joiner.add(
+            String.format(
+                "%sinclude_declared%s=%s",
+                prefix,
+                suffix,
+                URLEncoder.encode(String.valueOf(getIncludeDeclared()), "UTF-8")
+                    .replaceAll("\\+", "%20")));
       } catch (UnsupportedEncodingException e) {
         // Should never happen, UTF-8 is always supported
         throw new RuntimeException(e);

@@ -17,8 +17,10 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr
-from typing import Any, ClassVar, Dict, List
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
+from typing_extensions import Annotated
+from lance_namespace_urllib3_client.models.add_virtual_column_output_entry import AddVirtualColumnOutputEntry
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -26,13 +28,18 @@ class AddVirtualColumnEntry(BaseModel):
     """
     AddVirtualColumnEntry
     """ # noqa: E501
-    input_columns: List[StrictStr] = Field(description="List of input column names for the virtual column")
-    data_type: Dict[str, Any] = Field(description="Data type of the virtual column using JSON representation")
+    input_columns: List[Annotated[str, Field(min_length=1, strict=True)]] = Field(description="List of input Lance field paths for the virtual column. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments.")
+    outputs: List[AddVirtualColumnOutputEntry] = Field(description="Output columns produced by the virtual column UDF")
     image: StrictStr = Field(description="Docker image to use for the UDF")
     udf: StrictStr = Field(description="Base64 encoded pickled UDF")
     udf_name: StrictStr = Field(description="Name of the UDF")
     udf_version: StrictStr = Field(description="Version of the UDF")
-    __properties: ClassVar[List[str]] = ["input_columns", "data_type", "image", "udf", "udf_name", "udf_version"]
+    udf_backend: Optional[StrictStr] = Field(default=None, description="UDF backend type (e.g. DockerUDFSpecV1)")
+    auto_backfill: Optional[StrictBool] = Field(default=None, description="Whether to automatically backfill the column after creation")
+    manifest: Optional[StrictStr] = Field(default=None, description="JSON-serialized manifest for the UDF environment")
+    manifest_checksum: Optional[StrictStr] = Field(default=None, description="SHA-256 checksum of the manifest content")
+    field_metadata: Optional[Dict[str, StrictStr]] = Field(default=None, description="User-supplied field metadata (string key-value pairs)")
+    __properties: ClassVar[List[str]] = ["input_columns", "outputs", "image", "udf", "udf_name", "udf_version", "udf_backend", "auto_backfill", "manifest", "manifest_checksum", "field_metadata"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -73,6 +80,33 @@ class AddVirtualColumnEntry(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of each item in outputs (list)
+        _items = []
+        if self.outputs:
+            for _item_outputs in self.outputs:
+                if _item_outputs:
+                    _items.append(_item_outputs.to_dict())
+            _dict['outputs'] = _items
+        # set to None if udf_backend (nullable) is None
+        # and model_fields_set contains the field
+        if self.udf_backend is None and "udf_backend" in self.model_fields_set:
+            _dict['udf_backend'] = None
+
+        # set to None if auto_backfill (nullable) is None
+        # and model_fields_set contains the field
+        if self.auto_backfill is None and "auto_backfill" in self.model_fields_set:
+            _dict['auto_backfill'] = None
+
+        # set to None if manifest (nullable) is None
+        # and model_fields_set contains the field
+        if self.manifest is None and "manifest" in self.model_fields_set:
+            _dict['manifest'] = None
+
+        # set to None if manifest_checksum (nullable) is None
+        # and model_fields_set contains the field
+        if self.manifest_checksum is None and "manifest_checksum" in self.model_fields_set:
+            _dict['manifest_checksum'] = None
+
         return _dict
 
     @classmethod
@@ -86,11 +120,16 @@ class AddVirtualColumnEntry(BaseModel):
 
         _obj = cls.model_validate({
             "input_columns": obj.get("input_columns"),
-            "data_type": obj.get("data_type"),
+            "outputs": [AddVirtualColumnOutputEntry.from_dict(_item) for _item in obj["outputs"]] if obj.get("outputs") is not None else None,
             "image": obj.get("image"),
             "udf": obj.get("udf"),
             "udf_name": obj.get("udf_name"),
-            "udf_version": obj.get("udf_version")
+            "udf_version": obj.get("udf_version"),
+            "udf_backend": obj.get("udf_backend"),
+            "auto_backfill": obj.get("auto_backfill"),
+            "manifest": obj.get("manifest"),
+            "manifest_checksum": obj.get("manifest_checksum"),
+            "field_metadata": obj.get("field_metadata")
         })
         return _obj
 

@@ -5,14 +5,17 @@ All URIs are relative to *http://localhost:2333*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**alter_table_add_columns**](DataApi.md#alter_table_add_columns) | **POST** /v1/table/{id}/add_columns | Add new columns to table schema
+[**alter_table_backfill_columns**](DataApi.md#alter_table_backfill_columns) | **POST** /v1/table/{id}/backfill_column | Trigger an async column backfill job
 [**analyze_table_query_plan**](DataApi.md#analyze_table_query_plan) | **POST** /v1/table/{id}/analyze_plan | Analyze query execution plan
 [**count_table_rows**](DataApi.md#count_table_rows) | **POST** /v1/table/{id}/count_rows | Count rows in a table
+[**create_materialized_view**](DataApi.md#create_materialized_view) | **POST** /v1/materialized_view/{id}/create | Create a materialized view
 [**create_table**](DataApi.md#create_table) | **POST** /v1/table/{id}/create | Create a table with the given name
 [**delete_from_table**](DataApi.md#delete_from_table) | **POST** /v1/table/{id}/delete | Delete rows from a table
 [**explain_table_query_plan**](DataApi.md#explain_table_query_plan) | **POST** /v1/table/{id}/explain_plan | Get query execution plan explanation
 [**insert_into_table**](DataApi.md#insert_into_table) | **POST** /v1/table/{id}/insert | Insert records into a table
 [**merge_insert_into_table**](DataApi.md#merge_insert_into_table) | **POST** /v1/table/{id}/merge_insert | Merge insert (upsert) records into a table
 [**query_table**](DataApi.md#query_table) | **POST** /v1/table/{id}/query | Query a table
+[**refresh_materialized_view**](DataApi.md#refresh_materialized_view) | **POST** /v1/materialized_view/{id}/refresh | Trigger an async materialized view refresh
 [**update_table**](DataApi.md#update_table) | **POST** /v1/table/{id}/update | Update rows in a table
 
 
@@ -36,6 +39,38 @@ Name | Type | Description  | Required | Notes
 ### Return type
 
 [**models::AlterTableAddColumnsResponse**](AlterTableAddColumnsResponse.md)
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
+## alter_table_backfill_columns
+
+> models::AlterTableBackfillColumnsResponse alter_table_backfill_columns(id, alter_table_backfill_columns_request, delimiter)
+Trigger an async column backfill job
+
+Trigger an asynchronous backfill job for a computed column on table `id`. The column must be a virtual (UDF-backed) column. Returns a job ID for tracking. 
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**id** | **String** | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  | [required] |
+**alter_table_backfill_columns_request** | [**AlterTableBackfillColumnsRequest**](AlterTableBackfillColumnsRequest.md) |  | [required] |
+**delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
+
+### Return type
+
+[**models::AlterTableBackfillColumnsResponse**](AlterTableBackfillColumnsResponse.md)
 
 ### Authorization
 
@@ -113,12 +148,44 @@ Name | Type | Description  | Required | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 
+## create_materialized_view
+
+> models::CreateMaterializedViewResponse create_materialized_view(id, create_materialized_view_request, delimiter)
+Create a materialized view
+
+Create a materialized view at identifier `id`. The view may be query-backed, UDTF-backed, or chunker-backed, controlled by the `kind` discriminator. 
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**id** | **String** | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  | [required] |
+**create_materialized_view_request** | [**CreateMaterializedViewRequest**](CreateMaterializedViewRequest.md) |  | [required] |
+**delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
+
+### Return type
+
+[**models::CreateMaterializedViewResponse**](CreateMaterializedViewResponse.md)
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
 ## create_table
 
-> models::CreateTableResponse create_table(id, body, delimiter, mode)
+> models::CreateTableResponse create_table(id, body, delimiter, mode, properties, storage_options)
 Create a table with the given name
 
-Create table `id` in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `CreateTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
+Create table `id` in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `CreateTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name - `properties`: serialize as a single JSON-encoded query parameter such as   `properties={\"user\":\"alice\",\"team\":\"eng\"}`; these are business logic properties   managed by the namespace implementation outside Lance context - `storage_options`: serialize as a single JSON-encoded query parameter such as   `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`; these configure   write-time overrides for data and metadata written during table creation 
 
 ### Parameters
 
@@ -129,6 +196,8 @@ Name | Type | Description  | Required | Notes
 **body** | **Vec<u8>** | Arrow IPC data | [required] |
 **delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
 **mode** | Option<**String**> |  |  |
+**properties** | Option<**String**> | Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as `properties={\"user\":\"alice\",\"team\":\"eng\"}`.  |  |
+**storage_options** | Option<**String**> | Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`.  |  |
 
 ### Return type
 
@@ -212,10 +281,10 @@ Name | Type | Description  | Required | Notes
 
 ## insert_into_table
 
-> models::InsertIntoTableResponse insert_into_table(id, body, delimiter, mode)
+> models::InsertIntoTableResponse insert_into_table(id, body, delimiter, branch, mode)
 Insert records into a table
 
-Insert new records into table `id`.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `InsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
+Insert new records into table `id`.  For tables that have been declared but not yet created on storage (is_only_declared=true), this operation will create the table with the provided data.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `InsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
 
 ### Parameters
 
@@ -225,6 +294,7 @@ Name | Type | Description  | Required | Notes
 **id** | **String** | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  | [required] |
 **body** | **Vec<u8>** | Arrow IPC stream containing the records to insert | [required] |
 **delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
+**branch** | Option<**String**> | Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead.  |  |
 **mode** | Option<**String**> | How the insert should behave. Case insensitive, supports both PascalCase and snake_case. Valid values are: - Append (default): insert data to the existing table - Overwrite: remove all data in the table and then insert data to it  |  |[default to append]
 
 ### Return type
@@ -245,10 +315,10 @@ Name | Type | Description  | Required | Notes
 
 ## merge_insert_into_table
 
-> models::MergeInsertIntoTableResponse merge_insert_into_table(id, on, body, delimiter, when_matched_update_all, when_matched_update_all_filt, when_not_matched_insert_all, when_not_matched_by_source_delete, when_not_matched_by_source_delete_filt, timeout, use_index)
+> models::MergeInsertIntoTableResponse merge_insert_into_table(id, on, body, delimiter, branch, when_matched_update_all, when_matched_update_all_filt, when_not_matched_insert_all, when_not_matched_by_source_delete, when_not_matched_by_source_delete_filt, timeout, use_index)
 Merge insert (upsert) records into a table
 
-Performs a merge insert (upsert) operation on table `id`. This operation updates existing rows based on a matching column and inserts new rows that don't match. It returns the number of rows inserted and updated.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `MergeInsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `on`: pass through query parameter of the same name - `when_matched_update_all`: pass through query parameter of the same name - `when_matched_update_all_filt`: pass through query parameter of the same name - `when_not_matched_insert_all`: pass through query parameter of the same name - `when_not_matched_by_source_delete`: pass through query parameter of the same name - `when_not_matched_by_source_delete_filt`: pass through query parameter of the same name 
+Performs a merge insert (upsert) operation on table `id`. This operation updates existing rows based on a matching column and inserts new rows that don't match. It returns the number of rows inserted and updated.  For tables that have been declared but not yet created on storage (is_only_declared=true), this operation will create the table with the provided data (since there are no existing rows to merge with).  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `MergeInsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `on`: pass through query parameter of the same name - `when_matched_update_all`: pass through query parameter of the same name - `when_matched_update_all_filt`: pass through query parameter of the same name - `when_not_matched_insert_all`: pass through query parameter of the same name - `when_not_matched_by_source_delete`: pass through query parameter of the same name - `when_not_matched_by_source_delete_filt`: pass through query parameter of the same name 
 
 ### Parameters
 
@@ -256,14 +326,15 @@ Performs a merge insert (upsert) operation on table `id`. This operation updates
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
 **id** | **String** | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  | [required] |
-**on** | **String** | Column name to use for matching rows (required) | [required] |
+**on** | **String** | Lance field path to use for matching rows. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments. Use canonical full paths for display and errors; leaf names alone only identify top-level fields; invalid or unresolved paths should return InvalidInput or TableColumnNotFound. | [required] |
 **body** | **Vec<u8>** | Arrow IPC stream containing the records to merge | [required] |
 **delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
+**branch** | Option<**String**> | Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead.  |  |
 **when_matched_update_all** | Option<**bool**> | Update all columns when rows match |  |[default to false]
-**when_matched_update_all_filt** | Option<**String**> | The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true |  |
+**when_matched_update_all_filt** | Option<**String**> | The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled. |  |
 **when_not_matched_insert_all** | Option<**bool**> | Insert all columns when rows don't match |  |[default to false]
 **when_not_matched_by_source_delete** | Option<**bool**> | Delete all rows from target table that don't match a row in the source table |  |[default to false]
-**when_not_matched_by_source_delete_filt** | Option<**String**> | Delete rows from the target table if there is no match AND the SQL expression evaluates to true |  |
+**when_not_matched_by_source_delete_filt** | Option<**String**> | Delete rows from the target table if there is no match AND the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled. |  |
 **timeout** | Option<**String**> | Timeout for the operation (e.g., \"30s\", \"5m\") |  |
 **use_index** | Option<**bool**> | Whether to use index for matching rows |  |[default to false]
 
@@ -311,6 +382,38 @@ Name | Type | Description  | Required | Notes
 
 - **Content-Type**: application/json
 - **Accept**: application/vnd.apache.arrow.file, application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
+## refresh_materialized_view
+
+> models::RefreshMaterializedViewResponse refresh_materialized_view(id, delimiter, refresh_materialized_view_request)
+Trigger an async materialized view refresh
+
+Trigger an asynchronous refresh job for materialized view `id`. Returns a job ID for tracking. 
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**id** | **String** | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  | [required] |
+**delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
+**refresh_materialized_view_request** | Option<[**RefreshMaterializedViewRequest**](RefreshMaterializedViewRequest.md)> |  |  |
+
+### Return type
+
+[**models::RefreshMaterializedViewResponse**](RefreshMaterializedViewResponse.md)
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

@@ -62,21 +62,30 @@ from lance_namespace_urllib3_client.models import (
     AlterTableAddColumnsResponse,
     AlterTableAlterColumnsRequest,
     AlterTableAlterColumnsResponse,
+    AlterTableBackfillColumnsRequest,
+    AlterTableBackfillColumnsResponse,
     AlterTableDropColumnsRequest,
     AlterTableDropColumnsResponse,
     AlterTransactionRequest,
     AlterTransactionResponse,
     AnalyzeTableQueryPlanRequest,
+    BatchCommitTablesRequest,
+    BatchCommitTablesResponse,
     BatchCreateTableVersionsRequest,
     BatchCreateTableVersionsResponse,
     BatchDeleteTableVersionsRequest,
     BatchDeleteTableVersionsResponse,
+    CommitTableOperation,
+    CommitTableResult,
     CountTableRowsRequest,
+    CreateMaterializedViewRequest,
+    CreateMaterializedViewResponse,
+    MaterializedViewUdtfEntry,
     CreateTableVersionEntry,
-    CreateEmptyTableRequest,
-    CreateEmptyTableResponse,
     CreateNamespaceRequest,
     CreateNamespaceResponse,
+    CreateTableBranchRequest,
+    CreateTableBranchResponse,
     CreateTableIndexRequest,
     CreateTableIndexResponse,
     CreateTableScalarIndexResponse,
@@ -90,6 +99,8 @@ from lance_namespace_urllib3_client.models import (
     DeclareTableResponse,
     DeleteFromTableRequest,
     DeleteFromTableResponse,
+    DeleteTableBranchRequest,
+    DeleteTableBranchResponse,
     DeleteTableTagRequest,
     DeleteTableTagResponse,
     DeregisterTableRequest,
@@ -119,6 +130,8 @@ from lance_namespace_urllib3_client.models import (
     InsertIntoTableResponse,
     ListNamespacesRequest,
     ListNamespacesResponse,
+    ListTableBranchesRequest,
+    ListTableBranchesResponse,
     ListTableIndicesRequest,
     ListTableIndicesResponse,
     ListTableTagsRequest,
@@ -131,6 +144,8 @@ from lance_namespace_urllib3_client.models import (
     MergeInsertIntoTableResponse,
     NamespaceExistsRequest,
     QueryTableRequest,
+    RefreshMaterializedViewRequest,
+    RefreshMaterializedViewResponse,
     RegisterTableRequest,
     RegisterTableResponse,
     RenameTableRequest,
@@ -139,6 +154,8 @@ from lance_namespace_urllib3_client.models import (
     RestoreTableResponse,
     TableExistsRequest,
     TableVersion,
+    UpdateFieldMetadataRequest,
+    UpdateFieldMetadataResponse,
     UpdateTableRequest,
     UpdateTableResponse,
     UpdateTableSchemaMetadataRequest,
@@ -146,6 +163,14 @@ from lance_namespace_urllib3_client.models import (
     UpdateTableTagRequest,
     UpdateTableTagResponse,
 )
+
+# Backwards-compat shims for symbols removed in 0.7.0.
+# Released pylance wheels (e.g. 2.0.1, 4.0.0b1) do:
+#   from lance_namespace import CreateEmptyTableRequest, CreateEmptyTableResponse
+# Provide deprecated aliases so those imports don't break.
+# These will be removed in a future release.
+CreateEmptyTableRequest = CreateTableRequest
+CreateEmptyTableResponse = CreateTableResponse
 
 __all__ = [
     # Interface and factory
@@ -185,21 +210,33 @@ __all__ = [
     "AlterTableAddColumnsResponse",
     "AlterTableAlterColumnsRequest",
     "AlterTableAlterColumnsResponse",
+    "AlterTableBackfillColumnsRequest",
+    "AlterTableBackfillColumnsResponse",
     "AlterTableDropColumnsRequest",
     "AlterTableDropColumnsResponse",
     "AlterTransactionRequest",
     "AlterTransactionResponse",
     "AnalyzeTableQueryPlanRequest",
+    "BatchCommitTablesRequest",
+    "BatchCommitTablesResponse",
     "BatchCreateTableVersionsRequest",
     "BatchCreateTableVersionsResponse",
     "BatchDeleteTableVersionsRequest",
     "BatchDeleteTableVersionsResponse",
+    "CommitTableOperation",
+    "CommitTableResult",
     "CountTableRowsRequest",
+    "CreateMaterializedViewRequest",
+    "CreateMaterializedViewResponse",
+    "MaterializedViewUdtfEntry",
     "CreateTableVersionEntry",
+    # Deprecated aliases (removed in 0.7.0, kept for backwards compatibility)
     "CreateEmptyTableRequest",
     "CreateEmptyTableResponse",
     "CreateNamespaceRequest",
     "CreateNamespaceResponse",
+    "CreateTableBranchRequest",
+    "CreateTableBranchResponse",
     "CreateTableIndexRequest",
     "CreateTableIndexResponse",
     "CreateTableScalarIndexResponse",
@@ -213,6 +250,8 @@ __all__ = [
     "DeclareTableResponse",
     "DeleteFromTableRequest",
     "DeleteFromTableResponse",
+    "DeleteTableBranchRequest",
+    "DeleteTableBranchResponse",
     "DeleteTableTagRequest",
     "DeleteTableTagResponse",
     "DeregisterTableRequest",
@@ -242,6 +281,8 @@ __all__ = [
     "InsertIntoTableResponse",
     "ListNamespacesRequest",
     "ListNamespacesResponse",
+    "ListTableBranchesRequest",
+    "ListTableBranchesResponse",
     "ListTableIndicesRequest",
     "ListTableIndicesResponse",
     "ListTableTagsRequest",
@@ -254,6 +295,8 @@ __all__ = [
     "MergeInsertIntoTableResponse",
     "NamespaceExistsRequest",
     "QueryTableRequest",
+    "RefreshMaterializedViewRequest",
+    "RefreshMaterializedViewResponse",
     "RegisterTableRequest",
     "RegisterTableResponse",
     "RenameTableRequest",
@@ -262,6 +305,8 @@ __all__ = [
     "RestoreTableResponse",
     "TableExistsRequest",
     "TableVersion",
+    "UpdateFieldMetadataRequest",
+    "UpdateFieldMetadataResponse",
     "UpdateTableRequest",
     "UpdateTableResponse",
     "UpdateTableSchemaMetadataRequest",
@@ -499,8 +544,8 @@ class LanceNamespace(ABC):
         raise UnsupportedOperationError("Not supported: declare_table")
 
     def create_empty_table(
-        self, request: CreateEmptyTableRequest
-    ) -> CreateEmptyTableResponse:
+        self, request: "CreateEmptyTableRequest"
+    ) -> "CreateEmptyTableResponse":
         """Create an empty table (metadata only operation).
 
         .. deprecated::
@@ -827,6 +872,28 @@ class LanceNamespace(ABC):
         """
         raise UnsupportedOperationError("Not supported: batch_create_table_versions")
 
+    def batch_commit_tables(
+        self, request: BatchCommitTablesRequest
+    ) -> BatchCommitTablesResponse:
+        """Atomically commit a batch of mixed table operations.
+
+        This is a generalized version of `batch_create_table_versions` that supports
+        mixed operation types (DeclareTable, CreateTableVersion, DeleteTableVersions,
+        DeregisterTable) within a single atomic transaction at the metadata layer.
+
+        All operations are committed atomically: either all succeed or none are applied.
+
+        Raises
+        ------
+        NamespaceNotFoundError
+            If any namespace does not exist.
+        TableNotFoundError
+            If any table does not exist.
+        ConcurrentModificationError
+            If any operation conflicts.
+        """
+        raise UnsupportedOperationError("Not supported: batch_commit_tables")
+
     def update_table_schema_metadata(
         self, request: UpdateTableSchemaMetadataRequest
     ) -> UpdateTableSchemaMetadataResponse:
@@ -842,6 +909,22 @@ class LanceNamespace(ABC):
             If a concurrent modification conflict occurs.
         """
         raise UnsupportedOperationError("Not supported: update_table_schema_metadata")
+
+    def update_field_metadata(
+        self, request: UpdateFieldMetadataRequest
+    ) -> UpdateFieldMetadataResponse:
+        """Update per-field metadata.
+
+        Raises
+        ------
+        NamespaceNotFoundError
+            If the namespace does not exist.
+        TableNotFoundError
+            If the table does not exist.
+        ConcurrentModificationError
+            If a concurrent modification conflict occurs.
+        """
+        raise UnsupportedOperationError("Not supported: update_field_metadata")
 
     def get_table_stats(self, request: GetTableStatsRequest) -> GetTableStatsResponse:
         """Get table statistics.
@@ -916,6 +999,48 @@ class LanceNamespace(ABC):
             If the schema validation fails.
         """
         raise UnsupportedOperationError("Not supported: alter_table_alter_columns")
+
+    def alter_table_backfill_columns(
+        self, request: AlterTableBackfillColumnsRequest
+    ) -> AlterTableBackfillColumnsResponse:
+        """Trigger an async backfill job for a computed column.
+
+        Raises
+        ------
+        TableNotFoundError
+            If the table does not exist.
+        """
+        raise UnsupportedOperationError(
+            "Not supported: alter_table_backfill_columns"
+        )
+
+    def create_materialized_view(
+        self, request: CreateMaterializedViewRequest
+    ) -> CreateMaterializedViewResponse:
+        """Create a materialized view.
+
+        Raises
+        ------
+        TableAlreadyExistsError
+            If a table with the same identifier already exists.
+        """
+        raise UnsupportedOperationError(
+            "Not supported: create_materialized_view"
+        )
+
+    def refresh_materialized_view(
+        self, request: RefreshMaterializedViewRequest
+    ) -> RefreshMaterializedViewResponse:
+        """Trigger an async materialized view refresh.
+
+        Raises
+        ------
+        TableNotFoundError
+            If the table does not exist.
+        """
+        raise UnsupportedOperationError(
+            "Not supported: refresh_materialized_view"
+        )
 
     def alter_table_drop_columns(
         self, request: AlterTableDropColumnsRequest
@@ -1018,6 +1143,52 @@ class LanceNamespace(ABC):
             If a concurrent modification conflict occurs.
         """
         raise UnsupportedOperationError("Not supported: update_table_tag")
+
+    def create_table_branch(
+        self, request: CreateTableBranchRequest
+    ) -> CreateTableBranchResponse:
+        """Create a branch for a table.
+
+        Raises
+        ------
+        NamespaceNotFoundError
+            If the namespace does not exist.
+        TableNotFoundError
+            If the table does not exist.
+        TableVersionNotFoundError
+            If the source version does not exist.
+        ConcurrentModificationError
+            If a concurrent modification conflict occurs.
+        """
+        raise UnsupportedOperationError("Not supported: create_table_branch")
+
+    def list_table_branches(
+        self, request: ListTableBranchesRequest
+    ) -> ListTableBranchesResponse:
+        """List all branches for a table.
+
+        Raises
+        ------
+        NamespaceNotFoundError
+            If the namespace does not exist.
+        TableNotFoundError
+            If the table does not exist.
+        """
+        raise UnsupportedOperationError("Not supported: list_table_branches")
+
+    def delete_table_branch(
+        self, request: DeleteTableBranchRequest
+    ) -> DeleteTableBranchResponse:
+        """Delete a branch from a table.
+
+        Raises
+        ------
+        NamespaceNotFoundError
+            If the namespace does not exist.
+        TableNotFoundError
+            If the table does not exist.
+        """
+        raise UnsupportedOperationError("Not supported: delete_table_branch")
 
     def describe_transaction(
         self, request: DescribeTransactionRequest

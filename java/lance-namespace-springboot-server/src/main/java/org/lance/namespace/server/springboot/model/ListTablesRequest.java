@@ -42,6 +42,8 @@ public class ListTablesRequest {
 
   private Integer limit;
 
+  private Boolean includeDeclared = true;
+
   public ListTablesRequest identity(Identity identity) {
     this.identity = identity;
     return this;
@@ -181,6 +183,32 @@ public class ListTablesRequest {
     this.limit = limit;
   }
 
+  public ListTablesRequest includeDeclared(Boolean includeDeclared) {
+    this.includeDeclared = includeDeclared;
+    return this;
+  }
+
+  /**
+   * When true (default), includes tables that have been declared in the namespace but not yet
+   * created on storage, in addition to tables that have been created. When false, only tables with
+   * storage components are returned.
+   *
+   * @return includeDeclared
+   */
+  @Schema(
+      name = "include_declared",
+      description =
+          "When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned. ",
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("include_declared")
+  public Boolean getIncludeDeclared() {
+    return includeDeclared;
+  }
+
+  public void setIncludeDeclared(Boolean includeDeclared) {
+    this.includeDeclared = includeDeclared;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -194,12 +222,13 @@ public class ListTablesRequest {
         && Objects.equals(this.context, listTablesRequest.context)
         && Objects.equals(this.id, listTablesRequest.id)
         && Objects.equals(this.pageToken, listTablesRequest.pageToken)
-        && Objects.equals(this.limit, listTablesRequest.limit);
+        && Objects.equals(this.limit, listTablesRequest.limit)
+        && Objects.equals(this.includeDeclared, listTablesRequest.includeDeclared);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(identity, context, id, pageToken, limit);
+    return Objects.hash(identity, context, id, pageToken, limit, includeDeclared);
   }
 
   @Override
@@ -211,6 +240,7 @@ public class ListTablesRequest {
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    pageToken: ").append(toIndentedString(pageToken)).append("\n");
     sb.append("    limit: ").append(toIndentedString(limit)).append("\n");
+    sb.append("    includeDeclared: ").append(toIndentedString(includeDeclared)).append("\n");
     sb.append("}");
     return sb.toString();
   }

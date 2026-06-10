@@ -5,11 +5,16 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**input_columns** | **List[str]** | List of input column names for the virtual column (optional) | [optional] 
+**input_columns** | **List[str]** | List of input Lance field paths for the virtual column. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments. Optional. | [optional] 
 **image** | **str** | Docker image to use for the UDF (optional) | [optional] 
 **udf** | **str** | Base64 encoded pickled UDF (optional) | [optional] 
 **udf_name** | **str** | Name of the UDF (optional) | [optional] 
 **udf_version** | **str** | Version of the UDF (optional) | [optional] 
+**udf_backend** | **str** | UDF backend type (e.g. DockerUDFSpecV1) (optional) | [optional] 
+**auto_backfill** | **bool** | Whether to automatically backfill the column (optional) | [optional] 
+**manifest** | **str** | JSON-serialized manifest for the UDF environment (optional) | [optional] 
+**manifest_checksum** | **str** | SHA-256 checksum of the manifest content (optional) | [optional] 
+**field_metadata** | **Dict[str, str]** | User-supplied field metadata (optional) | [optional] 
 
 ## Example
 

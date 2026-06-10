@@ -1,0 +1,338 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.lance.namespace.model;
+
+import org.lance.namespace.client.async.ApiClient;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.openapitools.jackson.nullable.JsonNullable;
+
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.StringJoiner;
+
+/** AlterColumnsEntry */
+@JsonPropertyOrder({
+  AlterColumnsEntry.JSON_PROPERTY_PATH,
+  AlterColumnsEntry.JSON_PROPERTY_DATA_TYPE,
+  AlterColumnsEntry.JSON_PROPERTY_RENAME,
+  AlterColumnsEntry.JSON_PROPERTY_NULLABLE,
+  AlterColumnsEntry.JSON_PROPERTY_VIRTUAL_COLUMN
+})
+@javax.annotation.Generated(
+    value = "org.openapitools.codegen.languages.JavaClientCodegen",
+    comments = "Generator version: 7.12.0")
+public class AlterColumnsEntry {
+  public static final String JSON_PROPERTY_PATH = "path";
+  @javax.annotation.Nonnull private String path;
+
+  public static final String JSON_PROPERTY_DATA_TYPE = "data_type";
+  @javax.annotation.Nullable private Object dataType;
+
+  public static final String JSON_PROPERTY_RENAME = "rename";
+  private JsonNullable<String> rename = JsonNullable.<String>undefined();
+
+  public static final String JSON_PROPERTY_NULLABLE = "nullable";
+  private JsonNullable<Boolean> nullable = JsonNullable.<Boolean>undefined();
+
+  public static final String JSON_PROPERTY_VIRTUAL_COLUMN = "virtual_column";
+  private JsonNullable<AlterVirtualColumnEntry> virtualColumn =
+      JsonNullable.<AlterVirtualColumnEntry>undefined();
+
+  public AlterColumnsEntry() {}
+
+  public AlterColumnsEntry path(@javax.annotation.Nonnull String path) {
+    this.path = path;
+    return this;
+  }
+
+  /**
+   * Lance field path to alter. Nested fields use dot-separated segments; use backtick-quoted
+   * segments for literal dots and double backticks inside quoted segments. Use canonical full paths
+   * for display and errors; leaf names alone only identify top-level fields; invalid or unresolved
+   * paths should return InvalidInput or TableColumnNotFound.
+   *
+   * @return path
+   */
+  @javax.annotation.Nonnull
+  @JsonProperty(JSON_PROPERTY_PATH)
+  @JsonInclude(value = JsonInclude.Include.ALWAYS)
+  public String getPath() {
+    return path;
+  }
+
+  @JsonProperty(JSON_PROPERTY_PATH)
+  @JsonInclude(value = JsonInclude.Include.ALWAYS)
+  public void setPath(@javax.annotation.Nonnull String path) {
+    this.path = path;
+  }
+
+  public AlterColumnsEntry dataType(@javax.annotation.Nullable Object dataType) {
+    this.dataType = dataType;
+    return this;
+  }
+
+  /**
+   * New data type for the column using JSON representation (optional)
+   *
+   * @return dataType
+   */
+  @javax.annotation.Nullable
+  @JsonProperty(JSON_PROPERTY_DATA_TYPE)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public Object getDataType() {
+    return dataType;
+  }
+
+  @JsonProperty(JSON_PROPERTY_DATA_TYPE)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setDataType(@javax.annotation.Nullable Object dataType) {
+    this.dataType = dataType;
+  }
+
+  public AlterColumnsEntry rename(@javax.annotation.Nullable String rename) {
+    this.rename = JsonNullable.<String>of(rename);
+    return this;
+  }
+
+  /**
+   * New name for the column (optional)
+   *
+   * @return rename
+   */
+  @javax.annotation.Nullable
+  @JsonIgnore
+  public String getRename() {
+    return rename.orElse(null);
+  }
+
+  @JsonProperty(JSON_PROPERTY_RENAME)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public JsonNullable<String> getRename_JsonNullable() {
+    return rename;
+  }
+
+  @JsonProperty(JSON_PROPERTY_RENAME)
+  public void setRename_JsonNullable(JsonNullable<String> rename) {
+    this.rename = rename;
+  }
+
+  public void setRename(@javax.annotation.Nullable String rename) {
+    this.rename = JsonNullable.<String>of(rename);
+  }
+
+  public AlterColumnsEntry nullable(@javax.annotation.Nullable Boolean nullable) {
+    this.nullable = JsonNullable.<Boolean>of(nullable);
+    return this;
+  }
+
+  /**
+   * Whether the column should be nullable (optional)
+   *
+   * @return nullable
+   */
+  @javax.annotation.Nullable
+  @JsonIgnore
+  public Boolean getNullable() {
+    return nullable.orElse(null);
+  }
+
+  @JsonProperty(JSON_PROPERTY_NULLABLE)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public JsonNullable<Boolean> getNullable_JsonNullable() {
+    return nullable;
+  }
+
+  @JsonProperty(JSON_PROPERTY_NULLABLE)
+  public void setNullable_JsonNullable(JsonNullable<Boolean> nullable) {
+    this.nullable = nullable;
+  }
+
+  public void setNullable(@javax.annotation.Nullable Boolean nullable) {
+    this.nullable = JsonNullable.<Boolean>of(nullable);
+  }
+
+  public AlterColumnsEntry virtualColumn(
+      @javax.annotation.Nullable AlterVirtualColumnEntry virtualColumn) {
+    this.virtualColumn = JsonNullable.<AlterVirtualColumnEntry>of(virtualColumn);
+    return this;
+  }
+
+  /**
+   * Get virtualColumn
+   *
+   * @return virtualColumn
+   */
+  @javax.annotation.Nullable
+  @JsonIgnore
+  public AlterVirtualColumnEntry getVirtualColumn() {
+    return virtualColumn.orElse(null);
+  }
+
+  @JsonProperty(JSON_PROPERTY_VIRTUAL_COLUMN)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public JsonNullable<AlterVirtualColumnEntry> getVirtualColumn_JsonNullable() {
+    return virtualColumn;
+  }
+
+  @JsonProperty(JSON_PROPERTY_VIRTUAL_COLUMN)
+  public void setVirtualColumn_JsonNullable(JsonNullable<AlterVirtualColumnEntry> virtualColumn) {
+    this.virtualColumn = virtualColumn;
+  }
+
+  public void setVirtualColumn(@javax.annotation.Nullable AlterVirtualColumnEntry virtualColumn) {
+    this.virtualColumn = JsonNullable.<AlterVirtualColumnEntry>of(virtualColumn);
+  }
+
+  /** Return true if this AlterColumnsEntry object is equal to o. */
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    AlterColumnsEntry alterColumnsEntry = (AlterColumnsEntry) o;
+    return Objects.equals(this.path, alterColumnsEntry.path)
+        && Objects.equals(this.dataType, alterColumnsEntry.dataType)
+        && equalsNullable(this.rename, alterColumnsEntry.rename)
+        && equalsNullable(this.nullable, alterColumnsEntry.nullable)
+        && equalsNullable(this.virtualColumn, alterColumnsEntry.virtualColumn);
+  }
+
+  private static <T> boolean equalsNullable(JsonNullable<T> a, JsonNullable<T> b) {
+    return a == b
+        || (a != null
+            && b != null
+            && a.isPresent()
+            && b.isPresent()
+            && Objects.deepEquals(a.get(), b.get()));
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        path,
+        dataType,
+        hashCodeNullable(rename),
+        hashCodeNullable(nullable),
+        hashCodeNullable(virtualColumn));
+  }
+
+  private static <T> int hashCodeNullable(JsonNullable<T> a) {
+    if (a == null) {
+      return 1;
+    }
+    return a.isPresent() ? Arrays.deepHashCode(new Object[] {a.get()}) : 31;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class AlterColumnsEntry {\n");
+    sb.append("    path: ").append(toIndentedString(path)).append("\n");
+    sb.append("    dataType: ").append(toIndentedString(dataType)).append("\n");
+    sb.append("    rename: ").append(toIndentedString(rename)).append("\n");
+    sb.append("    nullable: ").append(toIndentedString(nullable)).append("\n");
+    sb.append("    virtualColumn: ").append(toIndentedString(virtualColumn)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
+  }
+
+  /**
+   * Convert the instance into URL query string.
+   *
+   * @return URL query string
+   */
+  public String toUrlQueryString() {
+    return toUrlQueryString(null);
+  }
+
+  /**
+   * Convert the instance into URL query string.
+   *
+   * @param prefix prefix of the query string
+   * @return URL query string
+   */
+  public String toUrlQueryString(String prefix) {
+    String suffix = "";
+    String containerSuffix = "";
+    String containerPrefix = "";
+    if (prefix == null) {
+      // style=form, explode=true, e.g. /pet?name=cat&type=manx
+      prefix = "";
+    } else {
+      // deepObject style e.g. /pet?id[name]=cat&id[type]=manx
+      prefix = prefix + "[";
+      suffix = "]";
+      containerSuffix = "]";
+      containerPrefix = "[";
+    }
+
+    StringJoiner joiner = new StringJoiner("&");
+
+    // add `path` to the URL query string
+    if (getPath() != null) {
+      joiner.add(
+          String.format(
+              "%spath%s=%s",
+              prefix, suffix, ApiClient.urlEncode(ApiClient.valueToString(getPath()))));
+    }
+
+    // add `data_type` to the URL query string
+    if (getDataType() != null) {
+      joiner.add(
+          String.format(
+              "%sdata_type%s=%s",
+              prefix, suffix, ApiClient.urlEncode(ApiClient.valueToString(getDataType()))));
+    }
+
+    // add `rename` to the URL query string
+    if (getRename() != null) {
+      joiner.add(
+          String.format(
+              "%srename%s=%s",
+              prefix, suffix, ApiClient.urlEncode(ApiClient.valueToString(getRename()))));
+    }
+
+    // add `nullable` to the URL query string
+    if (getNullable() != null) {
+      joiner.add(
+          String.format(
+              "%snullable%s=%s",
+              prefix, suffix, ApiClient.urlEncode(ApiClient.valueToString(getNullable()))));
+    }
+
+    // add `virtual_column` to the URL query string
+    if (getVirtualColumn() != null) {
+      joiner.add(getVirtualColumn().toUrlQueryString(prefix + "virtual_column" + suffix));
+    }
+
+    return joiner.toString();
+  }
+}

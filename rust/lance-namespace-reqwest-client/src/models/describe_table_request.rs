@@ -23,12 +23,18 @@ pub struct DescribeTableRequest {
     /// Version of the table to describe. If not specified, server should resolve it to the latest version. 
     #[serde(rename = "version", skip_serializing_if = "Option::is_none")]
     pub version: Option<i64>,
+    /// Branch to target. When not specified, the main branch is used. 
+    #[serde(rename = "branch", skip_serializing_if = "Option::is_none")]
+    pub branch: Option<String>,
     /// Whether to include the table URI in the response. Default is false. 
     #[serde(rename = "with_table_uri", skip_serializing_if = "Option::is_none")]
     pub with_table_uri: Option<bool>,
     /// Whether to load detailed metadata that requires opening the dataset. When true, the response must include all detailed metadata such as `version`, `schema`, and `stats` which require reading the dataset. When not set, the implementation can decide whether to return detailed metadata and which parts of detailed metadata to return. 
     #[serde(rename = "load_detailed_metadata", skip_serializing_if = "Option::is_none")]
     pub load_detailed_metadata: Option<bool>,
+    /// Whether to check if the table exists only as a namespace declaration without storage data. Default is false. When true, the response should populate `is_only_declared`. When false, the implementation should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires checking declared-only table state. 
+    #[serde(rename = "check_declared", skip_serializing_if = "Option::is_none")]
+    pub check_declared: Option<bool>,
     /// Whether to include vended credentials in the response `storage_options`. When true, the implementation should provide vended credentials for accessing storage. When not set, the implementation can decide whether to return vended credentials. 
     #[serde(rename = "vend_credentials", skip_serializing_if = "Option::is_none")]
     pub vend_credentials: Option<bool>,
@@ -41,8 +47,10 @@ impl DescribeTableRequest {
             context: None,
             id: None,
             version: None,
+            branch: None,
             with_table_uri: None,
             load_detailed_metadata: None,
+            check_declared: None,
             vend_credentials: None,
         }
     }

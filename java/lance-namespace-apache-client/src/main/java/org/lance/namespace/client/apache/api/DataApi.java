@@ -20,8 +20,12 @@ import org.lance.namespace.client.apache.Configuration;
 import org.lance.namespace.client.apache.Pair;
 import org.lance.namespace.model.AlterTableAddColumnsRequest;
 import org.lance.namespace.model.AlterTableAddColumnsResponse;
+import org.lance.namespace.model.AlterTableBackfillColumnsRequest;
+import org.lance.namespace.model.AlterTableBackfillColumnsResponse;
 import org.lance.namespace.model.AnalyzeTableQueryPlanRequest;
 import org.lance.namespace.model.CountTableRowsRequest;
+import org.lance.namespace.model.CreateMaterializedViewRequest;
+import org.lance.namespace.model.CreateMaterializedViewResponse;
 import org.lance.namespace.model.CreateTableResponse;
 import org.lance.namespace.model.DeleteFromTableRequest;
 import org.lance.namespace.model.DeleteFromTableResponse;
@@ -29,6 +33,8 @@ import org.lance.namespace.model.ExplainTableQueryPlanRequest;
 import org.lance.namespace.model.InsertIntoTableResponse;
 import org.lance.namespace.model.MergeInsertIntoTableResponse;
 import org.lance.namespace.model.QueryTableRequest;
+import org.lance.namespace.model.RefreshMaterializedViewRequest;
+import org.lance.namespace.model.RefreshMaterializedViewResponse;
 import org.lance.namespace.model.UpdateTableRequest;
 import org.lance.namespace.model.UpdateTableResponse;
 
@@ -141,6 +147,113 @@ public class DataApi extends BaseApi {
 
     TypeReference<AlterTableAddColumnsResponse> localVarReturnType =
         new TypeReference<AlterTableAddColumnsResponse>() {};
+    return apiClient.invokeAPI(
+        localVarPath,
+        "POST",
+        localVarQueryParams,
+        localVarCollectionQueryParams,
+        localVarQueryStringJoiner.toString(),
+        localVarPostBody,
+        localVarHeaderParams,
+        localVarCookieParams,
+        localVarFormParams,
+        localVarAccept,
+        localVarContentType,
+        localVarAuthNames,
+        localVarReturnType);
+  }
+
+  /**
+   * Trigger an async column backfill job Trigger an asynchronous backfill job for a computed column
+   * on table &#x60;id&#x60;. The column must be a virtual (UDF-backed) column. Returns a job ID for
+   * tracking.
+   *
+   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
+   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
+   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
+   *     root namespace. (required)
+   * @param alterTableBackfillColumnsRequest (required)
+   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
+   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
+   *     (optional)
+   * @return AlterTableBackfillColumnsResponse
+   * @throws ApiException if fails to make API call
+   */
+  public AlterTableBackfillColumnsResponse alterTableBackfillColumns(
+      String id,
+      AlterTableBackfillColumnsRequest alterTableBackfillColumnsRequest,
+      String delimiter)
+      throws ApiException {
+    return this.alterTableBackfillColumns(
+        id, alterTableBackfillColumnsRequest, delimiter, Collections.emptyMap());
+  }
+
+  /**
+   * Trigger an async column backfill job Trigger an asynchronous backfill job for a computed column
+   * on table &#x60;id&#x60;. The column must be a virtual (UDF-backed) column. Returns a job ID for
+   * tracking.
+   *
+   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
+   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
+   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
+   *     root namespace. (required)
+   * @param alterTableBackfillColumnsRequest (required)
+   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
+   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
+   *     (optional)
+   * @param additionalHeaders additionalHeaders for this call
+   * @return AlterTableBackfillColumnsResponse
+   * @throws ApiException if fails to make API call
+   */
+  public AlterTableBackfillColumnsResponse alterTableBackfillColumns(
+      String id,
+      AlterTableBackfillColumnsRequest alterTableBackfillColumnsRequest,
+      String delimiter,
+      Map<String, String> additionalHeaders)
+      throws ApiException {
+    Object localVarPostBody = alterTableBackfillColumnsRequest;
+
+    // verify the required parameter 'id' is set
+    if (id == null) {
+      throw new ApiException(
+          400, "Missing the required parameter 'id' when calling alterTableBackfillColumns");
+    }
+
+    // verify the required parameter 'alterTableBackfillColumnsRequest' is set
+    if (alterTableBackfillColumnsRequest == null) {
+      throw new ApiException(
+          400,
+          "Missing the required parameter 'alterTableBackfillColumnsRequest' when calling alterTableBackfillColumns");
+    }
+
+    // create path and map variables
+    String localVarPath =
+        "/v1/table/{id}/backfill_column"
+            .replaceAll(
+                "\\{" + "id" + "\\}", apiClient.escapeString(apiClient.parameterToString(id)));
+
+    StringJoiner localVarQueryStringJoiner = new StringJoiner("&");
+    String localVarQueryParameterBaseName;
+    List<Pair> localVarQueryParams = new ArrayList<Pair>();
+    List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+    Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+    Map<String, String> localVarCookieParams = new HashMap<String, String>();
+    Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+    localVarQueryParams.addAll(apiClient.parameterToPair("delimiter", delimiter));
+
+    localVarHeaderParams.putAll(additionalHeaders);
+
+    final String[] localVarAccepts = {"application/json"};
+    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+
+    final String[] localVarContentTypes = {"application/json"};
+    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+    String[] localVarAuthNames = new String[] {"OAuth2", "ApiKeyAuth", "BearerAuth"};
+
+    TypeReference<AlterTableBackfillColumnsResponse> localVarReturnType =
+        new TypeReference<AlterTableBackfillColumnsResponse>() {};
     return apiClient.invokeAPI(
         localVarPath,
         "POST",
@@ -367,28 +480,108 @@ public class DataApi extends BaseApi {
   }
 
   /**
-   * Create a table with the given name Create table &#x60;id&#x60; in the namespace with the given
-   * data in Arrow IPC stream. The schema of the Arrow IPC stream is used as the table schema. If
-   * the stream is empty, the API creates a new empty table. REST NAMESPACE ONLY REST namespace uses
-   * Arrow IPC stream as the request body. It passes in the &#x60;CreateTableRequest&#x60;
-   * information in the following way: - &#x60;id&#x60;: pass through path parameter of the same
-   * name - &#x60;mode&#x60;: pass through query parameter of the same name
+   * Create a materialized view Create a materialized view at identifier &#x60;id&#x60;. The view
+   * may be query-backed, UDTF-backed, or chunker-backed, controlled by the &#x60;kind&#x60;
+   * discriminator.
    *
    * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
    *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
    *     root namespace. (required)
-   * @param body Arrow IPC data (required)
+   * @param createMaterializedViewRequest (required)
    * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
    *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
    *     (optional)
-   * @param mode (optional)
-   * @return CreateTableResponse
+   * @return CreateMaterializedViewResponse
    * @throws ApiException if fails to make API call
    */
-  public CreateTableResponse createTable(String id, byte[] body, String delimiter, String mode)
+  public CreateMaterializedViewResponse createMaterializedView(
+      String id, CreateMaterializedViewRequest createMaterializedViewRequest, String delimiter)
       throws ApiException {
-    return this.createTable(id, body, delimiter, mode, Collections.emptyMap());
+    return this.createMaterializedView(
+        id, createMaterializedViewRequest, delimiter, Collections.emptyMap());
+  }
+
+  /**
+   * Create a materialized view Create a materialized view at identifier &#x60;id&#x60;. The view
+   * may be query-backed, UDTF-backed, or chunker-backed, controlled by the &#x60;kind&#x60;
+   * discriminator.
+   *
+   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
+   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
+   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
+   *     root namespace. (required)
+   * @param createMaterializedViewRequest (required)
+   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
+   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
+   *     (optional)
+   * @param additionalHeaders additionalHeaders for this call
+   * @return CreateMaterializedViewResponse
+   * @throws ApiException if fails to make API call
+   */
+  public CreateMaterializedViewResponse createMaterializedView(
+      String id,
+      CreateMaterializedViewRequest createMaterializedViewRequest,
+      String delimiter,
+      Map<String, String> additionalHeaders)
+      throws ApiException {
+    Object localVarPostBody = createMaterializedViewRequest;
+
+    // verify the required parameter 'id' is set
+    if (id == null) {
+      throw new ApiException(
+          400, "Missing the required parameter 'id' when calling createMaterializedView");
+    }
+
+    // verify the required parameter 'createMaterializedViewRequest' is set
+    if (createMaterializedViewRequest == null) {
+      throw new ApiException(
+          400,
+          "Missing the required parameter 'createMaterializedViewRequest' when calling createMaterializedView");
+    }
+
+    // create path and map variables
+    String localVarPath =
+        "/v1/materialized_view/{id}/create"
+            .replaceAll(
+                "\\{" + "id" + "\\}", apiClient.escapeString(apiClient.parameterToString(id)));
+
+    StringJoiner localVarQueryStringJoiner = new StringJoiner("&");
+    String localVarQueryParameterBaseName;
+    List<Pair> localVarQueryParams = new ArrayList<Pair>();
+    List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+    Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+    Map<String, String> localVarCookieParams = new HashMap<String, String>();
+    Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+    localVarQueryParams.addAll(apiClient.parameterToPair("delimiter", delimiter));
+
+    localVarHeaderParams.putAll(additionalHeaders);
+
+    final String[] localVarAccepts = {"application/json"};
+    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+
+    final String[] localVarContentTypes = {"application/json"};
+    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+    String[] localVarAuthNames = new String[] {"OAuth2", "ApiKeyAuth", "BearerAuth"};
+
+    TypeReference<CreateMaterializedViewResponse> localVarReturnType =
+        new TypeReference<CreateMaterializedViewResponse>() {};
+    return apiClient.invokeAPI(
+        localVarPath,
+        "POST",
+        localVarQueryParams,
+        localVarCollectionQueryParams,
+        localVarQueryStringJoiner.toString(),
+        localVarPostBody,
+        localVarHeaderParams,
+        localVarCookieParams,
+        localVarFormParams,
+        localVarAccept,
+        localVarContentType,
+        localVarAuthNames,
+        localVarReturnType);
   }
 
   /**
@@ -397,7 +590,14 @@ public class DataApi extends BaseApi {
    * the stream is empty, the API creates a new empty table. REST NAMESPACE ONLY REST namespace uses
    * Arrow IPC stream as the request body. It passes in the &#x60;CreateTableRequest&#x60;
    * information in the following way: - &#x60;id&#x60;: pass through path parameter of the same
-   * name - &#x60;mode&#x60;: pass through query parameter of the same name
+   * name - &#x60;mode&#x60;: pass through query parameter of the same name -
+   * &#x60;properties&#x60;: serialize as a single JSON-encoded query parameter such as
+   * &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;;
+   * these are business logic properties managed by the namespace implementation outside Lance
+   * context - &#x60;storage_options&#x60;: serialize as a single JSON-encoded query parameter such
+   * as
+   * &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;;
+   * these configure write-time overrides for data and metadata written during table creation
    *
    * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
@@ -408,12 +608,75 @@ public class DataApi extends BaseApi {
    *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
    *     (optional)
    * @param mode (optional)
+   * @param properties Business logic properties managed by the namespace implementation outside
+   *     Lance context. The map is translated to a single JSON-encoded query parameter such as
+   *     &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;.
+   *     (optional)
+   * @param storageOptions Storage options that configure overrides for writing table data and
+   *     metadata during table creation. These are passed to Lance for the write path. The map is
+   *     translated to a single JSON-encoded query parameter such as
+   *     &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;.
+   *     (optional)
+   * @return CreateTableResponse
+   * @throws ApiException if fails to make API call
+   */
+  public CreateTableResponse createTable(
+      String id,
+      byte[] body,
+      String delimiter,
+      String mode,
+      String properties,
+      String storageOptions)
+      throws ApiException {
+    return this.createTable(
+        id, body, delimiter, mode, properties, storageOptions, Collections.emptyMap());
+  }
+
+  /**
+   * Create a table with the given name Create table &#x60;id&#x60; in the namespace with the given
+   * data in Arrow IPC stream. The schema of the Arrow IPC stream is used as the table schema. If
+   * the stream is empty, the API creates a new empty table. REST NAMESPACE ONLY REST namespace uses
+   * Arrow IPC stream as the request body. It passes in the &#x60;CreateTableRequest&#x60;
+   * information in the following way: - &#x60;id&#x60;: pass through path parameter of the same
+   * name - &#x60;mode&#x60;: pass through query parameter of the same name -
+   * &#x60;properties&#x60;: serialize as a single JSON-encoded query parameter such as
+   * &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;;
+   * these are business logic properties managed by the namespace implementation outside Lance
+   * context - &#x60;storage_options&#x60;: serialize as a single JSON-encoded query parameter such
+   * as
+   * &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;;
+   * these configure write-time overrides for data and metadata written during table creation
+   *
+   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
+   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
+   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
+   *     root namespace. (required)
+   * @param body Arrow IPC data (required)
+   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
+   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
+   *     (optional)
+   * @param mode (optional)
+   * @param properties Business logic properties managed by the namespace implementation outside
+   *     Lance context. The map is translated to a single JSON-encoded query parameter such as
+   *     &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;.
+   *     (optional)
+   * @param storageOptions Storage options that configure overrides for writing table data and
+   *     metadata during table creation. These are passed to Lance for the write path. The map is
+   *     translated to a single JSON-encoded query parameter such as
+   *     &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;.
+   *     (optional)
    * @param additionalHeaders additionalHeaders for this call
    * @return CreateTableResponse
    * @throws ApiException if fails to make API call
    */
   public CreateTableResponse createTable(
-      String id, byte[] body, String delimiter, String mode, Map<String, String> additionalHeaders)
+      String id,
+      byte[] body,
+      String delimiter,
+      String mode,
+      String properties,
+      String storageOptions,
+      Map<String, String> additionalHeaders)
       throws ApiException {
     Object localVarPostBody = body;
 
@@ -443,6 +706,8 @@ public class DataApi extends BaseApi {
 
     localVarQueryParams.addAll(apiClient.parameterToPair("delimiter", delimiter));
     localVarQueryParams.addAll(apiClient.parameterToPair("mode", mode));
+    localVarQueryParams.addAll(apiClient.parameterToPair("properties", properties));
+    localVarQueryParams.addAll(apiClient.parameterToPair("storage_options", storageOptions));
 
     localVarHeaderParams.putAll(additionalHeaders);
 
@@ -679,11 +944,12 @@ public class DataApi extends BaseApi {
   }
 
   /**
-   * Insert records into a table Insert new records into table &#x60;id&#x60;. REST NAMESPACE ONLY
-   * REST namespace uses Arrow IPC stream as the request body. It passes in the
-   * &#x60;InsertIntoTableRequest&#x60; information in the following way: - &#x60;id&#x60;: pass
-   * through path parameter of the same name - &#x60;mode&#x60;: pass through query parameter of the
-   * same name
+   * Insert records into a table Insert new records into table &#x60;id&#x60;. For tables that have
+   * been declared but not yet created on storage (is_only_declared&#x3D;true), this operation will
+   * create the table with the provided data. REST NAMESPACE ONLY REST namespace uses Arrow IPC
+   * stream as the request body. It passes in the &#x60;InsertIntoTableRequest&#x60; information in
+   * the following way: - &#x60;id&#x60;: pass through path parameter of the same name -
+   * &#x60;mode&#x60;: pass through query parameter of the same name
    *
    * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
@@ -693,6 +959,10 @@ public class DataApi extends BaseApi {
    * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
    *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
    *     (optional)
+   * @param branch Optional branch to target. When not specified, the main branch is used. Used by
+   *     branch-scoped operations that cannot carry a &#x60;branch&#x60; field in their request body
+   *     (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry
+   *     &#x60;branch&#x60; as a body field instead. (optional)
    * @param mode How the insert should behave. Case insensitive, supports both PascalCase and
    *     snake_case. Valid values are: - Append (default): insert data to the existing table -
    *     Overwrite: remove all data in the table and then insert data to it (optional, default to
@@ -701,16 +971,17 @@ public class DataApi extends BaseApi {
    * @throws ApiException if fails to make API call
    */
   public InsertIntoTableResponse insertIntoTable(
-      String id, byte[] body, String delimiter, String mode) throws ApiException {
-    return this.insertIntoTable(id, body, delimiter, mode, Collections.emptyMap());
+      String id, byte[] body, String delimiter, String branch, String mode) throws ApiException {
+    return this.insertIntoTable(id, body, delimiter, branch, mode, Collections.emptyMap());
   }
 
   /**
-   * Insert records into a table Insert new records into table &#x60;id&#x60;. REST NAMESPACE ONLY
-   * REST namespace uses Arrow IPC stream as the request body. It passes in the
-   * &#x60;InsertIntoTableRequest&#x60; information in the following way: - &#x60;id&#x60;: pass
-   * through path parameter of the same name - &#x60;mode&#x60;: pass through query parameter of the
-   * same name
+   * Insert records into a table Insert new records into table &#x60;id&#x60;. For tables that have
+   * been declared but not yet created on storage (is_only_declared&#x3D;true), this operation will
+   * create the table with the provided data. REST NAMESPACE ONLY REST namespace uses Arrow IPC
+   * stream as the request body. It passes in the &#x60;InsertIntoTableRequest&#x60; information in
+   * the following way: - &#x60;id&#x60;: pass through path parameter of the same name -
+   * &#x60;mode&#x60;: pass through query parameter of the same name
    *
    * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
@@ -720,6 +991,10 @@ public class DataApi extends BaseApi {
    * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
    *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
    *     (optional)
+   * @param branch Optional branch to target. When not specified, the main branch is used. Used by
+   *     branch-scoped operations that cannot carry a &#x60;branch&#x60; field in their request body
+   *     (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry
+   *     &#x60;branch&#x60; as a body field instead. (optional)
    * @param mode How the insert should behave. Case insensitive, supports both PascalCase and
    *     snake_case. Valid values are: - Append (default): insert data to the existing table -
    *     Overwrite: remove all data in the table and then insert data to it (optional, default to
@@ -729,7 +1004,12 @@ public class DataApi extends BaseApi {
    * @throws ApiException if fails to make API call
    */
   public InsertIntoTableResponse insertIntoTable(
-      String id, byte[] body, String delimiter, String mode, Map<String, String> additionalHeaders)
+      String id,
+      byte[] body,
+      String delimiter,
+      String branch,
+      String mode,
+      Map<String, String> additionalHeaders)
       throws ApiException {
     Object localVarPostBody = body;
 
@@ -760,6 +1040,7 @@ public class DataApi extends BaseApi {
     Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
     localVarQueryParams.addAll(apiClient.parameterToPair("delimiter", delimiter));
+    localVarQueryParams.addAll(apiClient.parameterToPair("branch", branch));
     localVarQueryParams.addAll(apiClient.parameterToPair("mode", mode));
 
     localVarHeaderParams.putAll(additionalHeaders);
@@ -793,8 +1074,10 @@ public class DataApi extends BaseApi {
   /**
    * Merge insert (upsert) records into a table Performs a merge insert (upsert) operation on table
    * &#x60;id&#x60;. This operation updates existing rows based on a matching column and inserts new
-   * rows that don&#39;t match. It returns the number of rows inserted and updated. REST NAMESPACE
-   * ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the
+   * rows that don&#39;t match. It returns the number of rows inserted and updated. For tables that
+   * have been declared but not yet created on storage (is_only_declared&#x3D;true), this operation
+   * will create the table with the provided data (since there are no existing rows to merge with).
+   * REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the
    * &#x60;MergeInsertIntoTableRequest&#x60; information in the following way: - &#x60;id&#x60;:
    * pass through path parameter of the same name - &#x60;on&#x60;: pass through query parameter of
    * the same name - &#x60;when_matched_update_all&#x60;: pass through query parameter of the same
@@ -808,20 +1091,32 @@ public class DataApi extends BaseApi {
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
    *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
    *     root namespace. (required)
-   * @param on Column name to use for matching rows (required) (required)
+   * @param on Lance field path to use for matching rows. Nested fields use dot-separated segments;
+   *     use backtick-quoted segments for literal dots and double backticks inside quoted segments.
+   *     Use canonical full paths for display and errors; leaf names alone only identify top-level
+   *     fields; invalid or unresolved paths should return InvalidInput or TableColumnNotFound.
+   *     (required)
    * @param body Arrow IPC stream containing the records to merge (required)
    * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
    *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
    *     (optional)
+   * @param branch Optional branch to target. When not specified, the main branch is used. Used by
+   *     branch-scoped operations that cannot carry a &#x60;branch&#x60; field in their request body
+   *     (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry
+   *     &#x60;branch&#x60; as a body field instead. (optional)
    * @param whenMatchedUpdateAll Update all columns when rows match (optional, default to false)
    * @param whenMatchedUpdateAllFilt The row is updated (similar to UpdateAll) only for rows where
-   *     the SQL expression evaluates to true (optional)
+   *     the SQL expression evaluates to true. Field references must use Lance field path syntax:
+   *     nested fields use dot-separated segments, literal dots require backtick-quoted segments,
+   *     and backticks inside quoted segments are doubled. (optional)
    * @param whenNotMatchedInsertAll Insert all columns when rows don&#39;t match (optional, default
    *     to false)
    * @param whenNotMatchedBySourceDelete Delete all rows from target table that don&#39;t match a
    *     row in the source table (optional, default to false)
    * @param whenNotMatchedBySourceDeleteFilt Delete rows from the target table if there is no match
-   *     AND the SQL expression evaluates to true (optional)
+   *     AND the SQL expression evaluates to true. Field references must use Lance field path
+   *     syntax: nested fields use dot-separated segments, literal dots require backtick-quoted
+   *     segments, and backticks inside quoted segments are doubled. (optional)
    * @param timeout Timeout for the operation (e.g., \&quot;30s\&quot;, \&quot;5m\&quot;) (optional)
    * @param useIndex Whether to use index for matching rows (optional, default to false)
    * @return MergeInsertIntoTableResponse
@@ -832,6 +1127,7 @@ public class DataApi extends BaseApi {
       String on,
       byte[] body,
       String delimiter,
+      String branch,
       Boolean whenMatchedUpdateAll,
       String whenMatchedUpdateAllFilt,
       Boolean whenNotMatchedInsertAll,
@@ -845,6 +1141,7 @@ public class DataApi extends BaseApi {
         on,
         body,
         delimiter,
+        branch,
         whenMatchedUpdateAll,
         whenMatchedUpdateAllFilt,
         whenNotMatchedInsertAll,
@@ -858,8 +1155,10 @@ public class DataApi extends BaseApi {
   /**
    * Merge insert (upsert) records into a table Performs a merge insert (upsert) operation on table
    * &#x60;id&#x60;. This operation updates existing rows based on a matching column and inserts new
-   * rows that don&#39;t match. It returns the number of rows inserted and updated. REST NAMESPACE
-   * ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the
+   * rows that don&#39;t match. It returns the number of rows inserted and updated. For tables that
+   * have been declared but not yet created on storage (is_only_declared&#x3D;true), this operation
+   * will create the table with the provided data (since there are no existing rows to merge with).
+   * REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the
    * &#x60;MergeInsertIntoTableRequest&#x60; information in the following way: - &#x60;id&#x60;:
    * pass through path parameter of the same name - &#x60;on&#x60;: pass through query parameter of
    * the same name - &#x60;when_matched_update_all&#x60;: pass through query parameter of the same
@@ -873,20 +1172,32 @@ public class DataApi extends BaseApi {
    *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
    *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
    *     root namespace. (required)
-   * @param on Column name to use for matching rows (required) (required)
+   * @param on Lance field path to use for matching rows. Nested fields use dot-separated segments;
+   *     use backtick-quoted segments for literal dots and double backticks inside quoted segments.
+   *     Use canonical full paths for display and errors; leaf names alone only identify top-level
+   *     fields; invalid or unresolved paths should return InvalidInput or TableColumnNotFound.
+   *     (required)
    * @param body Arrow IPC stream containing the records to merge (required)
    * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
    *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
    *     (optional)
+   * @param branch Optional branch to target. When not specified, the main branch is used. Used by
+   *     branch-scoped operations that cannot carry a &#x60;branch&#x60; field in their request body
+   *     (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry
+   *     &#x60;branch&#x60; as a body field instead. (optional)
    * @param whenMatchedUpdateAll Update all columns when rows match (optional, default to false)
    * @param whenMatchedUpdateAllFilt The row is updated (similar to UpdateAll) only for rows where
-   *     the SQL expression evaluates to true (optional)
+   *     the SQL expression evaluates to true. Field references must use Lance field path syntax:
+   *     nested fields use dot-separated segments, literal dots require backtick-quoted segments,
+   *     and backticks inside quoted segments are doubled. (optional)
    * @param whenNotMatchedInsertAll Insert all columns when rows don&#39;t match (optional, default
    *     to false)
    * @param whenNotMatchedBySourceDelete Delete all rows from target table that don&#39;t match a
    *     row in the source table (optional, default to false)
    * @param whenNotMatchedBySourceDeleteFilt Delete rows from the target table if there is no match
-   *     AND the SQL expression evaluates to true (optional)
+   *     AND the SQL expression evaluates to true. Field references must use Lance field path
+   *     syntax: nested fields use dot-separated segments, literal dots require backtick-quoted
+   *     segments, and backticks inside quoted segments are doubled. (optional)
    * @param timeout Timeout for the operation (e.g., \&quot;30s\&quot;, \&quot;5m\&quot;) (optional)
    * @param useIndex Whether to use index for matching rows (optional, default to false)
    * @param additionalHeaders additionalHeaders for this call
@@ -898,6 +1209,7 @@ public class DataApi extends BaseApi {
       String on,
       byte[] body,
       String delimiter,
+      String branch,
       Boolean whenMatchedUpdateAll,
       String whenMatchedUpdateAllFilt,
       Boolean whenNotMatchedInsertAll,
@@ -942,6 +1254,7 @@ public class DataApi extends BaseApi {
     Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
     localVarQueryParams.addAll(apiClient.parameterToPair("delimiter", delimiter));
+    localVarQueryParams.addAll(apiClient.parameterToPair("branch", branch));
     localVarQueryParams.addAll(apiClient.parameterToPair("on", on));
     localVarQueryParams.addAll(
         apiClient.parameterToPair("when_matched_update_all", whenMatchedUpdateAll));
@@ -1072,6 +1385,102 @@ public class DataApi extends BaseApi {
     String[] localVarAuthNames = new String[] {"OAuth2", "ApiKeyAuth", "BearerAuth"};
 
     TypeReference<byte[]> localVarReturnType = new TypeReference<byte[]>() {};
+    return apiClient.invokeAPI(
+        localVarPath,
+        "POST",
+        localVarQueryParams,
+        localVarCollectionQueryParams,
+        localVarQueryStringJoiner.toString(),
+        localVarPostBody,
+        localVarHeaderParams,
+        localVarCookieParams,
+        localVarFormParams,
+        localVarAccept,
+        localVarContentType,
+        localVarAuthNames,
+        localVarReturnType);
+  }
+
+  /**
+   * Trigger an async materialized view refresh Trigger an asynchronous refresh job for materialized
+   * view &#x60;id&#x60;. Returns a job ID for tracking.
+   *
+   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
+   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
+   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
+   *     root namespace. (required)
+   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
+   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
+   *     (optional)
+   * @param refreshMaterializedViewRequest (optional)
+   * @return RefreshMaterializedViewResponse
+   * @throws ApiException if fails to make API call
+   */
+  public RefreshMaterializedViewResponse refreshMaterializedView(
+      String id, String delimiter, RefreshMaterializedViewRequest refreshMaterializedViewRequest)
+      throws ApiException {
+    return this.refreshMaterializedView(
+        id, delimiter, refreshMaterializedViewRequest, Collections.emptyMap());
+  }
+
+  /**
+   * Trigger an async materialized view refresh Trigger an asynchronous refresh job for materialized
+   * view &#x60;id&#x60;. Returns a job ID for tracking.
+   *
+   * @param id &#x60;string identifier&#x60; of an object in a namespace, following the Lance
+   *     Namespace spec. When the value is equal to the delimiter, it represents the root namespace.
+   *     For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the
+   *     root namespace. (required)
+   * @param delimiter An optional delimiter of the &#x60;string identifier&#x60;, following the
+   *     Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.
+   *     (optional)
+   * @param refreshMaterializedViewRequest (optional)
+   * @param additionalHeaders additionalHeaders for this call
+   * @return RefreshMaterializedViewResponse
+   * @throws ApiException if fails to make API call
+   */
+  public RefreshMaterializedViewResponse refreshMaterializedView(
+      String id,
+      String delimiter,
+      RefreshMaterializedViewRequest refreshMaterializedViewRequest,
+      Map<String, String> additionalHeaders)
+      throws ApiException {
+    Object localVarPostBody = refreshMaterializedViewRequest;
+
+    // verify the required parameter 'id' is set
+    if (id == null) {
+      throw new ApiException(
+          400, "Missing the required parameter 'id' when calling refreshMaterializedView");
+    }
+
+    // create path and map variables
+    String localVarPath =
+        "/v1/materialized_view/{id}/refresh"
+            .replaceAll(
+                "\\{" + "id" + "\\}", apiClient.escapeString(apiClient.parameterToString(id)));
+
+    StringJoiner localVarQueryStringJoiner = new StringJoiner("&");
+    String localVarQueryParameterBaseName;
+    List<Pair> localVarQueryParams = new ArrayList<Pair>();
+    List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+    Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+    Map<String, String> localVarCookieParams = new HashMap<String, String>();
+    Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+    localVarQueryParams.addAll(apiClient.parameterToPair("delimiter", delimiter));
+
+    localVarHeaderParams.putAll(additionalHeaders);
+
+    final String[] localVarAccepts = {"application/json"};
+    final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+
+    final String[] localVarContentTypes = {"application/json"};
+    final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+
+    String[] localVarAuthNames = new String[] {"OAuth2", "ApiKeyAuth", "BearerAuth"};
+
+    TypeReference<RefreshMaterializedViewResponse> localVarReturnType =
+        new TypeReference<RefreshMaterializedViewResponse>() {};
     return apiClient.invokeAPI(
         localVarPath,
         "POST",

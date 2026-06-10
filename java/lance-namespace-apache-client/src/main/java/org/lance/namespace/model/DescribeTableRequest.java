@@ -32,8 +32,10 @@ import java.util.StringJoiner;
   DescribeTableRequest.JSON_PROPERTY_CONTEXT,
   DescribeTableRequest.JSON_PROPERTY_ID,
   DescribeTableRequest.JSON_PROPERTY_VERSION,
+  DescribeTableRequest.JSON_PROPERTY_BRANCH,
   DescribeTableRequest.JSON_PROPERTY_WITH_TABLE_URI,
   DescribeTableRequest.JSON_PROPERTY_LOAD_DETAILED_METADATA,
+  DescribeTableRequest.JSON_PROPERTY_CHECK_DECLARED,
   DescribeTableRequest.JSON_PROPERTY_VEND_CREDENTIALS
 })
 @javax.annotation.Generated(
@@ -52,11 +54,17 @@ public class DescribeTableRequest {
   public static final String JSON_PROPERTY_VERSION = "version";
   @javax.annotation.Nullable private Long version;
 
+  public static final String JSON_PROPERTY_BRANCH = "branch";
+  @javax.annotation.Nullable private String branch;
+
   public static final String JSON_PROPERTY_WITH_TABLE_URI = "with_table_uri";
   @javax.annotation.Nullable private Boolean withTableUri = false;
 
   public static final String JSON_PROPERTY_LOAD_DETAILED_METADATA = "load_detailed_metadata";
   @javax.annotation.Nullable private Boolean loadDetailedMetadata;
+
+  public static final String JSON_PROPERTY_CHECK_DECLARED = "check_declared";
+  @javax.annotation.Nullable private Boolean checkDeclared = false;
 
   public static final String JSON_PROPERTY_VEND_CREDENTIALS = "vend_credentials";
   @javax.annotation.Nullable private Boolean vendCredentials;
@@ -180,6 +188,30 @@ public class DescribeTableRequest {
     this.version = version;
   }
 
+  public DescribeTableRequest branch(@javax.annotation.Nullable String branch) {
+
+    this.branch = branch;
+    return this;
+  }
+
+  /**
+   * Branch to target. When not specified, the main branch is used.
+   *
+   * @return branch
+   */
+  @javax.annotation.Nullable
+  @JsonProperty(JSON_PROPERTY_BRANCH)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public String getBranch() {
+    return branch;
+  }
+
+  @JsonProperty(JSON_PROPERTY_BRANCH)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setBranch(@javax.annotation.Nullable String branch) {
+    this.branch = branch;
+  }
+
   public DescribeTableRequest withTableUri(@javax.annotation.Nullable Boolean withTableUri) {
 
     this.withTableUri = withTableUri;
@@ -232,6 +264,33 @@ public class DescribeTableRequest {
     this.loadDetailedMetadata = loadDetailedMetadata;
   }
 
+  public DescribeTableRequest checkDeclared(@javax.annotation.Nullable Boolean checkDeclared) {
+
+    this.checkDeclared = checkDeclared;
+    return this;
+  }
+
+  /**
+   * Whether to check if the table exists only as a namespace declaration without storage data.
+   * Default is false. When true, the response should populate &#x60;is_only_declared&#x60;. When
+   * false, the implementation should return null for &#x60;is_only_declared&#x60; unless another
+   * option such as &#x60;load_detailed_metadata&#x60; requires checking declared-only table state.
+   *
+   * @return checkDeclared
+   */
+  @javax.annotation.Nullable
+  @JsonProperty(JSON_PROPERTY_CHECK_DECLARED)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public Boolean getCheckDeclared() {
+    return checkDeclared;
+  }
+
+  @JsonProperty(JSON_PROPERTY_CHECK_DECLARED)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setCheckDeclared(@javax.annotation.Nullable Boolean checkDeclared) {
+    this.checkDeclared = checkDeclared;
+  }
+
   public DescribeTableRequest vendCredentials(@javax.annotation.Nullable Boolean vendCredentials) {
 
     this.vendCredentials = vendCredentials;
@@ -271,15 +330,25 @@ public class DescribeTableRequest {
         && Objects.equals(this.context, describeTableRequest.context)
         && Objects.equals(this.id, describeTableRequest.id)
         && Objects.equals(this.version, describeTableRequest.version)
+        && Objects.equals(this.branch, describeTableRequest.branch)
         && Objects.equals(this.withTableUri, describeTableRequest.withTableUri)
         && Objects.equals(this.loadDetailedMetadata, describeTableRequest.loadDetailedMetadata)
+        && Objects.equals(this.checkDeclared, describeTableRequest.checkDeclared)
         && Objects.equals(this.vendCredentials, describeTableRequest.vendCredentials);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(
-        identity, context, id, version, withTableUri, loadDetailedMetadata, vendCredentials);
+        identity,
+        context,
+        id,
+        version,
+        branch,
+        withTableUri,
+        loadDetailedMetadata,
+        checkDeclared,
+        vendCredentials);
   }
 
   @Override
@@ -290,10 +359,12 @@ public class DescribeTableRequest {
     sb.append("    context: ").append(toIndentedString(context)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    version: ").append(toIndentedString(version)).append("\n");
+    sb.append("    branch: ").append(toIndentedString(branch)).append("\n");
     sb.append("    withTableUri: ").append(toIndentedString(withTableUri)).append("\n");
     sb.append("    loadDetailedMetadata: ")
         .append(toIndentedString(loadDetailedMetadata))
         .append("\n");
+    sb.append("    checkDeclared: ").append(toIndentedString(checkDeclared)).append("\n");
     sb.append("    vendCredentials: ").append(toIndentedString(vendCredentials)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -404,6 +475,21 @@ public class DescribeTableRequest {
       }
     }
 
+    // add `branch` to the URL query string
+    if (getBranch() != null) {
+      try {
+        joiner.add(
+            String.format(
+                "%sbranch%s=%s",
+                prefix,
+                suffix,
+                URLEncoder.encode(String.valueOf(getBranch()), "UTF-8").replaceAll("\\+", "%20")));
+      } catch (UnsupportedEncodingException e) {
+        // Should never happen, UTF-8 is always supported
+        throw new RuntimeException(e);
+      }
+    }
+
     // add `with_table_uri` to the URL query string
     if (getWithTableUri() != null) {
       try {
@@ -429,6 +515,22 @@ public class DescribeTableRequest {
                 prefix,
                 suffix,
                 URLEncoder.encode(String.valueOf(getLoadDetailedMetadata()), "UTF-8")
+                    .replaceAll("\\+", "%20")));
+      } catch (UnsupportedEncodingException e) {
+        // Should never happen, UTF-8 is always supported
+        throw new RuntimeException(e);
+      }
+    }
+
+    // add `check_declared` to the URL query string
+    if (getCheckDeclared() != null) {
+      try {
+        joiner.add(
+            String.format(
+                "%scheck_declared%s=%s",
+                prefix,
+                suffix,
+                URLEncoder.encode(String.valueOf(getCheckDeclared()), "UTF-8")
                     .replaceAll("\\+", "%20")));
       } catch (UnsupportedEncodingException e) {
         // Should never happen, UTF-8 is always supported

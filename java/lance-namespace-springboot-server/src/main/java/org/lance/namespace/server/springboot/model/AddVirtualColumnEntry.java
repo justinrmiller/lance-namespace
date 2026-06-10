@@ -21,7 +21,9 @@ import jakarta.validation.constraints.*;
 
 import java.util.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /** AddVirtualColumnEntry */
@@ -30,9 +32,9 @@ import java.util.Objects;
     comments = "Generator version: 7.12.0")
 public class AddVirtualColumnEntry {
 
-  @Valid private List<String> inputColumns = new ArrayList<>();
+  @Valid private List<@Size(min = 1) String> inputColumns = new ArrayList<>();
 
-  private Object dataType;
+  @Valid private List<@Valid AddVirtualColumnOutputEntry> outputs = new ArrayList<>();
 
   private String image;
 
@@ -42,27 +44,37 @@ public class AddVirtualColumnEntry {
 
   private String udfVersion;
 
+  private String udfBackend = null;
+
+  private Boolean autoBackfill = null;
+
+  private String manifest = null;
+
+  private String manifestChecksum = null;
+
+  @Valid private Map<String, String> fieldMetadata = new HashMap<>();
+
   public AddVirtualColumnEntry() {
     super();
   }
 
   /** Constructor with only required parameters */
   public AddVirtualColumnEntry(
-      List<String> inputColumns,
-      Object dataType,
+      List<@Size(min = 1) String> inputColumns,
+      List<@Valid AddVirtualColumnOutputEntry> outputs,
       String image,
       String udf,
       String udfName,
       String udfVersion) {
     this.inputColumns = inputColumns;
-    this.dataType = dataType;
+    this.outputs = outputs;
     this.image = image;
     this.udf = udf;
     this.udfName = udfName;
     this.udfVersion = udfVersion;
   }
 
-  public AddVirtualColumnEntry inputColumns(List<String> inputColumns) {
+  public AddVirtualColumnEntry inputColumns(List<@Size(min = 1) String> inputColumns) {
     this.inputColumns = inputColumns;
     return this;
   }
@@ -76,46 +88,58 @@ public class AddVirtualColumnEntry {
   }
 
   /**
-   * List of input column names for the virtual column
+   * List of input Lance field paths for the virtual column. Nested fields use dot-separated
+   * segments; use backtick-quoted segments for literal dots and double backticks inside quoted
+   * segments.
    *
    * @return inputColumns
    */
   @NotNull
   @Schema(
       name = "input_columns",
-      description = "List of input column names for the virtual column",
+      description =
+          "List of input Lance field paths for the virtual column. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments.",
       requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("input_columns")
-  public List<String> getInputColumns() {
+  public List<@Size(min = 1) String> getInputColumns() {
     return inputColumns;
   }
 
-  public void setInputColumns(List<String> inputColumns) {
+  public void setInputColumns(List<@Size(min = 1) String> inputColumns) {
     this.inputColumns = inputColumns;
   }
 
-  public AddVirtualColumnEntry dataType(Object dataType) {
-    this.dataType = dataType;
+  public AddVirtualColumnEntry outputs(List<@Valid AddVirtualColumnOutputEntry> outputs) {
+    this.outputs = outputs;
+    return this;
+  }
+
+  public AddVirtualColumnEntry addOutputsItem(AddVirtualColumnOutputEntry outputsItem) {
+    if (this.outputs == null) {
+      this.outputs = new ArrayList<>();
+    }
+    this.outputs.add(outputsItem);
     return this;
   }
 
   /**
-   * Data type of the virtual column using JSON representation
+   * Output columns produced by the virtual column UDF
    *
-   * @return dataType
+   * @return outputs
    */
   @NotNull
+  @Valid
   @Schema(
-      name = "data_type",
-      description = "Data type of the virtual column using JSON representation",
+      name = "outputs",
+      description = "Output columns produced by the virtual column UDF",
       requiredMode = Schema.RequiredMode.REQUIRED)
-  @JsonProperty("data_type")
-  public Object getDataType() {
-    return dataType;
+  @JsonProperty("outputs")
+  public List<@Valid AddVirtualColumnOutputEntry> getOutputs() {
+    return outputs;
   }
 
-  public void setDataType(Object dataType) {
-    this.dataType = dataType;
+  public void setOutputs(List<@Valid AddVirtualColumnOutputEntry> outputs) {
+    this.outputs = outputs;
   }
 
   public AddVirtualColumnEntry image(String image) {
@@ -214,6 +238,129 @@ public class AddVirtualColumnEntry {
     this.udfVersion = udfVersion;
   }
 
+  public AddVirtualColumnEntry udfBackend(String udfBackend) {
+    this.udfBackend = udfBackend;
+    return this;
+  }
+
+  /**
+   * UDF backend type (e.g. DockerUDFSpecV1)
+   *
+   * @return udfBackend
+   */
+  @Schema(
+      name = "udf_backend",
+      description = "UDF backend type (e.g. DockerUDFSpecV1)",
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("udf_backend")
+  public String getUdfBackend() {
+    return udfBackend;
+  }
+
+  public void setUdfBackend(String udfBackend) {
+    this.udfBackend = udfBackend;
+  }
+
+  public AddVirtualColumnEntry autoBackfill(Boolean autoBackfill) {
+    this.autoBackfill = autoBackfill;
+    return this;
+  }
+
+  /**
+   * Whether to automatically backfill the column after creation
+   *
+   * @return autoBackfill
+   */
+  @Schema(
+      name = "auto_backfill",
+      description = "Whether to automatically backfill the column after creation",
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("auto_backfill")
+  public Boolean getAutoBackfill() {
+    return autoBackfill;
+  }
+
+  public void setAutoBackfill(Boolean autoBackfill) {
+    this.autoBackfill = autoBackfill;
+  }
+
+  public AddVirtualColumnEntry manifest(String manifest) {
+    this.manifest = manifest;
+    return this;
+  }
+
+  /**
+   * JSON-serialized manifest for the UDF environment
+   *
+   * @return manifest
+   */
+  @Schema(
+      name = "manifest",
+      description = "JSON-serialized manifest for the UDF environment",
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("manifest")
+  public String getManifest() {
+    return manifest;
+  }
+
+  public void setManifest(String manifest) {
+    this.manifest = manifest;
+  }
+
+  public AddVirtualColumnEntry manifestChecksum(String manifestChecksum) {
+    this.manifestChecksum = manifestChecksum;
+    return this;
+  }
+
+  /**
+   * SHA-256 checksum of the manifest content
+   *
+   * @return manifestChecksum
+   */
+  @Schema(
+      name = "manifest_checksum",
+      description = "SHA-256 checksum of the manifest content",
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("manifest_checksum")
+  public String getManifestChecksum() {
+    return manifestChecksum;
+  }
+
+  public void setManifestChecksum(String manifestChecksum) {
+    this.manifestChecksum = manifestChecksum;
+  }
+
+  public AddVirtualColumnEntry fieldMetadata(Map<String, String> fieldMetadata) {
+    this.fieldMetadata = fieldMetadata;
+    return this;
+  }
+
+  public AddVirtualColumnEntry putFieldMetadataItem(String key, String fieldMetadataItem) {
+    if (this.fieldMetadata == null) {
+      this.fieldMetadata = new HashMap<>();
+    }
+    this.fieldMetadata.put(key, fieldMetadataItem);
+    return this;
+  }
+
+  /**
+   * User-supplied field metadata (string key-value pairs)
+   *
+   * @return fieldMetadata
+   */
+  @Schema(
+      name = "field_metadata",
+      description = "User-supplied field metadata (string key-value pairs)",
+      requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("field_metadata")
+  public Map<String, String> getFieldMetadata() {
+    return fieldMetadata;
+  }
+
+  public void setFieldMetadata(Map<String, String> fieldMetadata) {
+    this.fieldMetadata = fieldMetadata;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -224,16 +371,32 @@ public class AddVirtualColumnEntry {
     }
     AddVirtualColumnEntry addVirtualColumnEntry = (AddVirtualColumnEntry) o;
     return Objects.equals(this.inputColumns, addVirtualColumnEntry.inputColumns)
-        && Objects.equals(this.dataType, addVirtualColumnEntry.dataType)
+        && Objects.equals(this.outputs, addVirtualColumnEntry.outputs)
         && Objects.equals(this.image, addVirtualColumnEntry.image)
         && Objects.equals(this.udf, addVirtualColumnEntry.udf)
         && Objects.equals(this.udfName, addVirtualColumnEntry.udfName)
-        && Objects.equals(this.udfVersion, addVirtualColumnEntry.udfVersion);
+        && Objects.equals(this.udfVersion, addVirtualColumnEntry.udfVersion)
+        && Objects.equals(this.udfBackend, addVirtualColumnEntry.udfBackend)
+        && Objects.equals(this.autoBackfill, addVirtualColumnEntry.autoBackfill)
+        && Objects.equals(this.manifest, addVirtualColumnEntry.manifest)
+        && Objects.equals(this.manifestChecksum, addVirtualColumnEntry.manifestChecksum)
+        && Objects.equals(this.fieldMetadata, addVirtualColumnEntry.fieldMetadata);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(inputColumns, dataType, image, udf, udfName, udfVersion);
+    return Objects.hash(
+        inputColumns,
+        outputs,
+        image,
+        udf,
+        udfName,
+        udfVersion,
+        udfBackend,
+        autoBackfill,
+        manifest,
+        manifestChecksum,
+        fieldMetadata);
   }
 
   @Override
@@ -241,11 +404,16 @@ public class AddVirtualColumnEntry {
     StringBuilder sb = new StringBuilder();
     sb.append("class AddVirtualColumnEntry {\n");
     sb.append("    inputColumns: ").append(toIndentedString(inputColumns)).append("\n");
-    sb.append("    dataType: ").append(toIndentedString(dataType)).append("\n");
+    sb.append("    outputs: ").append(toIndentedString(outputs)).append("\n");
     sb.append("    image: ").append(toIndentedString(image)).append("\n");
     sb.append("    udf: ").append(toIndentedString(udf)).append("\n");
     sb.append("    udfName: ").append(toIndentedString(udfName)).append("\n");
     sb.append("    udfVersion: ").append(toIndentedString(udfVersion)).append("\n");
+    sb.append("    udfBackend: ").append(toIndentedString(udfBackend)).append("\n");
+    sb.append("    autoBackfill: ").append(toIndentedString(autoBackfill)).append("\n");
+    sb.append("    manifest: ").append(toIndentedString(manifest)).append("\n");
+    sb.append("    manifestChecksum: ").append(toIndentedString(manifestChecksum)).append("\n");
+    sb.append("    fieldMetadata: ").append(toIndentedString(fieldMetadata)).append("\n");
     sb.append("}");
     return sb.toString();
   }

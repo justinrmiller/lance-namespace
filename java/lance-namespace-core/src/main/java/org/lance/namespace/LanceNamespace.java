@@ -338,18 +338,6 @@ public interface LanceNamespace {
   }
 
   /**
-   * Create an empty table (metadata only operation).
-   *
-   * @param request The create empty table request
-   * @return The create empty table response
-   * @deprecated Use {@link #declareTable(DeclareTableRequest)} instead.
-   */
-  @Deprecated
-  default CreateEmptyTableResponse createEmptyTable(CreateEmptyTableRequest request) {
-    throw new UnsupportedOperationException("Not supported: createEmptyTable");
-  }
-
-  /**
    * Insert data into a table.
    *
    * @param request The insert into table request
@@ -573,6 +561,26 @@ public interface LanceNamespace {
   }
 
   /**
+   * Atomically commit a batch of mixed table operations.
+   *
+   * <p>This is a generalized version of {@link
+   * #batchCreateTableVersions(BatchCreateTableVersionsRequest)} that supports mixed operation types
+   * (DeclareTable, CreateTableVersion, DeleteTableVersions, DeregisterTable) within a single atomic
+   * transaction at the metadata layer.
+   *
+   * <p>All operations are committed atomically: either all succeed or none are applied.
+   *
+   * @param request The batch commit tables request
+   * @return The batch commit tables response
+   * @throws org.lance.namespace.errors.NamespaceNotFoundException if any namespace does not exist
+   * @throws org.lance.namespace.errors.TableNotFoundException if any table does not exist
+   * @throws org.lance.namespace.errors.ConcurrentModificationException if any operation conflicts
+   */
+  default BatchCommitTablesResponse batchCommitTables(BatchCommitTablesRequest request) {
+    throw new UnsupportedOperationException("Not supported: batchCommitTables");
+  }
+
+  /**
    * Update table schema metadata.
    *
    * @param request The update table schema metadata request
@@ -581,6 +589,16 @@ public interface LanceNamespace {
   default UpdateTableSchemaMetadataResponse updateTableSchemaMetadata(
       UpdateTableSchemaMetadataRequest request) {
     throw new UnsupportedOperationException("Not supported: updateTableSchemaMetadata");
+  }
+
+  /**
+   * Update per-field metadata.
+   *
+   * @param request The update field metadata request
+   * @return The update field metadata response
+   */
+  default UpdateFieldMetadataResponse updateFieldMetadata(UpdateFieldMetadataRequest request) {
+    throw new UnsupportedOperationException("Not supported: updateFieldMetadata");
   }
 
   /**
@@ -636,6 +654,40 @@ public interface LanceNamespace {
   default AlterTableAlterColumnsResponse alterTableAlterColumns(
       AlterTableAlterColumnsRequest request) {
     throw new UnsupportedOperationException("Not supported: alterTableAlterColumns");
+  }
+
+  /**
+   * Trigger an async backfill job for a computed column.
+   *
+   * @param request The backfill columns request
+   * @return The backfill columns response containing a job ID
+   */
+  default AlterTableBackfillColumnsResponse alterTableBackfillColumns(
+      AlterTableBackfillColumnsRequest request) {
+    throw new UnsupportedOperationException("Not supported: alterTableBackfillColumns");
+  }
+
+  /**
+   * Trigger an async materialized view refresh.
+   *
+   * @param request The refresh materialized view request
+   * @return The refresh response containing a job ID
+   */
+  default RefreshMaterializedViewResponse refreshMaterializedView(
+      RefreshMaterializedViewRequest request) {
+    throw new UnsupportedOperationException("Not supported: refreshMaterializedView");
+  }
+
+  /**
+   * Create a materialized view (query / UDTF / chunker) backed by a stored UDTF/chunker spec and an
+   * optional initial refresh.
+   *
+   * @param request The create materialized view request
+   * @return The create response containing the view's location and an optional job ID
+   */
+  default CreateMaterializedViewResponse createMaterializedView(
+      CreateMaterializedViewRequest request) {
+    throw new UnsupportedOperationException("Not supported: createMaterializedView");
   }
 
   /**
@@ -699,6 +751,38 @@ public interface LanceNamespace {
    */
   default UpdateTableTagResponse updateTableTag(UpdateTableTagRequest request) {
     throw new UnsupportedOperationException("Not supported: updateTableTag");
+  }
+
+  // Branch operations
+
+  /**
+   * Create a branch for a table.
+   *
+   * @param request The create table branch request
+   * @return The create table branch response
+   */
+  default CreateTableBranchResponse createTableBranch(CreateTableBranchRequest request) {
+    throw new UnsupportedOperationException("Not supported: createTableBranch");
+  }
+
+  /**
+   * List all branches for a table.
+   *
+   * @param request The list table branches request
+   * @return The list table branches response
+   */
+  default ListTableBranchesResponse listTableBranches(ListTableBranchesRequest request) {
+    throw new UnsupportedOperationException("Not supported: listTableBranches");
+  }
+
+  /**
+   * Delete a branch from a table.
+   *
+   * @param request The delete table branch request
+   * @return The delete table branch response
+   */
+  default DeleteTableBranchResponse deleteTableBranch(DeleteTableBranchRequest request) {
+    throw new UnsupportedOperationException("Not supported: deleteTableBranch");
   }
 
   // Transaction operations

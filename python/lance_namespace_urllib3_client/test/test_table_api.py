@@ -40,6 +40,13 @@ class TestTableApi(unittest.TestCase):
         """
         pass
 
+    def test_alter_table_backfill_columns(self) -> None:
+        """Test case for alter_table_backfill_columns
+
+        Trigger an async column backfill job
+        """
+        pass
+
     def test_alter_table_drop_columns(self) -> None:
         """Test case for alter_table_drop_columns
 
@@ -51,6 +58,13 @@ class TestTableApi(unittest.TestCase):
         """Test case for analyze_table_query_plan
 
         Analyze query execution plan
+        """
+        pass
+
+    def test_batch_commit_tables(self) -> None:
+        """Test case for batch_commit_tables
+
+        Atomically commit a batch of mixed table operations
         """
         pass
 
@@ -75,17 +89,17 @@ class TestTableApi(unittest.TestCase):
         """
         pass
 
-    def test_create_empty_table(self) -> None:
-        """Test case for create_empty_table
-
-        Create an empty table
-        """
-        pass
-
     def test_create_table(self) -> None:
         """Test case for create_table
 
         Create a table with the given name
+        """
+        pass
+
+    def test_create_table_branch(self) -> None:
+        """Test case for create_table_branch
+
+        Create a new branch
         """
         pass
 
@@ -128,6 +142,13 @@ class TestTableApi(unittest.TestCase):
         """Test case for delete_from_table
 
         Delete rows from a table
+        """
+        pass
+
+    def test_delete_table_branch(self) -> None:
+        """Test case for delete_table_branch
+
+        Delete a branch
         """
         pass
 
@@ -215,6 +236,13 @@ class TestTableApi(unittest.TestCase):
         """
         pass
 
+    def test_list_table_branches(self) -> None:
+        """Test case for list_table_branches
+
+        List all branches for a table
+        """
+        pass
+
     def test_list_table_indices(self) -> None:
         """Test case for list_table_indices
 
@@ -282,6 +310,13 @@ class TestTableApi(unittest.TestCase):
         """Test case for table_exists
 
         Check if a table exists
+        """
+        pass
+
+    def test_update_field_metadata(self) -> None:
+        """Test case for update_field_metadata
+
+        Update per-field metadata
         """
         pass
 

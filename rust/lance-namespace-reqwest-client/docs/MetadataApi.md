@@ -7,15 +7,17 @@ Method | HTTP request | Description
 [**alter_table_alter_columns**](MetadataApi.md#alter_table_alter_columns) | **POST** /v1/table/{id}/alter_columns | Modify existing columns
 [**alter_table_drop_columns**](MetadataApi.md#alter_table_drop_columns) | **POST** /v1/table/{id}/drop_columns | Remove columns from table
 [**alter_transaction**](MetadataApi.md#alter_transaction) | **POST** /v1/transaction/{id}/alter | Alter information of a transaction.
+[**batch_commit_tables**](MetadataApi.md#batch_commit_tables) | **POST** /v1/table/batch-commit | Atomically commit a batch of mixed table operations
 [**batch_create_table_versions**](MetadataApi.md#batch_create_table_versions) | **POST** /v1/table/version/batch-create | Atomically create versions for multiple tables
 [**batch_delete_table_versions**](MetadataApi.md#batch_delete_table_versions) | **POST** /v1/table/{id}/version/delete | Delete table version records
-[**create_empty_table**](MetadataApi.md#create_empty_table) | **POST** /v1/table/{id}/create-empty | Create an empty table
 [**create_namespace**](MetadataApi.md#create_namespace) | **POST** /v1/namespace/{id}/create | Create a new namespace
+[**create_table_branch**](MetadataApi.md#create_table_branch) | **POST** /v1/table/{id}/branches/create | Create a new branch
 [**create_table_index**](MetadataApi.md#create_table_index) | **POST** /v1/table/{id}/create_index | Create an index on a table
 [**create_table_scalar_index**](MetadataApi.md#create_table_scalar_index) | **POST** /v1/table/{id}/create_scalar_index | Create a scalar index on a table
 [**create_table_tag**](MetadataApi.md#create_table_tag) | **POST** /v1/table/{id}/tags/create | Create a new tag
 [**create_table_version**](MetadataApi.md#create_table_version) | **POST** /v1/table/{id}/version/create | Create a new table version
 [**declare_table**](MetadataApi.md#declare_table) | **POST** /v1/table/{id}/declare | Declare a table
+[**delete_table_branch**](MetadataApi.md#delete_table_branch) | **POST** /v1/table/{id}/branches/delete | Delete a branch
 [**delete_table_tag**](MetadataApi.md#delete_table_tag) | **POST** /v1/table/{id}/tags/delete | Delete a tag
 [**deregister_table**](MetadataApi.md#deregister_table) | **POST** /v1/table/{id}/deregister | Deregister a table
 [**describe_namespace**](MetadataApi.md#describe_namespace) | **POST** /v1/namespace/{id}/describe | Describe a namespace
@@ -29,6 +31,7 @@ Method | HTTP request | Description
 [**get_table_stats**](MetadataApi.md#get_table_stats) | **POST** /v1/table/{id}/stats | Get table statistics
 [**get_table_tag_version**](MetadataApi.md#get_table_tag_version) | **POST** /v1/table/{id}/tags/version | Get version for a specific tag
 [**list_namespaces**](MetadataApi.md#list_namespaces) | **GET** /v1/namespace/{id}/list | List namespaces
+[**list_table_branches**](MetadataApi.md#list_table_branches) | **POST** /v1/table/{id}/branches/list | List all branches for a table
 [**list_table_indices**](MetadataApi.md#list_table_indices) | **POST** /v1/table/{id}/index/list | List indexes on a table
 [**list_table_tags**](MetadataApi.md#list_table_tags) | **POST** /v1/table/{id}/tags/list | List all tags for a table
 [**list_table_versions**](MetadataApi.md#list_table_versions) | **POST** /v1/table/{id}/version/list | List all versions of a table
@@ -38,6 +41,7 @@ Method | HTTP request | Description
 [**rename_table**](MetadataApi.md#rename_table) | **POST** /v1/table/{id}/rename | Rename a table
 [**restore_table**](MetadataApi.md#restore_table) | **POST** /v1/table/{id}/restore | Restore table to a specific version
 [**table_exists**](MetadataApi.md#table_exists) | **POST** /v1/table/{id}/exists | Check if a table exists
+[**update_field_metadata**](MetadataApi.md#update_field_metadata) | **POST** /v1/table/{id}/update_field_metadata | Update per-field metadata
 [**update_table_schema_metadata**](MetadataApi.md#update_table_schema_metadata) | **POST** /v1/table/{id}/schema_metadata/update | Update table schema metadata
 [**update_table_tag**](MetadataApi.md#update_table_tag) | **POST** /v1/table/{id}/tags/update | Update a tag to point to a different version
 
@@ -139,6 +143,37 @@ Name | Type | Description  | Required | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 
+## batch_commit_tables
+
+> models::BatchCommitTablesResponse batch_commit_tables(batch_commit_tables_request, delimiter)
+Atomically commit a batch of mixed table operations
+
+Atomically commit a batch of table operations. This is a generalized version of `BatchCreateTableVersions` that supports mixed operation types within a single atomic transaction at the metadata layer.  Supported operation types: - `DeclareTable`: Declare (reserve) a new table - `CreateTableVersion`: Create a new version entry for a table - `DeleteTableVersions`: Delete version ranges from a table - `DeregisterTable`: Deregister (soft-delete) a table  All operations are committed atomically: either all succeed or none are applied. 
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**batch_commit_tables_request** | [**BatchCommitTablesRequest**](BatchCommitTablesRequest.md) |  | [required] |
+**delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
+
+### Return type
+
+[**models::BatchCommitTablesResponse**](BatchCommitTablesResponse.md)
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
 ## batch_create_table_versions
 
 > models::BatchCreateTableVersionsResponse batch_create_table_versions(batch_create_table_versions_request, delimiter)
@@ -202,38 +237,6 @@ Name | Type | Description  | Required | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 
-## create_empty_table
-
-> models::CreateEmptyTableResponse create_empty_table(id, create_empty_table_request, delimiter)
-Create an empty table
-
-Create an empty table with the given name without touching storage. This is a metadata-only operation that records the table existence and sets up aspects like access control.  For DirectoryNamespace implementation, this creates a `.lance-reserved` file in the table directory to mark the table's existence without creating actual Lance data files.  **Deprecated**: Use `DeclareTable` instead. 
-
-### Parameters
-
-
-Name | Type | Description  | Required | Notes
-------------- | ------------- | ------------- | ------------- | -------------
-**id** | **String** | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  | [required] |
-**create_empty_table_request** | [**CreateEmptyTableRequest**](CreateEmptyTableRequest.md) |  | [required] |
-**delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
-
-### Return type
-
-[**models::CreateEmptyTableResponse**](CreateEmptyTableResponse.md)
-
-### Authorization
-
-[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
-
-### HTTP request headers
-
-- **Content-Type**: application/json
-- **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-
 ## create_namespace
 
 > models::CreateNamespaceResponse create_namespace(id, create_namespace_request, delimiter)
@@ -266,12 +269,44 @@ Name | Type | Description  | Required | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 
+## create_table_branch
+
+> models::CreateTableBranchResponse create_table_branch(id, create_table_branch_request, delimiter)
+Create a new branch
+
+Create a new branch for table `id` starting from a source ref (another branch and/or version), defaulting to the latest version of the main branch. 
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**id** | **String** | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  | [required] |
+**create_table_branch_request** | [**CreateTableBranchRequest**](CreateTableBranchRequest.md) |  | [required] |
+**delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
+
+### Return type
+
+[**models::CreateTableBranchResponse**](CreateTableBranchResponse.md)
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
 ## create_table_index
 
 > models::CreateTableIndexResponse create_table_index(id, create_table_index_request, delimiter)
 Create an index on a table
 
-Create an index on a table column for faster search operations. Supports vector indexes (IVF_FLAT, IVF_HNSW_SQ, IVF_PQ, etc.) and scalar indexes (BTREE, BITMAP, FTS, etc.). Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
+Create an index on a table field for faster search operations. Supports vector indexes (IVF_FLAT, IVF_HNSW_SQ, IVF_PQ, etc.) and scalar indexes (BTREE, BITMAP, FTS, etc.). Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
 
 ### Parameters
 
@@ -303,7 +338,7 @@ Name | Type | Description  | Required | Notes
 > models::CreateTableScalarIndexResponse create_table_scalar_index(id, create_table_index_request, delimiter)
 Create a scalar index on a table
 
-Create a scalar index on a table column for faster filtering operations. Supports scalar indexes (BTREE, BITMAP, LABEL_LIST, FTS, etc.). This is an alias for CreateTableIndex specifically for scalar indexes. Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
+Create a scalar index on a table field for faster filtering operations. Supports scalar indexes (BTREE, BITMAP, LABEL_LIST, FTS, etc.). This is an alias for CreateTableIndex specifically for scalar indexes. Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
 
 ### Parameters
 
@@ -426,6 +461,38 @@ Name | Type | Description  | Required | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 
+## delete_table_branch
+
+> models::DeleteTableBranchResponse delete_table_branch(id, delete_table_branch_request, delimiter)
+Delete a branch
+
+Delete an existing branch from table `id`. 
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**id** | **String** | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  | [required] |
+**delete_table_branch_request** | [**DeleteTableBranchRequest**](DeleteTableBranchRequest.md) |  | [required] |
+**delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
+
+### Return type
+
+[**models::DeleteTableBranchResponse**](DeleteTableBranchResponse.md)
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
 ## delete_table_tag
 
 > models::DeleteTableTagResponse delete_table_tag(id, delete_table_tag_request, delimiter)
@@ -524,10 +591,10 @@ Name | Type | Description  | Required | Notes
 
 ## describe_table
 
-> models::DescribeTableResponse describe_table(id, describe_table_request, delimiter, with_table_uri, load_detailed_metadata)
+> models::DescribeTableResponse describe_table(id, describe_table_request, delimiter, with_table_uri, load_detailed_metadata, check_declared)
 Describe information of a table
 
-Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri` and `load_detailed_metadata` as query parameters instead of in the request body. 
+Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri`, `load_detailed_metadata`, and `check_declared` as query parameters instead of in the request body. 
 
 ### Parameters
 
@@ -539,6 +606,7 @@ Name | Type | Description  | Required | Notes
 **delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
 **with_table_uri** | Option<**bool**> | Whether to include the table URI in the response |  |[default to false]
 **load_detailed_metadata** | Option<**bool**> | Whether to load detailed metadata that requires opening the dataset. When false (default), only `location` is required in the response. When true, the response includes additional metadata such as `version`, `schema`, and `stats`.  |  |[default to false]
+**check_declared** | Option<**bool**> | Whether to check if the table exists only as a namespace declaration without storage data. When false (default), the response should return null for `is_only_declared` unless another option such as `load_detailed_metadata` requires the check.  |  |[default to false]
 
 ### Return type
 
@@ -718,7 +786,7 @@ Name | Type | Description  | Required | Notes
 
 ## drop_table_index
 
-> models::DropTableIndexResponse drop_table_index(id, index_name, delimiter)
+> models::DropTableIndexResponse drop_table_index(id, index_name, delimiter, branch)
 Drop a specific index
 
 Drop the specified index from table `id`.  REST NAMESPACE ONLY REST namespace does not use a request body for this operation. The `DropTableIndexRequest` information is passed in the following way: - `id`: pass through path parameter of the same name - `index_name`: pass through path parameter of the same name 
@@ -731,6 +799,7 @@ Name | Type | Description  | Required | Notes
 **id** | **String** | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  | [required] |
 **index_name** | **String** | Name of the index to drop | [required] |
 **delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
+**branch** | Option<**String**> | Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead.  |  |
 
 ### Return type
 
@@ -845,6 +914,39 @@ Name | Type | Description  | Required | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 
+## list_table_branches
+
+> models::ListTableBranchesResponse list_table_branches(id, delimiter, page_token, limit)
+List all branches for a table
+
+List all branches that have been created for table `id`. Returns a map of branch names to their contents.  REST NAMESPACE ONLY REST namespace does not use a request body for this operation. The `ListTableBranchesRequest` information is passed in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**id** | **String** | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  | [required] |
+**delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
+**page_token** | Option<**String**> | Pagination token from a previous request |  |
+**limit** | Option<**i32**> | Maximum number of items to return |  |
+
+### Return type
+
+[**models::ListTableBranchesResponse**](ListTableBranchesResponse.md)
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
 ## list_table_indices
 
 > models::ListTableIndicesResponse list_table_indices(id, list_table_indices_request, delimiter)
@@ -912,7 +1014,7 @@ Name | Type | Description  | Required | Notes
 
 ## list_table_versions
 
-> models::ListTableVersionsResponse list_table_versions(id, delimiter, page_token, limit, descending)
+> models::ListTableVersionsResponse list_table_versions(id, delimiter, branch, page_token, limit, descending)
 List all versions of a table
 
 List all versions (commits) of table `id` with their metadata.  Use `descending=true` to guarantee versions are returned in descending order (latest to oldest). Otherwise, the ordering is implementation-defined.  REST NAMESPACE ONLY REST namespace does not use a request body for this operation. The `ListTableVersionsRequest` information is passed in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `descending`: pass through query parameter of the same name 
@@ -924,6 +1026,7 @@ Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
 **id** | **String** | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  | [required] |
 **delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
+**branch** | Option<**String**> | Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead.  |  |
 **page_token** | Option<**String**> | Pagination token from a previous request |  |
 **limit** | Option<**i32**> | Maximum number of items to return |  |
 **descending** | Option<**bool**> | When true, versions are guaranteed to be returned in descending order (latest to oldest). When false or not specified, the ordering is implementation-defined.  |  |
@@ -946,10 +1049,10 @@ Name | Type | Description  | Required | Notes
 
 ## list_tables
 
-> models::ListTablesResponse list_tables(id, delimiter, page_token, limit)
+> models::ListTablesResponse list_tables(id, delimiter, page_token, limit, include_declared)
 List tables in a namespace
 
-List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
+List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
 
 ### Parameters
 
@@ -960,6 +1063,7 @@ Name | Type | Description  | Required | Notes
 **delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
 **page_token** | Option<**String**> | Pagination token from a previous request |  |
 **limit** | Option<**i32**> | Maximum number of items to return |  |
+**include_declared** | Option<**bool**> | When true (default), includes tables that have been declared in the namespace but not yet created on storage, in addition to tables that have been created. When false, only tables with storage components are returned.  |  |[default to true]
 
 ### Return type
 
@@ -1137,9 +1241,41 @@ Name | Type | Description  | Required | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 
+## update_field_metadata
+
+> models::UpdateFieldMetadataResponse update_field_metadata(id, update_field_metadata_request, delimiter)
+Update per-field metadata
+
+Update the Arrow field (column) metadata for table `id`.  Each entry targets a field by `path` and merges the provided key-value pairs into that field's existing metadata, or replaces it when `replace` is true. A null metadata value deletes that key. 
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**id** | **String** | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  | [required] |
+**update_field_metadata_request** | [**UpdateFieldMetadataRequest**](UpdateFieldMetadataRequest.md) |  | [required] |
+**delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
+
+### Return type
+
+[**models::UpdateFieldMetadataResponse**](UpdateFieldMetadataResponse.md)
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
 ## update_table_schema_metadata
 
-> std::collections::HashMap<String, String> update_table_schema_metadata(id, request_body, delimiter)
+> std::collections::HashMap<String, String> update_table_schema_metadata(id, request_body, delimiter, branch)
 Update table schema metadata
 
 Replace the schema metadata for table `id` with the provided key-value pairs.  REST NAMESPACE ONLY REST namespace uses a direct object (map of string to string) as both request and response body instead of the wrapped `UpdateTableSchemaMetadataRequest` and `UpdateTableSchemaMetadataResponse`. 
@@ -1152,6 +1288,7 @@ Name | Type | Description  | Required | Notes
 **id** | **String** | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace.  | [required] |
 **request_body** | [**std::collections::HashMap<String, String>**](String.md) |  | [required] |
 **delimiter** | Option<**String**> | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used.  |  |
+**branch** | Option<**String**> | Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead.  |  |
 
 ### Return type
 

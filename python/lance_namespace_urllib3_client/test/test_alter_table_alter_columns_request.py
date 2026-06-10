@@ -38,44 +38,56 @@ class TestAlterTableAlterColumnsRequest(unittest.TestCase):
                 identity = lance_namespace_urllib3_client.models.identity.Identity(
                     api_key = '', 
                     auth_token = '', ),
-                context = {
-                    'key' : ''
-                    },
                 id = [
                     ''
                     ],
+                branch = '',
                 alterations = [
                     lance_namespace_urllib3_client.models.alter_columns_entry.AlterColumnsEntry(
-                        path = '', 
+                        path = '0', 
                         data_type = lance_namespace_urllib3_client.models.data_type.data_type(), 
                         rename = '', 
                         nullable = True, 
                         virtual_column = lance_namespace_urllib3_client.models.alter_virtual_column_entry.AlterVirtualColumnEntry(
                             input_columns = [
-                                ''
+                                '0'
                                 ], 
                             image = '', 
                             udf = '', 
                             udf_name = '', 
-                            udf_version = '', ), )
+                            udf_version = '', 
+                            udf_backend = '', 
+                            auto_backfill = True, 
+                            manifest = '', 
+                            manifest_checksum = '', 
+                            field_metadata = {
+                                'key' : ''
+                                }, ), )
                     ]
             )
         else:
             return AlterTableAlterColumnsRequest(
                 alterations = [
                     lance_namespace_urllib3_client.models.alter_columns_entry.AlterColumnsEntry(
-                        path = '', 
+                        path = '0', 
                         data_type = lance_namespace_urllib3_client.models.data_type.data_type(), 
                         rename = '', 
                         nullable = True, 
                         virtual_column = lance_namespace_urllib3_client.models.alter_virtual_column_entry.AlterVirtualColumnEntry(
                             input_columns = [
-                                ''
+                                '0'
                                 ], 
                             image = '', 
                             udf = '', 
                             udf_name = '', 
-                            udf_version = '', ), )
+                            udf_version = '', 
+                            udf_backend = '', 
+                            auto_backfill = True, 
+                            manifest = '', 
+                            manifest_checksum = '', 
+                            field_metadata = {
+                                'key' : ''
+                                }, ), )
                     ],
         )
         """

@@ -10,7 +10,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-VERSION = 0.5.2
+VERSION = 0.8.3-beta.1
 
 .PHONY: clean-reqwest-client
 clean-reqwest-client:
@@ -19,7 +19,7 @@ clean-reqwest-client:
 .PHONY: gen-reqwest-client
 gen-reqwest-client: clean-reqwest-client
 	uv run openapi-generator-cli generate \
-	  -i ../docs/src/rest.yaml \
+	  -i ../docs/src/spec.yaml \
 	  -g rust \
 	  -o lance-namespace-reqwest-client \
 	  --type-mappings='Binary=Vec<u8>,binary=Vec<u8>,file=Vec<u8>' \

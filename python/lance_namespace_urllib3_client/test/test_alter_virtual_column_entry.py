@@ -36,12 +36,19 @@ class TestAlterVirtualColumnEntry(unittest.TestCase):
         if include_optional:
             return AlterVirtualColumnEntry(
                 input_columns = [
-                    ''
+                    '0'
                     ],
                 image = '',
                 udf = '',
                 udf_name = '',
-                udf_version = ''
+                udf_version = '',
+                udf_backend = '',
+                auto_backfill = True,
+                manifest = '',
+                manifest_checksum = '',
+                field_metadata = {
+                    'key' : ''
+                    }
             )
         else:
             return AlterVirtualColumnEntry(

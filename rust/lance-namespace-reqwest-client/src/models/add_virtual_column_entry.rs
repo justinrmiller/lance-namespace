@@ -13,12 +13,12 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AddVirtualColumnEntry {
-    /// List of input column names for the virtual column
+    /// List of input Lance field paths for the virtual column. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments.
     #[serde(rename = "input_columns")]
     pub input_columns: Vec<String>,
-    /// Data type of the virtual column using JSON representation
-    #[serde(rename = "data_type")]
-    pub data_type: serde_json::Value,
+    /// Output columns produced by the virtual column UDF
+    #[serde(rename = "outputs")]
+    pub outputs: Vec<models::AddVirtualColumnOutputEntry>,
     /// Docker image to use for the UDF
     #[serde(rename = "image")]
     pub image: String,
@@ -31,17 +31,37 @@ pub struct AddVirtualColumnEntry {
     /// Version of the UDF
     #[serde(rename = "udf_version")]
     pub udf_version: String,
+    /// UDF backend type (e.g. DockerUDFSpecV1)
+    #[serde(rename = "udf_backend", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
+    pub udf_backend: Option<Option<String>>,
+    /// Whether to automatically backfill the column after creation
+    #[serde(rename = "auto_backfill", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
+    pub auto_backfill: Option<Option<bool>>,
+    /// JSON-serialized manifest for the UDF environment
+    #[serde(rename = "manifest", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
+    pub manifest: Option<Option<String>>,
+    /// SHA-256 checksum of the manifest content
+    #[serde(rename = "manifest_checksum", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
+    pub manifest_checksum: Option<Option<String>>,
+    /// User-supplied field metadata (string key-value pairs)
+    #[serde(rename = "field_metadata", skip_serializing_if = "Option::is_none")]
+    pub field_metadata: Option<std::collections::HashMap<String, String>>,
 }
 
 impl AddVirtualColumnEntry {
-    pub fn new(input_columns: Vec<String>, data_type: serde_json::Value, image: String, udf: String, udf_name: String, udf_version: String) -> AddVirtualColumnEntry {
+    pub fn new(input_columns: Vec<String>, outputs: Vec<models::AddVirtualColumnOutputEntry>, image: String, udf: String, udf_name: String, udf_version: String) -> AddVirtualColumnEntry {
         AddVirtualColumnEntry {
             input_columns,
-            data_type,
+            outputs,
             image,
             udf,
             udf_name,
             udf_version,
+            udf_backend: None,
+            auto_backfill: None,
+            manifest: None,
+            manifest_checksum: None,
+            field_metadata: None,
         }
     }
 }

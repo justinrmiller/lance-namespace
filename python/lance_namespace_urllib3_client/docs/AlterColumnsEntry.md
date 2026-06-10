@@ -5,11 +5,11 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**path** | **str** | Column path to alter | 
-**data_type** | **object** | New data type for the column using JSON representation (optional) | 
+**path** | **str** | Lance field path to alter. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments. Use canonical full paths for display and errors; leaf names alone only identify top-level fields; invalid or unresolved paths should return InvalidInput or TableColumnNotFound. | 
+**data_type** | **object** | New data type for the column using JSON representation (optional) | [optional] 
 **rename** | **str** | New name for the column (optional) | [optional] 
 **nullable** | **bool** | Whether the column should be nullable (optional) | [optional] 
-**virtual_column** | [**AlterVirtualColumnEntry**](AlterVirtualColumnEntry.md) | Virtual column alterations (optional) | [optional] 
+**virtual_column** | [**AlterVirtualColumnEntry**](AlterVirtualColumnEntry.md) |  | [optional] 
 
 ## Example
 

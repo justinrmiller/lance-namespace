@@ -41,6 +41,19 @@ pub enum AlterTableAlterColumnsError {
     UnknownValue(serde_json::Value),
 }
 
+/// struct for typed errors of method [`alter_table_backfill_columns`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum AlterTableBackfillColumnsError {
+    Status400(models::ErrorResponse),
+    Status401(models::ErrorResponse),
+    Status403(models::ErrorResponse),
+    Status404(models::ErrorResponse),
+    Status503(models::ErrorResponse),
+    Status5XX(models::ErrorResponse),
+    UnknownValue(serde_json::Value),
+}
+
 /// struct for typed errors of method [`alter_table_drop_columns`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -62,6 +75,20 @@ pub enum AnalyzeTableQueryPlanError {
     Status401(models::ErrorResponse),
     Status403(models::ErrorResponse),
     Status404(models::ErrorResponse),
+    Status503(models::ErrorResponse),
+    Status5XX(models::ErrorResponse),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`batch_commit_tables`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum BatchCommitTablesError {
+    Status400(models::ErrorResponse),
+    Status401(models::ErrorResponse),
+    Status403(models::ErrorResponse),
+    Status404(models::ErrorResponse),
+    Status409(models::ErrorResponse),
     Status503(models::ErrorResponse),
     Status5XX(models::ErrorResponse),
     UnknownValue(serde_json::Value),
@@ -107,10 +134,10 @@ pub enum CountTableRowsError {
     UnknownValue(serde_json::Value),
 }
 
-/// struct for typed errors of method [`create_empty_table`]
+/// struct for typed errors of method [`create_table`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum CreateEmptyTableError {
+pub enum CreateTableError {
     Status400(models::ErrorResponse),
     Status401(models::ErrorResponse),
     Status403(models::ErrorResponse),
@@ -121,14 +148,15 @@ pub enum CreateEmptyTableError {
     UnknownValue(serde_json::Value),
 }
 
-/// struct for typed errors of method [`create_table`]
+/// struct for typed errors of method [`create_table_branch`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum CreateTableError {
+pub enum CreateTableBranchError {
     Status400(models::ErrorResponse),
     Status401(models::ErrorResponse),
     Status403(models::ErrorResponse),
     Status404(models::ErrorResponse),
+    Status409(models::ErrorResponse),
     Status503(models::ErrorResponse),
     Status5XX(models::ErrorResponse),
     UnknownValue(serde_json::Value),
@@ -206,6 +234,19 @@ pub enum DeclareTableError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum DeleteFromTableError {
+    Status400(models::ErrorResponse),
+    Status401(models::ErrorResponse),
+    Status403(models::ErrorResponse),
+    Status404(models::ErrorResponse),
+    Status503(models::ErrorResponse),
+    Status5XX(models::ErrorResponse),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`delete_table_branch`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum DeleteTableBranchError {
     Status400(models::ErrorResponse),
     Status401(models::ErrorResponse),
     Status403(models::ErrorResponse),
@@ -370,6 +411,19 @@ pub enum ListAllTablesError {
     UnknownValue(serde_json::Value),
 }
 
+/// struct for typed errors of method [`list_table_branches`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ListTableBranchesError {
+    Status400(models::ErrorResponse),
+    Status401(models::ErrorResponse),
+    Status403(models::ErrorResponse),
+    Status404(models::ErrorResponse),
+    Status503(models::ErrorResponse),
+    Status5XX(models::ErrorResponse),
+    UnknownValue(serde_json::Value),
+}
+
 /// struct for typed errors of method [`list_table_indices`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -495,6 +549,19 @@ pub enum RestoreTableError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum TableExistsError {
+    Status400(models::ErrorResponse),
+    Status401(models::ErrorResponse),
+    Status403(models::ErrorResponse),
+    Status404(models::ErrorResponse),
+    Status503(models::ErrorResponse),
+    Status5XX(models::ErrorResponse),
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`update_field_metadata`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum UpdateFieldMetadataError {
     Status400(models::ErrorResponse),
     Status401(models::ErrorResponse),
     Status403(models::ErrorResponse),
@@ -658,6 +725,63 @@ pub async fn alter_table_alter_columns(configuration: &configuration::Configurat
     }
 }
 
+/// Trigger an asynchronous backfill job for a computed column on table `id`. The column must be a virtual (UDF-backed) column. Returns a job ID for tracking. 
+pub async fn alter_table_backfill_columns(configuration: &configuration::Configuration, id: &str, alter_table_backfill_columns_request: models::AlterTableBackfillColumnsRequest, delimiter: Option<&str>) -> Result<models::AlterTableBackfillColumnsResponse, Error<AlterTableBackfillColumnsError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_id = id;
+    let p_alter_table_backfill_columns_request = alter_table_backfill_columns_request;
+    let p_delimiter = delimiter;
+
+    let uri_str = format!("{}/v1/table/{id}/backfill_column", configuration.base_path, id=crate::apis::urlencode(p_id));
+    let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref param_value) = p_delimiter {
+        req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    if let Some(ref apikey) = configuration.api_key {
+        let key = apikey.key.clone();
+        let value = match apikey.prefix {
+            Some(ref prefix) => format!("{} {}", prefix, key),
+            None => key,
+        };
+        req_builder = req_builder.header("x-api-key", value);
+    };
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_alter_table_backfill_columns_request);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::AlterTableBackfillColumnsResponse`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::AlterTableBackfillColumnsResponse`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<AlterTableBackfillColumnsError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
 /// Remove specified columns from table `id`. 
 pub async fn alter_table_drop_columns(configuration: &configuration::Configuration, id: &str, alter_table_drop_columns_request: models::AlterTableDropColumnsRequest, delimiter: Option<&str>) -> Result<models::AlterTableDropColumnsResponse, Error<AlterTableDropColumnsError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -768,6 +892,62 @@ pub async fn analyze_table_query_plan(configuration: &configuration::Configurati
     } else {
         let content = resp.text().await?;
         let entity: Option<AnalyzeTableQueryPlanError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
+/// Atomically commit a batch of table operations. This is a generalized version of `BatchCreateTableVersions` that supports mixed operation types within a single atomic transaction at the metadata layer.  Supported operation types: - `DeclareTable`: Declare (reserve) a new table - `CreateTableVersion`: Create a new version entry for a table - `DeleteTableVersions`: Delete version ranges from a table - `DeregisterTable`: Deregister (soft-delete) a table  All operations are committed atomically: either all succeed or none are applied. 
+pub async fn batch_commit_tables(configuration: &configuration::Configuration, batch_commit_tables_request: models::BatchCommitTablesRequest, delimiter: Option<&str>) -> Result<models::BatchCommitTablesResponse, Error<BatchCommitTablesError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_batch_commit_tables_request = batch_commit_tables_request;
+    let p_delimiter = delimiter;
+
+    let uri_str = format!("{}/v1/table/batch-commit", configuration.base_path);
+    let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref param_value) = p_delimiter {
+        req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    if let Some(ref apikey) = configuration.api_key {
+        let key = apikey.key.clone();
+        let value = match apikey.prefix {
+            Some(ref prefix) => format!("{} {}", prefix, key),
+            None => key,
+        };
+        req_builder = req_builder.header("x-api-key", value);
+    };
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_batch_commit_tables_request);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::BatchCommitTablesResponse`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::BatchCommitTablesResponse`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<BatchCommitTablesError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent { status, content, entity }))
     }
 }
@@ -942,70 +1122,15 @@ pub async fn count_table_rows(configuration: &configuration::Configuration, id: 
     }
 }
 
-/// Create an empty table with the given name without touching storage. This is a metadata-only operation that records the table existence and sets up aspects like access control.  For DirectoryNamespace implementation, this creates a `.lance-reserved` file in the table directory to mark the table's existence without creating actual Lance data files.  **Deprecated**: Use `DeclareTable` instead. 
-pub async fn create_empty_table(configuration: &configuration::Configuration, id: &str, create_empty_table_request: models::CreateEmptyTableRequest, delimiter: Option<&str>) -> Result<models::CreateEmptyTableResponse, Error<CreateEmptyTableError>> {
-    // add a prefix to parameters to efficiently prevent name collisions
-    let p_id = id;
-    let p_create_empty_table_request = create_empty_table_request;
-    let p_delimiter = delimiter;
-
-    let uri_str = format!("{}/v1/table/{id}/create-empty", configuration.base_path, id=crate::apis::urlencode(p_id));
-    let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
-
-    if let Some(ref param_value) = p_delimiter {
-        req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
-    }
-    if let Some(ref user_agent) = configuration.user_agent {
-        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
-    }
-    if let Some(ref token) = configuration.oauth_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
-    if let Some(ref apikey) = configuration.api_key {
-        let key = apikey.key.clone();
-        let value = match apikey.prefix {
-            Some(ref prefix) => format!("{} {}", prefix, key),
-            None => key,
-        };
-        req_builder = req_builder.header("x-api-key", value);
-    };
-    if let Some(ref token) = configuration.bearer_access_token {
-        req_builder = req_builder.bearer_auth(token.to_owned());
-    };
-    req_builder = req_builder.json(&p_create_empty_table_request);
-
-    let req = req_builder.build()?;
-    let resp = configuration.client.execute(req).await?;
-
-    let status = resp.status();
-    let content_type = resp
-        .headers()
-        .get("content-type")
-        .and_then(|v| v.to_str().ok())
-        .unwrap_or("application/octet-stream");
-    let content_type = super::ContentType::from(content_type);
-
-    if !status.is_client_error() && !status.is_server_error() {
-        let content = resp.text().await?;
-        match content_type {
-            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::CreateEmptyTableResponse`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::CreateEmptyTableResponse`")))),
-        }
-    } else {
-        let content = resp.text().await?;
-        let entity: Option<CreateEmptyTableError> = serde_json::from_str(&content).ok();
-        Err(Error::ResponseError(ResponseContent { status, content, entity }))
-    }
-}
-
-/// Create table `id` in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `CreateTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
-pub async fn create_table(configuration: &configuration::Configuration, id: &str, body: Vec<u8>, delimiter: Option<&str>, mode: Option<&str>) -> Result<models::CreateTableResponse, Error<CreateTableError>> {
+/// Create table `id` in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `CreateTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name - `properties`: serialize as a single JSON-encoded query parameter such as   `properties={\"user\":\"alice\",\"team\":\"eng\"}`; these are business logic properties   managed by the namespace implementation outside Lance context - `storage_options`: serialize as a single JSON-encoded query parameter such as   `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`; these configure   write-time overrides for data and metadata written during table creation 
+pub async fn create_table(configuration: &configuration::Configuration, id: &str, body: Vec<u8>, delimiter: Option<&str>, mode: Option<&str>, properties: Option<&str>, storage_options: Option<&str>) -> Result<models::CreateTableResponse, Error<CreateTableError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_body = body;
     let p_delimiter = delimiter;
     let p_mode = mode;
+    let p_properties = properties;
+    let p_storage_options = storage_options;
 
     let uri_str = format!("{}/v1/table/{id}/create", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
@@ -1015,6 +1140,12 @@ pub async fn create_table(configuration: &configuration::Configuration, id: &str
     }
     if let Some(ref param_value) = p_mode {
         req_builder = req_builder.query(&[("mode", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_properties {
+        req_builder = req_builder.query(&[("properties", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_storage_options {
+        req_builder = req_builder.query(&[("storage_options", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
@@ -1060,7 +1191,64 @@ pub async fn create_table(configuration: &configuration::Configuration, id: &str
     }
 }
 
-/// Create an index on a table column for faster search operations. Supports vector indexes (IVF_FLAT, IVF_HNSW_SQ, IVF_PQ, etc.) and scalar indexes (BTREE, BITMAP, FTS, etc.). Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
+/// Create a new branch for table `id` starting from a source ref (another branch and/or version), defaulting to the latest version of the main branch. 
+pub async fn create_table_branch(configuration: &configuration::Configuration, id: &str, create_table_branch_request: models::CreateTableBranchRequest, delimiter: Option<&str>) -> Result<models::CreateTableBranchResponse, Error<CreateTableBranchError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_id = id;
+    let p_create_table_branch_request = create_table_branch_request;
+    let p_delimiter = delimiter;
+
+    let uri_str = format!("{}/v1/table/{id}/branches/create", configuration.base_path, id=crate::apis::urlencode(p_id));
+    let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref param_value) = p_delimiter {
+        req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    if let Some(ref apikey) = configuration.api_key {
+        let key = apikey.key.clone();
+        let value = match apikey.prefix {
+            Some(ref prefix) => format!("{} {}", prefix, key),
+            None => key,
+        };
+        req_builder = req_builder.header("x-api-key", value);
+    };
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_create_table_branch_request);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::CreateTableBranchResponse`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::CreateTableBranchResponse`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<CreateTableBranchError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
+/// Create an index on a table field for faster search operations. Supports vector indexes (IVF_FLAT, IVF_HNSW_SQ, IVF_PQ, etc.) and scalar indexes (BTREE, BITMAP, FTS, etc.). Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
 pub async fn create_table_index(configuration: &configuration::Configuration, id: &str, create_table_index_request: models::CreateTableIndexRequest, delimiter: Option<&str>) -> Result<models::CreateTableIndexResponse, Error<CreateTableIndexError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -1117,7 +1305,7 @@ pub async fn create_table_index(configuration: &configuration::Configuration, id
     }
 }
 
-/// Create a scalar index on a table column for faster filtering operations. Supports scalar indexes (BTREE, BITMAP, LABEL_LIST, FTS, etc.). This is an alias for CreateTableIndex specifically for scalar indexes. Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
+/// Create a scalar index on a table field for faster filtering operations. Supports scalar indexes (BTREE, BITMAP, LABEL_LIST, FTS, etc.). This is an alias for CreateTableIndex specifically for scalar indexes. Index creation is handled asynchronously. Use the `ListTableIndices` and `DescribeTableIndexStats` operations to monitor index creation progress. 
 pub async fn create_table_scalar_index(configuration: &configuration::Configuration, id: &str, create_table_index_request: models::CreateTableIndexRequest, delimiter: Option<&str>) -> Result<models::CreateTableScalarIndexResponse, Error<CreateTableScalarIndexError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
@@ -1402,6 +1590,63 @@ pub async fn delete_from_table(configuration: &configuration::Configuration, id:
     }
 }
 
+/// Delete an existing branch from table `id`. 
+pub async fn delete_table_branch(configuration: &configuration::Configuration, id: &str, delete_table_branch_request: models::DeleteTableBranchRequest, delimiter: Option<&str>) -> Result<models::DeleteTableBranchResponse, Error<DeleteTableBranchError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_id = id;
+    let p_delete_table_branch_request = delete_table_branch_request;
+    let p_delimiter = delimiter;
+
+    let uri_str = format!("{}/v1/table/{id}/branches/delete", configuration.base_path, id=crate::apis::urlencode(p_id));
+    let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref param_value) = p_delimiter {
+        req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    if let Some(ref apikey) = configuration.api_key {
+        let key = apikey.key.clone();
+        let value = match apikey.prefix {
+            Some(ref prefix) => format!("{} {}", prefix, key),
+            None => key,
+        };
+        req_builder = req_builder.header("x-api-key", value);
+    };
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_delete_table_branch_request);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::DeleteTableBranchResponse`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::DeleteTableBranchResponse`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<DeleteTableBranchError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
 /// Delete an existing tag from table `id`. 
 pub async fn delete_table_tag(configuration: &configuration::Configuration, id: &str, delete_table_tag_request: models::DeleteTableTagRequest, delimiter: Option<&str>) -> Result<models::DeleteTableTagResponse, Error<DeleteTableTagError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -1516,14 +1761,15 @@ pub async fn deregister_table(configuration: &configuration::Configuration, id: 
     }
 }
 
-/// Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri` and `load_detailed_metadata` as query parameters instead of in the request body. 
-pub async fn describe_table(configuration: &configuration::Configuration, id: &str, describe_table_request: models::DescribeTableRequest, delimiter: Option<&str>, with_table_uri: Option<bool>, load_detailed_metadata: Option<bool>) -> Result<models::DescribeTableResponse, Error<DescribeTableError>> {
+/// Describe the detailed information for table `id`.  REST NAMESPACE ONLY REST namespace passes `with_table_uri`, `load_detailed_metadata`, and `check_declared` as query parameters instead of in the request body. 
+pub async fn describe_table(configuration: &configuration::Configuration, id: &str, describe_table_request: models::DescribeTableRequest, delimiter: Option<&str>, with_table_uri: Option<bool>, load_detailed_metadata: Option<bool>, check_declared: Option<bool>) -> Result<models::DescribeTableResponse, Error<DescribeTableError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_describe_table_request = describe_table_request;
     let p_delimiter = delimiter;
     let p_with_table_uri = with_table_uri;
     let p_load_detailed_metadata = load_detailed_metadata;
+    let p_check_declared = check_declared;
 
     let uri_str = format!("{}/v1/table/{id}/describe", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
@@ -1536,6 +1782,9 @@ pub async fn describe_table(configuration: &configuration::Configuration, id: &s
     }
     if let Some(ref param_value) = p_load_detailed_metadata {
         req_builder = req_builder.query(&[("load_detailed_metadata", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_check_declared {
+        req_builder = req_builder.query(&[("check_declared", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
@@ -1752,17 +2001,21 @@ pub async fn drop_table(configuration: &configuration::Configuration, id: &str, 
 }
 
 /// Drop the specified index from table `id`.  REST NAMESPACE ONLY REST namespace does not use a request body for this operation. The `DropTableIndexRequest` information is passed in the following way: - `id`: pass through path parameter of the same name - `index_name`: pass through path parameter of the same name 
-pub async fn drop_table_index(configuration: &configuration::Configuration, id: &str, index_name: &str, delimiter: Option<&str>) -> Result<models::DropTableIndexResponse, Error<DropTableIndexError>> {
+pub async fn drop_table_index(configuration: &configuration::Configuration, id: &str, index_name: &str, delimiter: Option<&str>, branch: Option<&str>) -> Result<models::DropTableIndexResponse, Error<DropTableIndexError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_index_name = index_name;
     let p_delimiter = delimiter;
+    let p_branch = branch;
 
     let uri_str = format!("{}/v1/table/{id}/index/{index_name}/drop", configuration.base_path, id=crate::apis::urlencode(p_id), index_name=crate::apis::urlencode(p_index_name));
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
 
     if let Some(ref param_value) = p_delimiter {
         req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_branch {
+        req_builder = req_builder.query(&[("branch", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
@@ -1978,12 +2231,13 @@ pub async fn get_table_tag_version(configuration: &configuration::Configuration,
     }
 }
 
-/// Insert new records into table `id`.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `InsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
-pub async fn insert_into_table(configuration: &configuration::Configuration, id: &str, body: Vec<u8>, delimiter: Option<&str>, mode: Option<&str>) -> Result<models::InsertIntoTableResponse, Error<InsertIntoTableError>> {
+/// Insert new records into table `id`.  For tables that have been declared but not yet created on storage (is_only_declared=true), this operation will create the table with the provided data.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `InsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `mode`: pass through query parameter of the same name 
+pub async fn insert_into_table(configuration: &configuration::Configuration, id: &str, body: Vec<u8>, delimiter: Option<&str>, branch: Option<&str>, mode: Option<&str>) -> Result<models::InsertIntoTableResponse, Error<InsertIntoTableError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_body = body;
     let p_delimiter = delimiter;
+    let p_branch = branch;
     let p_mode = mode;
 
     let uri_str = format!("{}/v1/table/{id}/insert", configuration.base_path, id=crate::apis::urlencode(p_id));
@@ -1991,6 +2245,9 @@ pub async fn insert_into_table(configuration: &configuration::Configuration, id:
 
     if let Some(ref param_value) = p_delimiter {
         req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_branch {
+        req_builder = req_builder.query(&[("branch", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_mode {
         req_builder = req_builder.query(&[("mode", &param_value.to_string())]);
@@ -2039,15 +2296,82 @@ pub async fn insert_into_table(configuration: &configuration::Configuration, id:
     }
 }
 
-/// List all tables across all namespaces.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListAllTablesRequest` information in the following way: - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `delimiter`: pass through query parameter of the same name 
-pub async fn list_all_tables(configuration: &configuration::Configuration, delimiter: Option<&str>, page_token: Option<&str>, limit: Option<i32>) -> Result<models::ListTablesResponse, Error<ListAllTablesError>> {
+/// List all tables across all namespaces.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListAllTablesRequest` information in the following way: - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `delimiter`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
+pub async fn list_all_tables(configuration: &configuration::Configuration, delimiter: Option<&str>, page_token: Option<&str>, limit: Option<i32>, include_declared: Option<bool>) -> Result<models::ListTablesResponse, Error<ListAllTablesError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_delimiter = delimiter;
     let p_page_token = page_token;
     let p_limit = limit;
+    let p_include_declared = include_declared;
 
     let uri_str = format!("{}/v1/table", configuration.base_path);
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref param_value) = p_delimiter {
+        req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_page_token {
+        req_builder = req_builder.query(&[("page_token", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_limit {
+        req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_include_declared {
+        req_builder = req_builder.query(&[("include_declared", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    if let Some(ref apikey) = configuration.api_key {
+        let key = apikey.key.clone();
+        let value = match apikey.prefix {
+            Some(ref prefix) => format!("{} {}", prefix, key),
+            None => key,
+        };
+        req_builder = req_builder.header("x-api-key", value);
+    };
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ListTablesResponse`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ListTablesResponse`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ListAllTablesError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
+/// List all branches that have been created for table `id`. Returns a map of branch names to their contents.  REST NAMESPACE ONLY REST namespace does not use a request body for this operation. The `ListTableBranchesRequest` information is passed in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
+pub async fn list_table_branches(configuration: &configuration::Configuration, id: &str, delimiter: Option<&str>, page_token: Option<&str>, limit: Option<i32>) -> Result<models::ListTableBranchesResponse, Error<ListTableBranchesError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_id = id;
+    let p_delimiter = delimiter;
+    let p_page_token = page_token;
+    let p_limit = limit;
+
+    let uri_str = format!("{}/v1/table/{id}/branches/list", configuration.base_path, id=crate::apis::urlencode(p_id));
+    let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
 
     if let Some(ref param_value) = p_delimiter {
         req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
@@ -2091,12 +2415,12 @@ pub async fn list_all_tables(configuration: &configuration::Configuration, delim
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ListTablesResponse`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ListTablesResponse`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ListTableBranchesResponse`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ListTableBranchesResponse`")))),
         }
     } else {
         let content = resp.text().await?;
-        let entity: Option<ListAllTablesError> = serde_json::from_str(&content).ok();
+        let entity: Option<ListTableBranchesError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent { status, content, entity }))
     }
 }
@@ -2222,10 +2546,11 @@ pub async fn list_table_tags(configuration: &configuration::Configuration, id: &
 }
 
 /// List all versions (commits) of table `id` with their metadata.  Use `descending=true` to guarantee versions are returned in descending order (latest to oldest). Otherwise, the ordering is implementation-defined.  REST NAMESPACE ONLY REST namespace does not use a request body for this operation. The `ListTableVersionsRequest` information is passed in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `descending`: pass through query parameter of the same name 
-pub async fn list_table_versions(configuration: &configuration::Configuration, id: &str, delimiter: Option<&str>, page_token: Option<&str>, limit: Option<i32>, descending: Option<bool>) -> Result<models::ListTableVersionsResponse, Error<ListTableVersionsError>> {
+pub async fn list_table_versions(configuration: &configuration::Configuration, id: &str, delimiter: Option<&str>, branch: Option<&str>, page_token: Option<&str>, limit: Option<i32>, descending: Option<bool>) -> Result<models::ListTableVersionsResponse, Error<ListTableVersionsError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_delimiter = delimiter;
+    let p_branch = branch;
     let p_page_token = page_token;
     let p_limit = limit;
     let p_descending = descending;
@@ -2235,6 +2560,9 @@ pub async fn list_table_versions(configuration: &configuration::Configuration, i
 
     if let Some(ref param_value) = p_delimiter {
         req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_branch {
+        req_builder = req_builder.query(&[("branch", &param_value.to_string())]);
     }
     if let Some(ref param_value) = p_page_token {
         req_builder = req_builder.query(&[("page_token", &param_value.to_string())]);
@@ -2288,13 +2616,14 @@ pub async fn list_table_versions(configuration: &configuration::Configuration, i
     }
 }
 
-/// List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name 
-pub async fn list_tables(configuration: &configuration::Configuration, id: &str, delimiter: Option<&str>, page_token: Option<&str>, limit: Option<i32>) -> Result<models::ListTablesResponse, Error<ListTablesError>> {
+/// List all child table names of the parent namespace `id`.  REST NAMESPACE ONLY REST namespace uses GET to perform this operation without a request body. It passes in the `ListTablesRequest` information in the following way: - `id`: pass through path parameter of the same name - `page_token`: pass through query parameter of the same name - `limit`: pass through query parameter of the same name - `include_declared`: pass through query parameter of the same name 
+pub async fn list_tables(configuration: &configuration::Configuration, id: &str, delimiter: Option<&str>, page_token: Option<&str>, limit: Option<i32>, include_declared: Option<bool>) -> Result<models::ListTablesResponse, Error<ListTablesError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_delimiter = delimiter;
     let p_page_token = page_token;
     let p_limit = limit;
+    let p_include_declared = include_declared;
 
     let uri_str = format!("{}/v1/namespace/{id}/table/list", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
@@ -2307,6 +2636,9 @@ pub async fn list_tables(configuration: &configuration::Configuration, id: &str,
     }
     if let Some(ref param_value) = p_limit {
         req_builder = req_builder.query(&[("limit", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_include_declared {
+        req_builder = req_builder.query(&[("include_declared", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
@@ -2351,13 +2683,14 @@ pub async fn list_tables(configuration: &configuration::Configuration, id: &str,
     }
 }
 
-/// Performs a merge insert (upsert) operation on table `id`. This operation updates existing rows based on a matching column and inserts new rows that don't match. It returns the number of rows inserted and updated.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `MergeInsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `on`: pass through query parameter of the same name - `when_matched_update_all`: pass through query parameter of the same name - `when_matched_update_all_filt`: pass through query parameter of the same name - `when_not_matched_insert_all`: pass through query parameter of the same name - `when_not_matched_by_source_delete`: pass through query parameter of the same name - `when_not_matched_by_source_delete_filt`: pass through query parameter of the same name 
-pub async fn merge_insert_into_table(configuration: &configuration::Configuration, id: &str, on: &str, body: Vec<u8>, delimiter: Option<&str>, when_matched_update_all: Option<bool>, when_matched_update_all_filt: Option<&str>, when_not_matched_insert_all: Option<bool>, when_not_matched_by_source_delete: Option<bool>, when_not_matched_by_source_delete_filt: Option<&str>, timeout: Option<&str>, use_index: Option<bool>) -> Result<models::MergeInsertIntoTableResponse, Error<MergeInsertIntoTableError>> {
+/// Performs a merge insert (upsert) operation on table `id`. This operation updates existing rows based on a matching column and inserts new rows that don't match. It returns the number of rows inserted and updated.  For tables that have been declared but not yet created on storage (is_only_declared=true), this operation will create the table with the provided data (since there are no existing rows to merge with).  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the `MergeInsertIntoTableRequest` information in the following way: - `id`: pass through path parameter of the same name - `on`: pass through query parameter of the same name - `when_matched_update_all`: pass through query parameter of the same name - `when_matched_update_all_filt`: pass through query parameter of the same name - `when_not_matched_insert_all`: pass through query parameter of the same name - `when_not_matched_by_source_delete`: pass through query parameter of the same name - `when_not_matched_by_source_delete_filt`: pass through query parameter of the same name 
+pub async fn merge_insert_into_table(configuration: &configuration::Configuration, id: &str, on: &str, body: Vec<u8>, delimiter: Option<&str>, branch: Option<&str>, when_matched_update_all: Option<bool>, when_matched_update_all_filt: Option<&str>, when_not_matched_insert_all: Option<bool>, when_not_matched_by_source_delete: Option<bool>, when_not_matched_by_source_delete_filt: Option<&str>, timeout: Option<&str>, use_index: Option<bool>) -> Result<models::MergeInsertIntoTableResponse, Error<MergeInsertIntoTableError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_on = on;
     let p_body = body;
     let p_delimiter = delimiter;
+    let p_branch = branch;
     let p_when_matched_update_all = when_matched_update_all;
     let p_when_matched_update_all_filt = when_matched_update_all_filt;
     let p_when_not_matched_insert_all = when_not_matched_insert_all;
@@ -2371,6 +2704,9 @@ pub async fn merge_insert_into_table(configuration: &configuration::Configuratio
 
     if let Some(ref param_value) = p_delimiter {
         req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_branch {
+        req_builder = req_builder.query(&[("branch", &param_value.to_string())]);
     }
     req_builder = req_builder.query(&[("on", &p_on.to_string())]);
     if let Some(ref param_value) = p_when_matched_update_all {
@@ -2701,6 +3037,63 @@ pub async fn table_exists(configuration: &configuration::Configuration, id: &str
     }
 }
 
+/// Update the Arrow field (column) metadata for table `id`.  Each entry targets a field by `path` and merges the provided key-value pairs into that field's existing metadata, or replaces it when `replace` is true. A null metadata value deletes that key. 
+pub async fn update_field_metadata(configuration: &configuration::Configuration, id: &str, update_field_metadata_request: models::UpdateFieldMetadataRequest, delimiter: Option<&str>) -> Result<models::UpdateFieldMetadataResponse, Error<UpdateFieldMetadataError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_id = id;
+    let p_update_field_metadata_request = update_field_metadata_request;
+    let p_delimiter = delimiter;
+
+    let uri_str = format!("{}/v1/table/{id}/update_field_metadata", configuration.base_path, id=crate::apis::urlencode(p_id));
+    let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref param_value) = p_delimiter {
+        req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
+    }
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    if let Some(ref token) = configuration.oauth_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    if let Some(ref apikey) = configuration.api_key {
+        let key = apikey.key.clone();
+        let value = match apikey.prefix {
+            Some(ref prefix) => format!("{} {}", prefix, key),
+            None => key,
+        };
+        req_builder = req_builder.header("x-api-key", value);
+    };
+    if let Some(ref token) = configuration.bearer_access_token {
+        req_builder = req_builder.bearer_auth(token.to_owned());
+    };
+    req_builder = req_builder.json(&p_update_field_metadata_request);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::UpdateFieldMetadataResponse`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::UpdateFieldMetadataResponse`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<UpdateFieldMetadataError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
 /// Update existing rows in table `id`. 
 pub async fn update_table(configuration: &configuration::Configuration, id: &str, update_table_request: models::UpdateTableRequest, delimiter: Option<&str>) -> Result<models::UpdateTableResponse, Error<UpdateTableError>> {
     // add a prefix to parameters to efficiently prevent name collisions
@@ -2759,17 +3152,21 @@ pub async fn update_table(configuration: &configuration::Configuration, id: &str
 }
 
 /// Replace the schema metadata for table `id` with the provided key-value pairs.  REST NAMESPACE ONLY REST namespace uses a direct object (map of string to string) as both request and response body instead of the wrapped `UpdateTableSchemaMetadataRequest` and `UpdateTableSchemaMetadataResponse`. 
-pub async fn update_table_schema_metadata(configuration: &configuration::Configuration, id: &str, request_body: std::collections::HashMap<String, String>, delimiter: Option<&str>) -> Result<std::collections::HashMap<String, String>, Error<UpdateTableSchemaMetadataError>> {
+pub async fn update_table_schema_metadata(configuration: &configuration::Configuration, id: &str, request_body: std::collections::HashMap<String, String>, delimiter: Option<&str>, branch: Option<&str>) -> Result<std::collections::HashMap<String, String>, Error<UpdateTableSchemaMetadataError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_id = id;
     let p_request_body = request_body;
     let p_delimiter = delimiter;
+    let p_branch = branch;
 
     let uri_str = format!("{}/v1/table/{id}/schema_metadata/update", configuration.base_path, id=crate::apis::urlencode(p_id));
     let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
 
     if let Some(ref param_value) = p_delimiter {
         req_builder = req_builder.query(&[("delimiter", &param_value.to_string())]);
+    }
+    if let Some(ref param_value) = p_branch {
+        req_builder = req_builder.query(&[("branch", &param_value.to_string())]);
     }
     if let Some(ref user_agent) = configuration.user_agent {
         req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());

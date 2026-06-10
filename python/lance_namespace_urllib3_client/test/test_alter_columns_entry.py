@@ -35,23 +35,29 @@ class TestAlterColumnsEntry(unittest.TestCase):
         model = AlterColumnsEntry()
         if include_optional:
             return AlterColumnsEntry(
-                path = '',
+                path = '0',
                 data_type = lance_namespace_urllib3_client.models.data_type.data_type(),
                 rename = '',
                 nullable = True,
                 virtual_column = lance_namespace_urllib3_client.models.alter_virtual_column_entry.AlterVirtualColumnEntry(
                     input_columns = [
-                        ''
+                        '0'
                         ], 
                     image = '', 
                     udf = '', 
                     udf_name = '', 
-                    udf_version = '', )
+                    udf_version = '', 
+                    udf_backend = '', 
+                    auto_backfill = True, 
+                    manifest = '', 
+                    manifest_checksum = '', 
+                    field_metadata = {
+                        'key' : ''
+                        }, )
             )
         else:
             return AlterColumnsEntry(
-                path = '',
-                data_type = lance_namespace_urllib3_client.models.data_type.data_type(),
+                path = '0',
         )
         """
 

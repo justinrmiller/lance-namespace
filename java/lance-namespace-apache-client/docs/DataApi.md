@@ -5,14 +5,17 @@ All URIs are relative to *http://localhost:2333*
 | Method | HTTP request | Description |
 |------------- | ------------- | -------------|
 | [**alterTableAddColumns**](DataApi.md#alterTableAddColumns) | **POST** /v1/table/{id}/add_columns | Add new columns to table schema |
+| [**alterTableBackfillColumns**](DataApi.md#alterTableBackfillColumns) | **POST** /v1/table/{id}/backfill_column | Trigger an async column backfill job |
 | [**analyzeTableQueryPlan**](DataApi.md#analyzeTableQueryPlan) | **POST** /v1/table/{id}/analyze_plan | Analyze query execution plan |
 | [**countTableRows**](DataApi.md#countTableRows) | **POST** /v1/table/{id}/count_rows | Count rows in a table |
+| [**createMaterializedView**](DataApi.md#createMaterializedView) | **POST** /v1/materialized_view/{id}/create | Create a materialized view |
 | [**createTable**](DataApi.md#createTable) | **POST** /v1/table/{id}/create | Create a table with the given name |
 | [**deleteFromTable**](DataApi.md#deleteFromTable) | **POST** /v1/table/{id}/delete | Delete rows from a table |
 | [**explainTableQueryPlan**](DataApi.md#explainTableQueryPlan) | **POST** /v1/table/{id}/explain_plan | Get query execution plan explanation |
 | [**insertIntoTable**](DataApi.md#insertIntoTable) | **POST** /v1/table/{id}/insert | Insert records into a table |
 | [**mergeInsertIntoTable**](DataApi.md#mergeInsertIntoTable) | **POST** /v1/table/{id}/merge_insert | Merge insert (upsert) records into a table |
 | [**queryTable**](DataApi.md#queryTable) | **POST** /v1/table/{id}/query | Query a table |
+| [**refreshMaterializedView**](DataApi.md#refreshMaterializedView) | **POST** /v1/materialized_view/{id}/refresh | Trigger an async materialized view refresh |
 | [**updateTable**](DataApi.md#updateTable) | **POST** /v1/table/{id}/update | Update rows in a table |
 
 
@@ -100,6 +103,97 @@ public class Example {
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | Add columns operation result |  -  |
+| **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
+| **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
+| **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
+| **404** | A server-side problem that means can not find the specified resource. |  -  |
+| **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
+| **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
+
+
+## alterTableBackfillColumns
+
+> AlterTableBackfillColumnsResponse alterTableBackfillColumns(id, alterTableBackfillColumnsRequest, delimiter)
+
+Trigger an async column backfill job
+
+Trigger an asynchronous backfill job for a computed column on table &#x60;id&#x60;. The column must be a virtual (UDF-backed) column. Returns a job ID for tracking. 
+
+### Example
+
+```java
+// Import classes:
+import org.lance.namespace.client.apache.ApiClient;
+import org.lance.namespace.client.apache.ApiException;
+import org.lance.namespace.client.apache.Configuration;
+import org.lance.namespace.client.apache.auth.*;
+import org.lance.namespace.client.apache.models.*;
+import org.lance.namespace.client.apache.api.DataApi;
+
+public class Example {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath("http://localhost:2333");
+        
+        // Configure OAuth2 access token for authorization: OAuth2
+        OAuth OAuth2 = (OAuth) defaultClient.getAuthentication("OAuth2");
+        OAuth2.setAccessToken("YOUR ACCESS TOKEN");
+
+        // Configure API key authorization: ApiKeyAuth
+        ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+        ApiKeyAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //ApiKeyAuth.setApiKeyPrefix("Token");
+
+        // Configure HTTP bearer authorization: BearerAuth
+        HttpBearerAuth BearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("BearerAuth");
+        BearerAuth.setBearerToken("BEARER TOKEN");
+
+        DataApi apiInstance = new DataApi(defaultClient);
+        String id = "id_example"; // String | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. 
+        AlterTableBackfillColumnsRequest alterTableBackfillColumnsRequest = new AlterTableBackfillColumnsRequest(); // AlterTableBackfillColumnsRequest | 
+        String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        try {
+            AlterTableBackfillColumnsResponse result = apiInstance.alterTableBackfillColumns(id, alterTableBackfillColumnsRequest, delimiter);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DataApi#alterTableBackfillColumns");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | **String**| &#x60;string identifier&#x60; of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the root namespace.  | |
+| **alterTableBackfillColumnsRequest** | [**AlterTableBackfillColumnsRequest**](AlterTableBackfillColumnsRequest.md)|  | |
+| **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
+
+### Return type
+
+[**AlterTableBackfillColumnsResponse**](AlterTableBackfillColumnsResponse.md)
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **202** | Backfill job accepted |  -  |
 | **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
 | **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
 | **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
@@ -290,13 +384,105 @@ public class Example {
 | **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
 
 
+## createMaterializedView
+
+> CreateMaterializedViewResponse createMaterializedView(id, createMaterializedViewRequest, delimiter)
+
+Create a materialized view
+
+Create a materialized view at identifier &#x60;id&#x60;. The view may be query-backed, UDTF-backed, or chunker-backed, controlled by the &#x60;kind&#x60; discriminator. 
+
+### Example
+
+```java
+// Import classes:
+import org.lance.namespace.client.apache.ApiClient;
+import org.lance.namespace.client.apache.ApiException;
+import org.lance.namespace.client.apache.Configuration;
+import org.lance.namespace.client.apache.auth.*;
+import org.lance.namespace.client.apache.models.*;
+import org.lance.namespace.client.apache.api.DataApi;
+
+public class Example {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath("http://localhost:2333");
+        
+        // Configure OAuth2 access token for authorization: OAuth2
+        OAuth OAuth2 = (OAuth) defaultClient.getAuthentication("OAuth2");
+        OAuth2.setAccessToken("YOUR ACCESS TOKEN");
+
+        // Configure API key authorization: ApiKeyAuth
+        ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+        ApiKeyAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //ApiKeyAuth.setApiKeyPrefix("Token");
+
+        // Configure HTTP bearer authorization: BearerAuth
+        HttpBearerAuth BearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("BearerAuth");
+        BearerAuth.setBearerToken("BEARER TOKEN");
+
+        DataApi apiInstance = new DataApi(defaultClient);
+        String id = "id_example"; // String | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. 
+        CreateMaterializedViewRequest createMaterializedViewRequest = new CreateMaterializedViewRequest(); // CreateMaterializedViewRequest | 
+        String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        try {
+            CreateMaterializedViewResponse result = apiInstance.createMaterializedView(id, createMaterializedViewRequest, delimiter);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DataApi#createMaterializedView");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | **String**| &#x60;string identifier&#x60; of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the root namespace.  | |
+| **createMaterializedViewRequest** | [**CreateMaterializedViewRequest**](CreateMaterializedViewRequest.md)|  | |
+| **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
+
+### Return type
+
+[**CreateMaterializedViewResponse**](CreateMaterializedViewResponse.md)
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **201** | Materialized view created |  -  |
+| **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
+| **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
+| **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
+| **404** | A server-side problem that means can not find the specified resource. |  -  |
+| **409** | The request conflicts with the current state of the target resource. |  -  |
+| **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
+| **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
+
+
 ## createTable
 
-> CreateTableResponse createTable(id, body, delimiter, mode)
+> CreateTableResponse createTable(id, body, delimiter, mode, properties, storageOptions)
 
 Create a table with the given name
 
-Create table &#x60;id&#x60; in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the &#x60;CreateTableRequest&#x60; information in the following way: - &#x60;id&#x60;: pass through path parameter of the same name - &#x60;mode&#x60;: pass through query parameter of the same name 
+Create table &#x60;id&#x60; in the namespace with the given data in Arrow IPC stream.  The schema of the Arrow IPC stream is used as the table schema. If the stream is empty, the API creates a new empty table.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the &#x60;CreateTableRequest&#x60; information in the following way: - &#x60;id&#x60;: pass through path parameter of the same name - &#x60;mode&#x60;: pass through query parameter of the same name - &#x60;properties&#x60;: serialize as a single JSON-encoded query parameter such as   &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;; these are business logic properties   managed by the namespace implementation outside Lance context - &#x60;storage_options&#x60;: serialize as a single JSON-encoded query parameter such as   &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;; these configure   write-time overrides for data and metadata written during table creation 
 
 ### Example
 
@@ -333,8 +519,10 @@ public class Example {
         byte[] body = null; // byte[] | Arrow IPC data
         String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
         String mode = "mode_example"; // String | 
+        String properties = "properties_example"; // String | Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as `properties={\"user\":\"alice\",\"team\":\"eng\"}`. 
+        String storageOptions = "storageOptions_example"; // String | Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as `storage_options={\"aws_region\":\"us-east-1\",\"timeout\":\"30s\"}`. 
         try {
-            CreateTableResponse result = apiInstance.createTable(id, body, delimiter, mode);
+            CreateTableResponse result = apiInstance.createTable(id, body, delimiter, mode, properties, storageOptions);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DataApi#createTable");
@@ -356,6 +544,8 @@ public class Example {
 | **body** | **byte[]**| Arrow IPC data | |
 | **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
 | **mode** | **String**|  | [optional] |
+| **properties** | **String**| Business logic properties managed by the namespace implementation outside Lance context. The map is translated to a single JSON-encoded query parameter such as &#x60;properties&#x3D;{\&quot;user\&quot;:\&quot;alice\&quot;,\&quot;team\&quot;:\&quot;eng\&quot;}&#x60;.  | [optional] |
+| **storageOptions** | **String**| Storage options that configure overrides for writing table data and metadata during table creation. These are passed to Lance for the write path. The map is translated to a single JSON-encoded query parameter such as &#x60;storage_options&#x3D;{\&quot;aws_region\&quot;:\&quot;us-east-1\&quot;,\&quot;timeout\&quot;:\&quot;30s\&quot;}&#x60;.  | [optional] |
 
 ### Return type
 
@@ -379,6 +569,7 @@ public class Example {
 | **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
 | **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
 | **404** | A server-side problem that means can not find the specified resource. |  -  |
+| **409** | The request conflicts with the current state of the target resource. |  -  |
 | **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
 | **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
 
@@ -567,11 +758,11 @@ public class Example {
 
 ## insertIntoTable
 
-> InsertIntoTableResponse insertIntoTable(id, body, delimiter, mode)
+> InsertIntoTableResponse insertIntoTable(id, body, delimiter, branch, mode)
 
 Insert records into a table
 
-Insert new records into table &#x60;id&#x60;.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the &#x60;InsertIntoTableRequest&#x60; information in the following way: - &#x60;id&#x60;: pass through path parameter of the same name - &#x60;mode&#x60;: pass through query parameter of the same name 
+Insert new records into table &#x60;id&#x60;.  For tables that have been declared but not yet created on storage (is_only_declared&#x3D;true), this operation will create the table with the provided data.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the &#x60;InsertIntoTableRequest&#x60; information in the following way: - &#x60;id&#x60;: pass through path parameter of the same name - &#x60;mode&#x60;: pass through query parameter of the same name 
 
 ### Example
 
@@ -607,9 +798,10 @@ public class Example {
         String id = "id_example"; // String | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. 
         byte[] body = null; // byte[] | Arrow IPC stream containing the records to insert
         String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        String branch = "branch_example"; // String | Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
         String mode = "append"; // String | How the insert should behave. Case insensitive, supports both PascalCase and snake_case. Valid values are: - Append (default): insert data to the existing table - Overwrite: remove all data in the table and then insert data to it 
         try {
-            InsertIntoTableResponse result = apiInstance.insertIntoTable(id, body, delimiter, mode);
+            InsertIntoTableResponse result = apiInstance.insertIntoTable(id, body, delimiter, branch, mode);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DataApi#insertIntoTable");
@@ -630,6 +822,7 @@ public class Example {
 | **id** | **String**| &#x60;string identifier&#x60; of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the root namespace.  | |
 | **body** | **byte[]**| Arrow IPC stream containing the records to insert | |
 | **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
+| **branch** | **String**| Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a &#x60;branch&#x60; field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry &#x60;branch&#x60; as a body field instead.  | [optional] |
 | **mode** | **String**| How the insert should behave. Case insensitive, supports both PascalCase and snake_case. Valid values are: - Append (default): insert data to the existing table - Overwrite: remove all data in the table and then insert data to it  | [optional] [default to append] |
 
 ### Return type
@@ -660,11 +853,11 @@ public class Example {
 
 ## mergeInsertIntoTable
 
-> MergeInsertIntoTableResponse mergeInsertIntoTable(id, on, body, delimiter, whenMatchedUpdateAll, whenMatchedUpdateAllFilt, whenNotMatchedInsertAll, whenNotMatchedBySourceDelete, whenNotMatchedBySourceDeleteFilt, timeout, useIndex)
+> MergeInsertIntoTableResponse mergeInsertIntoTable(id, on, body, delimiter, branch, whenMatchedUpdateAll, whenMatchedUpdateAllFilt, whenNotMatchedInsertAll, whenNotMatchedBySourceDelete, whenNotMatchedBySourceDeleteFilt, timeout, useIndex)
 
 Merge insert (upsert) records into a table
 
-Performs a merge insert (upsert) operation on table &#x60;id&#x60;. This operation updates existing rows based on a matching column and inserts new rows that don&#39;t match. It returns the number of rows inserted and updated.  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the &#x60;MergeInsertIntoTableRequest&#x60; information in the following way: - &#x60;id&#x60;: pass through path parameter of the same name - &#x60;on&#x60;: pass through query parameter of the same name - &#x60;when_matched_update_all&#x60;: pass through query parameter of the same name - &#x60;when_matched_update_all_filt&#x60;: pass through query parameter of the same name - &#x60;when_not_matched_insert_all&#x60;: pass through query parameter of the same name - &#x60;when_not_matched_by_source_delete&#x60;: pass through query parameter of the same name - &#x60;when_not_matched_by_source_delete_filt&#x60;: pass through query parameter of the same name 
+Performs a merge insert (upsert) operation on table &#x60;id&#x60;. This operation updates existing rows based on a matching column and inserts new rows that don&#39;t match. It returns the number of rows inserted and updated.  For tables that have been declared but not yet created on storage (is_only_declared&#x3D;true), this operation will create the table with the provided data (since there are no existing rows to merge with).  REST NAMESPACE ONLY REST namespace uses Arrow IPC stream as the request body. It passes in the &#x60;MergeInsertIntoTableRequest&#x60; information in the following way: - &#x60;id&#x60;: pass through path parameter of the same name - &#x60;on&#x60;: pass through query parameter of the same name - &#x60;when_matched_update_all&#x60;: pass through query parameter of the same name - &#x60;when_matched_update_all_filt&#x60;: pass through query parameter of the same name - &#x60;when_not_matched_insert_all&#x60;: pass through query parameter of the same name - &#x60;when_not_matched_by_source_delete&#x60;: pass through query parameter of the same name - &#x60;when_not_matched_by_source_delete_filt&#x60;: pass through query parameter of the same name 
 
 ### Example
 
@@ -698,18 +891,19 @@ public class Example {
 
         DataApi apiInstance = new DataApi(defaultClient);
         String id = "id_example"; // String | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. 
-        String on = "on_example"; // String | Column name to use for matching rows (required)
+        String on = "on_example"; // String | Lance field path to use for matching rows. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments. Use canonical full paths for display and errors; leaf names alone only identify top-level fields; invalid or unresolved paths should return InvalidInput or TableColumnNotFound.
         byte[] body = null; // byte[] | Arrow IPC stream containing the records to merge
         String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        String branch = "branch_example"; // String | Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a `branch` field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry `branch` as a body field instead. 
         Boolean whenMatchedUpdateAll = false; // Boolean | Update all columns when rows match
-        String whenMatchedUpdateAllFilt = "whenMatchedUpdateAllFilt_example"; // String | The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true
+        String whenMatchedUpdateAllFilt = "whenMatchedUpdateAllFilt_example"; // String | The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled.
         Boolean whenNotMatchedInsertAll = false; // Boolean | Insert all columns when rows don't match
         Boolean whenNotMatchedBySourceDelete = false; // Boolean | Delete all rows from target table that don't match a row in the source table
-        String whenNotMatchedBySourceDeleteFilt = "whenNotMatchedBySourceDeleteFilt_example"; // String | Delete rows from the target table if there is no match AND the SQL expression evaluates to true
+        String whenNotMatchedBySourceDeleteFilt = "whenNotMatchedBySourceDeleteFilt_example"; // String | Delete rows from the target table if there is no match AND the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled.
         String timeout = "timeout_example"; // String | Timeout for the operation (e.g., \"30s\", \"5m\")
         Boolean useIndex = false; // Boolean | Whether to use index for matching rows
         try {
-            MergeInsertIntoTableResponse result = apiInstance.mergeInsertIntoTable(id, on, body, delimiter, whenMatchedUpdateAll, whenMatchedUpdateAllFilt, whenNotMatchedInsertAll, whenNotMatchedBySourceDelete, whenNotMatchedBySourceDeleteFilt, timeout, useIndex);
+            MergeInsertIntoTableResponse result = apiInstance.mergeInsertIntoTable(id, on, body, delimiter, branch, whenMatchedUpdateAll, whenMatchedUpdateAllFilt, whenNotMatchedInsertAll, whenNotMatchedBySourceDelete, whenNotMatchedBySourceDeleteFilt, timeout, useIndex);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DataApi#mergeInsertIntoTable");
@@ -728,14 +922,15 @@ public class Example {
 | Name | Type | Description  | Notes |
 |------------- | ------------- | ------------- | -------------|
 | **id** | **String**| &#x60;string identifier&#x60; of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the root namespace.  | |
-| **on** | **String**| Column name to use for matching rows (required) | |
+| **on** | **String**| Lance field path to use for matching rows. Nested fields use dot-separated segments; use backtick-quoted segments for literal dots and double backticks inside quoted segments. Use canonical full paths for display and errors; leaf names alone only identify top-level fields; invalid or unresolved paths should return InvalidInput or TableColumnNotFound. | |
 | **body** | **byte[]**| Arrow IPC stream containing the records to merge | |
 | **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
+| **branch** | **String**| Optional branch to target. When not specified, the main branch is used. Used by branch-scoped operations that cannot carry a &#x60;branch&#x60; field in their request body (Arrow IPC stream and bodyless operations). Operations with a JSON request body carry &#x60;branch&#x60; as a body field instead.  | [optional] |
 | **whenMatchedUpdateAll** | **Boolean**| Update all columns when rows match | [optional] [default to false] |
-| **whenMatchedUpdateAllFilt** | **String**| The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true | [optional] |
+| **whenMatchedUpdateAllFilt** | **String**| The row is updated (similar to UpdateAll) only for rows where the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled. | [optional] |
 | **whenNotMatchedInsertAll** | **Boolean**| Insert all columns when rows don&#39;t match | [optional] [default to false] |
 | **whenNotMatchedBySourceDelete** | **Boolean**| Delete all rows from target table that don&#39;t match a row in the source table | [optional] [default to false] |
-| **whenNotMatchedBySourceDeleteFilt** | **String**| Delete rows from the target table if there is no match AND the SQL expression evaluates to true | [optional] |
+| **whenNotMatchedBySourceDeleteFilt** | **String**| Delete rows from the target table if there is no match AND the SQL expression evaluates to true. Field references must use Lance field path syntax: nested fields use dot-separated segments, literal dots require backtick-quoted segments, and backticks inside quoted segments are doubled. | [optional] |
 | **timeout** | **String**| Timeout for the operation (e.g., \&quot;30s\&quot;, \&quot;5m\&quot;) | [optional] |
 | **useIndex** | **Boolean**| Whether to use index for matching rows | [optional] [default to false] |
 
@@ -848,6 +1043,97 @@ public class Example {
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | Query results in Arrow IPC file format |  -  |
+| **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
+| **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
+| **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |
+| **404** | A server-side problem that means can not find the specified resource. |  -  |
+| **503** | The service is not ready to handle the request. The client should wait and retry. The service may additionally send a Retry-After header to indicate when to retry. |  -  |
+| **5XX** | A server-side problem that might not be addressable from the client side. Used for server 5xx errors without more specific documentation in individual routes. |  -  |
+
+
+## refreshMaterializedView
+
+> RefreshMaterializedViewResponse refreshMaterializedView(id, delimiter, refreshMaterializedViewRequest)
+
+Trigger an async materialized view refresh
+
+Trigger an asynchronous refresh job for materialized view &#x60;id&#x60;. Returns a job ID for tracking. 
+
+### Example
+
+```java
+// Import classes:
+import org.lance.namespace.client.apache.ApiClient;
+import org.lance.namespace.client.apache.ApiException;
+import org.lance.namespace.client.apache.Configuration;
+import org.lance.namespace.client.apache.auth.*;
+import org.lance.namespace.client.apache.models.*;
+import org.lance.namespace.client.apache.api.DataApi;
+
+public class Example {
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath("http://localhost:2333");
+        
+        // Configure OAuth2 access token for authorization: OAuth2
+        OAuth OAuth2 = (OAuth) defaultClient.getAuthentication("OAuth2");
+        OAuth2.setAccessToken("YOUR ACCESS TOKEN");
+
+        // Configure API key authorization: ApiKeyAuth
+        ApiKeyAuth ApiKeyAuth = (ApiKeyAuth) defaultClient.getAuthentication("ApiKeyAuth");
+        ApiKeyAuth.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //ApiKeyAuth.setApiKeyPrefix("Token");
+
+        // Configure HTTP bearer authorization: BearerAuth
+        HttpBearerAuth BearerAuth = (HttpBearerAuth) defaultClient.getAuthentication("BearerAuth");
+        BearerAuth.setBearerToken("BEARER TOKEN");
+
+        DataApi apiInstance = new DataApi(defaultClient);
+        String id = "id_example"; // String | `string identifier` of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, `v1/namespace/$/list` performs a `ListNamespace` on the root namespace. 
+        String delimiter = "delimiter_example"; // String | An optional delimiter of the `string identifier`, following the Lance Namespace spec. When not specified, the `$` delimiter must be used. 
+        RefreshMaterializedViewRequest refreshMaterializedViewRequest = new RefreshMaterializedViewRequest(); // RefreshMaterializedViewRequest | 
+        try {
+            RefreshMaterializedViewResponse result = apiInstance.refreshMaterializedView(id, delimiter, refreshMaterializedViewRequest);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DataApi#refreshMaterializedView");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **id** | **String**| &#x60;string identifier&#x60; of an object in a namespace, following the Lance Namespace spec. When the value is equal to the delimiter, it represents the root namespace. For example, &#x60;v1/namespace/$/list&#x60; performs a &#x60;ListNamespace&#x60; on the root namespace.  | |
+| **delimiter** | **String**| An optional delimiter of the &#x60;string identifier&#x60;, following the Lance Namespace spec. When not specified, the &#x60;$&#x60; delimiter must be used.  | [optional] |
+| **refreshMaterializedViewRequest** | [**RefreshMaterializedViewRequest**](RefreshMaterializedViewRequest.md)|  | [optional] |
+
+### Return type
+
+[**RefreshMaterializedViewResponse**](RefreshMaterializedViewResponse.md)
+
+### Authorization
+
+[OAuth2](../README.md#OAuth2), [ApiKeyAuth](../README.md#ApiKeyAuth), [BearerAuth](../README.md#BearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **202** | Refresh job accepted |  -  |
 | **400** | Indicates a bad request error. It could be caused by an unexpected request body format or other forms of request validation failure, such as invalid json. Usually serves application/json content, although in some cases simple text/plain content might be returned by the server&#39;s middleware. |  -  |
 | **401** | Unauthorized. The request lacks valid authentication credentials for the operation. |  -  |
 | **403** | Forbidden. Authenticated user does not have the necessary permissions. |  -  |

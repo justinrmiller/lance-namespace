@@ -38,42 +38,72 @@ class TestAlterTableAddColumnsRequest(unittest.TestCase):
                 identity = lance_namespace_urllib3_client.models.identity.Identity(
                     api_key = '', 
                     auth_token = '', ),
-                context = {
-                    'key' : ''
-                    },
                 id = [
                     ''
                     ],
+                branch = '',
                 new_columns = [
-                    lance_namespace_urllib3_client.models.new_column_transform.NewColumnTransform(
+                    lance_namespace_urllib3_client.models.add_columns_entry.AddColumnsEntry(
                         name = '', 
                         expression = '', 
                         virtual_column = lance_namespace_urllib3_client.models.add_virtual_column_entry.AddVirtualColumnEntry(
                             input_columns = [
-                                ''
+                                '0'
                                 ], 
-                            data_type = lance_namespace_urllib3_client.models.data_type.data_type(), 
+                            outputs = [
+                                lance_namespace_urllib3_client.models.add_virtual_column_output_entry.AddVirtualColumnOutputEntry(
+                                    column = '', 
+                                    struct_field = '', 
+                                    data_type = lance_namespace_urllib3_client.models.data_type.data_type(), 
+                                    nullable = True, 
+                                    metadata = {
+                                        'key' : ''
+                                        }, )
+                                ], 
                             image = '', 
                             udf = '', 
                             udf_name = '', 
-                            udf_version = '', ), )
+                            udf_version = '', 
+                            udf_backend = '', 
+                            auto_backfill = True, 
+                            manifest = '', 
+                            manifest_checksum = '', 
+                            field_metadata = {
+                                'key' : ''
+                                }, ), )
                     ]
             )
         else:
             return AlterTableAddColumnsRequest(
                 new_columns = [
-                    lance_namespace_urllib3_client.models.new_column_transform.NewColumnTransform(
+                    lance_namespace_urllib3_client.models.add_columns_entry.AddColumnsEntry(
                         name = '', 
                         expression = '', 
                         virtual_column = lance_namespace_urllib3_client.models.add_virtual_column_entry.AddVirtualColumnEntry(
                             input_columns = [
-                                ''
+                                '0'
                                 ], 
-                            data_type = lance_namespace_urllib3_client.models.data_type.data_type(), 
+                            outputs = [
+                                lance_namespace_urllib3_client.models.add_virtual_column_output_entry.AddVirtualColumnOutputEntry(
+                                    column = '', 
+                                    struct_field = '', 
+                                    data_type = lance_namespace_urllib3_client.models.data_type.data_type(), 
+                                    nullable = True, 
+                                    metadata = {
+                                        'key' : ''
+                                        }, )
+                                ], 
                             image = '', 
                             udf = '', 
                             udf_name = '', 
-                            udf_version = '', ), )
+                            udf_version = '', 
+                            udf_backend = '', 
+                            auto_backfill = True, 
+                            manifest = '', 
+                            manifest_checksum = '', 
+                            field_metadata = {
+                                'key' : ''
+                                }, ), )
                     ],
         )
         """

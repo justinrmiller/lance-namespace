@@ -20,17 +20,15 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
 /** AlterTableAddColumnsRequest */
 @JsonPropertyOrder({
   AlterTableAddColumnsRequest.JSON_PROPERTY_IDENTITY,
-  AlterTableAddColumnsRequest.JSON_PROPERTY_CONTEXT,
   AlterTableAddColumnsRequest.JSON_PROPERTY_ID,
+  AlterTableAddColumnsRequest.JSON_PROPERTY_BRANCH,
   AlterTableAddColumnsRequest.JSON_PROPERTY_NEW_COLUMNS
 })
 @javax.annotation.Generated(
@@ -40,14 +38,14 @@ public class AlterTableAddColumnsRequest {
   public static final String JSON_PROPERTY_IDENTITY = "identity";
   @javax.annotation.Nullable private Identity identity;
 
-  public static final String JSON_PROPERTY_CONTEXT = "context";
-  @javax.annotation.Nullable private Map<String, String> context = new HashMap<>();
-
   public static final String JSON_PROPERTY_ID = "id";
   @javax.annotation.Nullable private List<String> id = new ArrayList<>();
 
+  public static final String JSON_PROPERTY_BRANCH = "branch";
+  @javax.annotation.Nullable private String branch;
+
   public static final String JSON_PROPERTY_NEW_COLUMNS = "new_columns";
-  @javax.annotation.Nonnull private List<NewColumnTransform> newColumns = new ArrayList<>();
+  @javax.annotation.Nonnull private List<AddColumnsEntry> newColumns = new ArrayList<>();
 
   public AlterTableAddColumnsRequest() {}
 
@@ -75,43 +73,6 @@ public class AlterTableAddColumnsRequest {
     this.identity = identity;
   }
 
-  public AlterTableAddColumnsRequest context(
-      @javax.annotation.Nullable Map<String, String> context) {
-
-    this.context = context;
-    return this;
-  }
-
-  public AlterTableAddColumnsRequest putContextItem(String key, String contextItem) {
-    if (this.context == null) {
-      this.context = new HashMap<>();
-    }
-    this.context.put(key, contextItem);
-    return this;
-  }
-
-  /**
-   * Arbitrary context for a request as key-value pairs. How to use the context is custom to the
-   * specific implementation. REST NAMESPACE ONLY Context entries are passed via HTTP headers using
-   * the naming convention &#x60;x-lance-ctx-&lt;key&gt;: &lt;value&gt;&#x60;. For example, a
-   * context entry &#x60;{\&quot;trace_id\&quot;: \&quot;abc123\&quot;}&#x60; would be sent as the
-   * header &#x60;x-lance-ctx-trace_id: abc123&#x60;.
-   *
-   * @return context
-   */
-  @javax.annotation.Nullable
-  @JsonProperty(JSON_PROPERTY_CONTEXT)
-  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public Map<String, String> getContext() {
-    return context;
-  }
-
-  @JsonProperty(JSON_PROPERTY_CONTEXT)
-  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
-  public void setContext(@javax.annotation.Nullable Map<String, String> context) {
-    this.context = context;
-  }
-
   public AlterTableAddColumnsRequest id(@javax.annotation.Nullable List<String> id) {
 
     this.id = id;
@@ -127,7 +88,7 @@ public class AlterTableAddColumnsRequest {
   }
 
   /**
-   * Get id
+   * Table identifier path (namespace + table name)
    *
    * @return id
    */
@@ -144,14 +105,38 @@ public class AlterTableAddColumnsRequest {
     this.id = id;
   }
 
+  public AlterTableAddColumnsRequest branch(@javax.annotation.Nullable String branch) {
+
+    this.branch = branch;
+    return this;
+  }
+
+  /**
+   * Branch to target. When not specified, the main branch is used.
+   *
+   * @return branch
+   */
+  @javax.annotation.Nullable
+  @JsonProperty(JSON_PROPERTY_BRANCH)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public String getBranch() {
+    return branch;
+  }
+
+  @JsonProperty(JSON_PROPERTY_BRANCH)
+  @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
+  public void setBranch(@javax.annotation.Nullable String branch) {
+    this.branch = branch;
+  }
+
   public AlterTableAddColumnsRequest newColumns(
-      @javax.annotation.Nonnull List<NewColumnTransform> newColumns) {
+      @javax.annotation.Nonnull List<AddColumnsEntry> newColumns) {
 
     this.newColumns = newColumns;
     return this;
   }
 
-  public AlterTableAddColumnsRequest addNewColumnsItem(NewColumnTransform newColumnsItem) {
+  public AlterTableAddColumnsRequest addNewColumnsItem(AddColumnsEntry newColumnsItem) {
     if (this.newColumns == null) {
       this.newColumns = new ArrayList<>();
     }
@@ -160,20 +145,20 @@ public class AlterTableAddColumnsRequest {
   }
 
   /**
-   * List of new columns to add
+   * List of new columns to add to the table
    *
    * @return newColumns
    */
   @javax.annotation.Nonnull
   @JsonProperty(JSON_PROPERTY_NEW_COLUMNS)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public List<NewColumnTransform> getNewColumns() {
+  public List<AddColumnsEntry> getNewColumns() {
     return newColumns;
   }
 
   @JsonProperty(JSON_PROPERTY_NEW_COLUMNS)
   @JsonInclude(value = JsonInclude.Include.ALWAYS)
-  public void setNewColumns(@javax.annotation.Nonnull List<NewColumnTransform> newColumns) {
+  public void setNewColumns(@javax.annotation.Nonnull List<AddColumnsEntry> newColumns) {
     this.newColumns = newColumns;
   }
 
@@ -187,14 +172,14 @@ public class AlterTableAddColumnsRequest {
     }
     AlterTableAddColumnsRequest alterTableAddColumnsRequest = (AlterTableAddColumnsRequest) o;
     return Objects.equals(this.identity, alterTableAddColumnsRequest.identity)
-        && Objects.equals(this.context, alterTableAddColumnsRequest.context)
         && Objects.equals(this.id, alterTableAddColumnsRequest.id)
+        && Objects.equals(this.branch, alterTableAddColumnsRequest.branch)
         && Objects.equals(this.newColumns, alterTableAddColumnsRequest.newColumns);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(identity, context, id, newColumns);
+    return Objects.hash(identity, id, branch, newColumns);
   }
 
   @Override
@@ -202,8 +187,8 @@ public class AlterTableAddColumnsRequest {
     StringBuilder sb = new StringBuilder();
     sb.append("class AlterTableAddColumnsRequest {\n");
     sb.append("    identity: ").append(toIndentedString(identity)).append("\n");
-    sb.append("    context: ").append(toIndentedString(context)).append("\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    branch: ").append(toIndentedString(branch)).append("\n");
     sb.append("    newColumns: ").append(toIndentedString(newColumns)).append("\n");
     sb.append("}");
     return sb.toString();
@@ -256,28 +241,6 @@ public class AlterTableAddColumnsRequest {
       joiner.add(getIdentity().toUrlQueryString(prefix + "identity" + suffix));
     }
 
-    // add `context` to the URL query string
-    if (getContext() != null) {
-      for (String _key : getContext().keySet()) {
-        try {
-          joiner.add(
-              String.format(
-                  "%scontext%s%s=%s",
-                  prefix,
-                  suffix,
-                  "".equals(suffix)
-                      ? ""
-                      : String.format("%s%d%s", containerPrefix, _key, containerSuffix),
-                  getContext().get(_key),
-                  URLEncoder.encode(String.valueOf(getContext().get(_key)), "UTF-8")
-                      .replaceAll("\\+", "%20")));
-        } catch (UnsupportedEncodingException e) {
-          // Should never happen, UTF-8 is always supported
-          throw new RuntimeException(e);
-        }
-      }
-    }
-
     // add `id` to the URL query string
     if (getId() != null) {
       for (int i = 0; i < getId().size(); i++) {
@@ -296,6 +259,21 @@ public class AlterTableAddColumnsRequest {
           // Should never happen, UTF-8 is always supported
           throw new RuntimeException(e);
         }
+      }
+    }
+
+    // add `branch` to the URL query string
+    if (getBranch() != null) {
+      try {
+        joiner.add(
+            String.format(
+                "%sbranch%s=%s",
+                prefix,
+                suffix,
+                URLEncoder.encode(String.valueOf(getBranch()), "UTF-8").replaceAll("\\+", "%20")));
+      } catch (UnsupportedEncodingException e) {
+        // Should never happen, UTF-8 is always supported
+        throw new RuntimeException(e);
       }
     }
 
